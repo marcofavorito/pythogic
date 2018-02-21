@@ -1,2 +1,2 @@
-setuptools==20.7.0
+setuptools==38.5.1
 typing==3.6.4
