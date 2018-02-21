@@ -1,45 +1,61 @@
-# http://mathworld.wolfram.com/First-OrderLogic.html
+# -*- coding: utf-8 -*-
 
-from typing import Set, List
+"""Module for First-Order logic
+For the theory please see: http://mathworld.wolfram.com/First-OrderLogic.html
+"""
+
+
+from typing import Set
 from abc import ABC
 
-class Symbol(object):
-    def __init__(self, name: str):
-        self.name = name
-
-    def __str__(self):
-        return self.name
-
-
-class FunctionSymbol(Symbol):
-    def __init__(self, name: str, arity: int):
-        super().__init__(name)
-        self.arity = arity
-
-    def __str__(self):
-        return self.name + "^" + str(self.arity)
-
-
-class ConstantSymbol(FunctionSymbol):
-    def __init__(self, name:str):
-        super().__init__(name, 0)
-
-
-class PredicateSymbol(Symbol):
-    def __init__(self, name: str, arity):
-        super().__init__(name)
-        self.arity = arity
-
-    def __str__(self):
-        return self.name + "^" + str(self.arity)
-
+from pythogic.fol.Symbol import Symbol, FunctionSymbol, ConstantSymbol, PredicateSymbol
 
 class Term(object):
-    def __init__(self, symbol:Symbol):
+    def __init__(self, symbol: Symbol):
         self.symbol = symbol
+
+    def __str__(self):
+        return str(self.symbol)
 
     def __eq__(self, other):
         return Equal(self, other)
+
+    def __hash__(self):
+        return self.symbol.__hash__()
+
+
+class Variable(Term):
+    def __init__(self, symbol: Symbol):
+        super().__init__(symbol)
+
+
+    @classmethod
+    def fromString(cls, name:str):
+        return Variable(Symbol(name))
+
+
+
+
+class FunctionTerm(Term):
+    def __init__(self, function_symbol: FunctionSymbol, *args:Term):
+        assert len(args) == function_symbol.arity
+        super().__init__(function_symbol)
+        self.args = args
+
+    def __str__(self):
+        return super().__str__() + "(" + ", ".join([t.__str__() for t in self.args]) + ")"
+
+
+
+class ConstantTerm(FunctionTerm):
+    def __init__(self, constant_symbol: ConstantSymbol):
+        super().__init__(constant_symbol)
+
+
+
+class Formula(ABC):
+    def evaluate(self):
+        raise NotImplementedError
 
     def __invert__(self):
         return Negate(self)
@@ -53,53 +69,25 @@ class Term(object):
     def __rshift__(self, other):
         return Implies(self, other)
 
-    def __str__(self):
-        return str(self.symbol)
-
-
-
-class Variable(Term):
-    def __init__(self, symbol:Symbol):
-        super().__init__(symbol)
-
-    @classmethod
-    def fromString(cls, name:str):
-        return Variable(Symbol(name))
-
-
-
-
-class FunctionTerm(Term):
-    def __init__(self, function_symbol:FunctionSymbol, *args:Term):
-        super().__init__(function_symbol)
-        self.args = args
-
-    def __str__(self):
-        return super().__str__() + "(" + ", ".join([t.__str__() for t in self.args]) + ")"
-
-
-class ConstantTerm(FunctionTerm):
-    def __init__(self, constant_symbol:ConstantSymbol):
-        super().__init__(constant_symbol)
-
-
-
-class Formula(ABC):
-    def evaluate(self):
-        raise NotImplementedError
 
 class PredicateFormula(Formula):
-    def __init__(self, predicate_symbol:PredicateSymbol, *args:Term):
+    def __init__(self, predicate_symbol: PredicateSymbol, *args:Term):
+        assert len(args) == predicate_symbol.arity
         self.predicate_symbol = predicate_symbol
         self.args = args
 
     def __str__(self):
         return str(self.predicate_symbol) + "(" + ", ".join([t.__str__() for t in self.args]) + ")"
 
+    @classmethod
+    def fromString(cls, name: str, *args:Term):
+        return PredicateFormula(PredicateSymbol(name, len(args)), *args)
+
 class Operator(Formula):
     @property
     def operator_symbol(self):
         raise NotImplementedError
+
 
 
 
@@ -114,10 +102,10 @@ class BinaryOperator(Operator):
         return str(self.f1) + " " + self.operator_symbol + " " + str(self.f2)
 
 class Equal(Operator):
-    """Equality operator: term_1 == term_2
+    """Equality operator: term_1 = term_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
-        >>> e = Equal(a, b);
+        >>> e = Equal(a, b)
         >>> str(e)
         'a = b'
     """
@@ -126,23 +114,34 @@ class Equal(Operator):
         self.t1 = t1
         self.t2 = t2
 
-
-
     def __str__(self):
-        return super().__str__()
+        return str(self.t1) + " = " + str(self.t2)
 
 
 class Negate(Formula):
-    """Negation operator: ~formula"""
+    """Negation operator: ~formula
+
+    >>> a=Variable.fromString("a")
+    >>> A=PredicateFormula.fromString("A", a)
+    >>> e = Negate(A)
+    >>> str(e)
+    '~(A^1(a))'
+
+    """
+    operator_symbol = "~"
     def __init__(self, f:Formula):
         self.f = f
+
+    def __str__(self):
+        return self.operator_symbol + "(" + str(self.f) + ")"
 
 
 class And(BinaryOperator):
     """And operator: formula_1 & formula_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
-        >>> e = And(a, b);
+        >>> A=PredicateFormula.fromString("A", a); B=PredicateFormula.fromString("B", b)
+        >>> e = And(a, b)
         >>> str(e)
         'a & b'
     """
@@ -157,7 +156,7 @@ class Or(BinaryOperator):
     """Or operator: formula_1 | formula_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
-        >>> e = Or(a, b);
+        >>> e = Or(a, b)
         >>> str(e)
         'a | b'
     """
@@ -173,7 +172,7 @@ class Implies(BinaryOperator):
     """Logical implication: formula_1 >> formula_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
-        >>> e = Implies(a, b);
+        >>> e = Implies(a, b)
         >>> str(e)
         'a >> b'
     """
@@ -210,10 +209,11 @@ class FOL(object):
         if isinstance(t, Variable):
             return t in self.vars
         if isinstance(t, FunctionTerm):
-            return all(self._is_term(arg) for arg in t.args)
+            return isinstance(t.symbol, FunctionSymbol) \
+                   and t.symbol in self.functions \
+                   and all(self._is_term(arg) for arg in t.args)
         else:
-            # Argument neither a Variable nor a FunctionTerm"
-            return False
+            raise ValueError("Argument neither a Variable nor a FunctionTerm")
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""

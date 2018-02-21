@@ -16,7 +16,7 @@ Pythogic
 
 
 
-Python package for deal with logical formulas and formal systems
+Python package for deal with logical formulas and formal systems.
 
 
 * Free software: MIT license
