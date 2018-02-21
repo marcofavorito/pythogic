@@ -8,6 +8,17 @@ class Symbol(object):
     def __str__(self):
         return self.name
 
+    def _members(self):
+        return (self.name)
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self._members() == other._members()
+        else:
+            return False
+
+    def __hash__(self):
+        return hash(self._members())
 
 
 class FunctionSymbol(Symbol):
@@ -19,6 +30,8 @@ class FunctionSymbol(Symbol):
     def __str__(self):
         return self.name + "^" + str(self.arity)
 
+    def _members(self):
+        return (self.name, self.arity)
 
 
 class ConstantSymbol(FunctionSymbol):
@@ -33,3 +46,6 @@ class PredicateSymbol(Symbol):
 
     def __str__(self):
         return self.name + "^" + str(self.arity)
+
+    def _members(self):
+        return (self.name, self.arity)
