@@ -1,5 +1,0 @@
-{
-  "docs/conf.py": true, 
-  "pythogic/fol.py": true, 
-  "tests/test_pythogic.py": true
-}
