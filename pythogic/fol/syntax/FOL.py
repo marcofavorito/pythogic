@@ -15,8 +15,7 @@ from pythogic.fol.syntax.Term import Term, Variable, FunctionTerm
 class FOL(object):
     """Class to represent a FOL formal system"""
 
-    def __init__(self, vars: Set[Variable], functions: Set[FunctionSymbol], predicates: Set[PredicateSymbol]):
-        self.vars = vars
+    def __init__(self, functions: Set[FunctionSymbol], predicates: Set[PredicateSymbol]):
         self.functions = functions
         self.predicates = predicates
 
@@ -24,8 +23,8 @@ class FOL(object):
     def _is_term(self, t: Term):
         """Check if a term is legal in the current formal system"""
         if isinstance(t, Variable):
-            return t in self.vars
-        if isinstance(t, FunctionTerm):
+            return True
+        elif isinstance(t, FunctionTerm):
             return isinstance(t.symbol, FunctionSymbol) \
                    and t.symbol in self.functions \
                    and all(self._is_term(arg) for arg in t.args)
@@ -43,7 +42,7 @@ class FOL(object):
         elif any(isinstance(f, op) for op in [And, Or, Implies]):
             return self._is_formula(f.f1) and self._is_formula(f.f2)
         elif any(isinstance(f, quantification) for quantification in [Exists, ForAll]):
-            return f.v in self.vars and self._is_formula(f.f)
+            return isinstance(f.v, Variable) and self._is_formula(f.f)
         else:
             raise ValueError("Argument not a valid Formula")
 

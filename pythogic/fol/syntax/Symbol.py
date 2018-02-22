@@ -3,7 +3,7 @@
 class Symbol(object):
     """A class to represent a symbol (actually, a wrap for a string)"""
     def __init__(self, name: str):
-        self.name = name
+        self.name = str(name)
 
     def __str__(self):
         return self.name
@@ -19,6 +19,10 @@ class Symbol(object):
 
     def __hash__(self):
         return hash(self._members())
+
+    def __repr__(self):
+        return "(" + ", ".join(map(str,self._members())) + ")"
+
 
 
 class FunctionSymbol(Symbol):
@@ -45,6 +49,9 @@ class PredicateSymbol(Symbol):
         self.arity = arity
 
     def __str__(self):
+        return self.name + "^" + str(self.arity)
+
+    def __repr__(self):
         return self.name + "^" + str(self.arity)
 
     def _members(self):
