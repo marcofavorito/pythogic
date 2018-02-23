@@ -387,7 +387,7 @@ class TestSemantics(TestFOL):
 
         forall_x__x_equal_x = ForAll(self.x, x_equal_x)
         forall_x__x_equal_y = ForAll(self.x, x_equal_y)
-        not_forall_x__x_equal_x  = Not(Exists(self.x, Not(x_equal_x)))
+        not_forall_x__x_equal_x  = Not(forall_x__x_equal_x)
 
         # Person(x, 20)
         # x = "john"
@@ -433,5 +433,6 @@ class TestSemantics(TestFOL):
 
         # ForAll
         self.assertTrue(truth(self.assignment, forall_x__x_equal_x))
-        self.assertTrue(truth(self.assignment, not_forall_x__x_equal_x))
         self.assertFalse(truth(self.assignment, forall_x__x_equal_y))
+        self.assertFalse(truth(self.assignment, not_forall_x__x_equal_x))
+
