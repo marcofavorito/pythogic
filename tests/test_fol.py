@@ -9,9 +9,10 @@ from pythogic.fol.semantics.Assignment import Assignment
 from pythogic.fol.semantics.Function import Function
 from pythogic.fol.semantics.Interpretation import Interpretation
 from pythogic.fol.semantics.Relation import Relation
+from pythogic.fol.semantics.utils import truth
 from pythogic.fol.syntax.Symbol import Symbol, ConstantSymbol, FunctionSymbol, PredicateSymbol
 from pythogic.fol.syntax.Term import Variable, FunctionTerm, ConstantTerm
-from pythogic.fol.syntax.Formula import PredicateFormula, Equal, Negate, And, Or, Implies, Exists, ForAll
+from pythogic.fol.syntax.Formula import PredicateFormula, Equal, Not, And, Or, Implies, Exists, ForAll
 from pythogic.fol.syntax.FOL import FOL
 import copy
 
@@ -52,8 +53,8 @@ class TestSyntax(TestFOL):
         self.A_a = PredicateFormula(self.A, self.a)
         self.a_equal_a = Equal(self.a, self.a)
         self.b_equal_c = Equal(self.b, self.c)
-        self.neg_a_equal_a = Negate(self.a_equal_a)
-        self.neg_Aa = Negate(self.A_a)
+        self.neg_a_equal_a = Not(self.a_equal_a)
+        self.neg_Aa = Not(self.A_a)
         self.Aa_and_b_equal_c = And(self.A_a, self.b_equal_c)
         self.Aa_or_b_equal_c = Or(self.A_a, self.b_equal_c)
         self.Aa_implies_b_equal_c = Implies(self.A_a, self.b_equal_c)
@@ -80,7 +81,7 @@ class TestSyntax(TestFOL):
         self.dummy_predicate = PredicateFormula(self.dummy_predicate_sym, self.a, self.b)
         self.dummy_predicate_only_one_symbol_false = PredicateFormula(self.predicate_sym, self.dummy_variable, self.dummy_constant)
         self.dummy_equal = Equal(self.c, self.dummy_constant)
-        self.dummy_neg = Negate(self.dummy_predicate_only_one_symbol_false)
+        self.dummy_neg = Not(self.dummy_predicate_only_one_symbol_false)
         self.dummy_and = And(self.dummy_predicate, self.predicate_ab)
         self.dummy_or = Or(self.dummy_predicate_only_one_symbol_false, self.predicate_ac)
 
@@ -155,7 +156,7 @@ class TestSyntax(TestFOL):
         self.assertEqual(self.A_a, PredicateFormula(PredicateSymbol("A", 1),
                                                                 Variable.fromString("a")))
         self.assertEqual(self.b_equal_c, Equal(Variable.fromString("b"), Variable.fromString("c")))
-        self.assertEqual(self.neg_a_equal_a, Negate(Equal(Variable.fromString("a"), Variable.fromString("a"))))
+        self.assertEqual(self.neg_a_equal_a, Not(Equal(Variable.fromString("a"), Variable.fromString("a"))))
         self.assertEqual(self.forall_b_exists_a_predicate_ab,
                          ForAll(Variable.fromString("b"),
                                 Exists(Variable.fromString("a"),
@@ -173,7 +174,7 @@ class TestSyntax(TestFOL):
                                              Variable.fromString("c")))
         self.assertNotEqual(self.A_a, PredicateFormula(PredicateSymbol("A", 1), Variable.fromString("b")))
         self.assertNotEqual(self.b_equal_c, Equal(Variable.fromString("b"), Variable.fromString("b")))
-        self.assertNotEqual(self.neg_a_equal_a, Negate(Equal(Variable.fromString("b"), Variable.fromString("a"))))
+        self.assertNotEqual(self.neg_a_equal_a, Not(Equal(Variable.fromString("b"), Variable.fromString("a"))))
         self.assertNotEqual(self.forall_b_exists_a_predicate_ab,
                             ForAll(Variable.fromString("b"),
                                    Exists(Variable.fromString("a"),
@@ -269,6 +270,7 @@ class TestSemantics(TestFOL):
         self.LivesIn = Function(self.LivesIn_fun_sym, self.livesin_function_dictionary)
 
         self.I = Interpretation.fromRelationsAndFunctions({self.LivesIn}, {self.Person, self.Lives})
+        self.fol = self.I.fol
 
         self.x = Variable.fromString("x")
         self.y = Variable.fromString("y")
@@ -315,8 +317,6 @@ class TestSemantics(TestFOL):
         the_same_tuples = {("john", 20), ("paul", 21), ("george", 22), ("joseph", 23)}
         different_tuples = {("john", 20), ("paul", 21), ("george", 22), ("joseph", 20)}
 
-
-
         the_same_relation = Relation(PredicateSymbol("Person", 2), the_same_tuples)
         the_same_relation_but_different_symbol = Relation(PredicateSymbol("Another_Person", 2), the_same_tuples)
         the_same_relation_but_different_tuples = Relation(PredicateSymbol("Person", 2), different_tuples)
@@ -356,7 +356,82 @@ class TestSemantics(TestFOL):
         self.assertEqual(self.assignment(self.y), 20)
         self.assertEqual(self.assignment(self.z), "ny")
 
+        self.assertEqual(self.assignment(FunctionTerm(self.LivesIn_fun_sym, self.x)), "ny")
+        self.assertTrue((self.assignment(self.x), self.assignment(ConstantTerm.fromString("20"))) in self.Person.tuples)
 
+    def test_truth(self):
+        w = Variable.fromString("w")
+        Person_x_20 = PredicateFormula(self.Person_pred_sym, self.x, ConstantTerm.fromString("20"))
+        Person_x_y = PredicateFormula(self.Person_pred_sym, self.x, self.y)
+        not_Person_x_21 = Not(PredicateFormula(self.Person_pred_sym, self.x, ConstantTerm.fromString("21")))
+        y_equal_20 = Equal(self.y, ConstantTerm.fromString("20"))
+        x_equal_john = Equal(self.x, ConstantTerm.fromString("john"))
+        x_equal_x = Equal(self.x, self.x)
+        x_equal_y = Equal(self.x, self.y)
+        x_equal_z = Equal(self.x, self.z)
 
+        x_lives_w = PredicateFormula(self.Lives_pred_sym, self.x, w)
+        x_lives_y = PredicateFormula(self.Lives_pred_sym, self.x, self.y)
+        x_lives_ny = PredicateFormula(self.Lives_pred_sym, self.x, ConstantTerm.fromString("ny"))
+        x_lives_paris = PredicateFormula(self.Lives_pred_sym, self.x, ConstantTerm.fromString("paris"))
+        w_lives_z = PredicateFormula(self.Lives_pred_sym, w, self.z)
 
+        exists_w__x_lives_w = Exists(w, x_lives_w)
+        exists_y__x_lives_y = Exists(self.y, x_lives_y)
+        exists_z_exists_w__w_lives_z = Exists(self.z, Exists(w, w_lives_z))
+        exists_x__x_equal_x = Exists(self.x, x_equal_x)
+        exists_x__x_equal_y = Exists(self.x, x_equal_y)
+        exists_x__x_equal_john_and_Lives_x_paris = Exists(self.x, And(x_equal_john, x_lives_paris))
+        exists_x__x_equal_john_and_exists_x__Lives_x_ny = And(Exists(self.x, x_equal_john), Exists(self.x, x_lives_ny))
+        exists_x__x_equal_x_and_exists_x__Lives_x_ny = And(exists_x__x_equal_x, Exists(self.x, x_lives_ny))
 
+        forall_x__x_equal_x = ForAll(self.x, x_equal_x)
+        forall_x__x_equal_y = ForAll(self.x, x_equal_y)
+        not_forall_x__x_equal_x  = Not(Exists(self.x, Not(x_equal_x)))
+
+        # Person(x, 20)
+        # x = "john"
+        self.assertTrue(truth(self.assignment, Person_x_20))
+
+        # ~Person(x, 21)
+        # x = "john"
+        self.assertTrue(truth(self.assignment, not_Person_x_21))
+
+        # Equals
+        self.assertTrue(truth(self.assignment, y_equal_20))
+        self.assertTrue(truth(self.assignment, x_equal_x))
+        self.assertFalse(truth(self.assignment, x_equal_y))
+        self.assertFalse(truth(self.assignment, x_equal_z))
+
+        # y == 20 and x == "john" and Person(x, y)
+        self.assertTrue(truth(self.assignment, And(y_equal_20, And(x_equal_john, Person_x_y))))
+
+        # De Morgan on previous formula
+        # Not (Not y == 20 or Not x == "john" ot Not Person(x, y)
+        self.assertTrue(truth(self.assignment, Not(Or(Not(y_equal_20), Or(Not(x_equal_john), Not(Person_x_y))))))
+
+        # Or with the last formula true
+        self.assertTrue(truth(self.assignment, Or(Equal(self.x, self.y), Or(Equal(self.x, self.y), Equal(self.z,self.z)))))
+
+        # (y==20 and x=="john") => Person(x,y)
+        self.assertTrue(truth(self.assignment, Implies(And(y_equal_20, x_equal_john), Person_x_y)))
+
+        self.assertTrue(truth(self.assignment, Implies(Not(x_equal_x), Person_x_y)))
+
+        # Exists
+        self.assertTrue(truth(self.assignment, exists_w__x_lives_w))
+        self.assertTrue(truth(self.assignment, exists_x__x_equal_x))
+        self.assertTrue(truth(self.assignment, exists_x__x_equal_y))
+        # quantified variable not present in the formula
+        self.assertTrue(truth(self.assignment, exists_y__x_lives_y))
+        # 2 quantified variables
+        self.assertTrue(truth(self.assignment, exists_z_exists_w__w_lives_z))
+        # annidate exists
+        self.assertTrue(truth(self.assignment, exists_x__x_equal_john_and_exists_x__Lives_x_ny))
+        self.assertTrue(truth(self.assignment, exists_x__x_equal_x_and_exists_x__Lives_x_ny))
+        self.assertFalse(truth(self.assignment, exists_x__x_equal_john_and_Lives_x_paris))
+
+        # ForAll
+        self.assertTrue(truth(self.assignment, forall_x__x_equal_x))
+        self.assertTrue(truth(self.assignment, not_forall_x__x_equal_x))
+        self.assertFalse(truth(self.assignment, forall_x__x_equal_y))

@@ -30,7 +30,6 @@ class Interpretation(object):
     def fromRelationsAndFunctions(functions:Set[Function], relations: Set[Relation]):
         function_symbols  = set(f.function_symbol  for f in functions)
         predicate_symbols = set(r.predicate_symbol for r in relations)
-        fol = FOL(function_symbols, predicate_symbols)
 
         objects_from_relations = set(e for r in relations for t in r.tuples for e in t)
         objects_from_functions = set(reduce(lambda x,y: x.union(y), [set(x).union({y}) for f in functions for x, y in f.function_dictionary.items()], set()))
@@ -39,8 +38,9 @@ class Interpretation(object):
             ConstantSymbol(str(o)),
             {():o}
         ) for o in domain)
+        constants_symbols = set(ConstantSymbol(str(o)) for o in domain)
 
-
+        fol = FOL(function_symbols.union(constants_symbols), predicate_symbols)
         return Interpretation(fol, domain, relations, functions.union(constants))
 
     def getRelation(self, name: PredicateSymbol):
@@ -50,4 +50,12 @@ class Interpretation(object):
     def getFunction(self, name: FunctionSymbol):
         assert name in self._symbol2function
         return self._symbol2function[name]
+
+    def isValidFunction(self, function:Function):
+        return all(all(e in self.domain for e in x) and y in self.domain for x,y in function.function_dictionary)
+
+    def isValidRelation(self, relation:Relation):
+        return all(e in self.domain for t in relation.tuples for e in t)
+
+
 

@@ -13,8 +13,12 @@ class Assignment(object):
 
     def __call__(self, term:Term):
         if isinstance(term, Variable):
+            assert term in self.variable2object
             return self.variable2object[term]
         elif isinstance(term, FunctionTerm):
-            return self.interpretation.getFunction(term.symbol)(tuple([self(arg) for arg in term.args]))
+            assert term.symbol in self.interpretation.fol.functions
+            args = [self(arg) for arg in term.args]
+            return self.interpretation.getFunction(term.symbol)(*args)
         else:
             raise ValueError("Term is nor a Variable neither a FunctionTerm")
+

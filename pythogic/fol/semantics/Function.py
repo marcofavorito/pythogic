@@ -1,6 +1,5 @@
 from typing import Tuple, Dict
 
-from pythogic.fol.semantics.Object import Object
 from pythogic.fol.syntax.Symbol import FunctionSymbol
 
 
@@ -17,7 +16,7 @@ class Function(object):
         return str(self.function_symbol)
 
     def _members(self):
-        return (self.function_symbol, tuple(self.function_dictionary.items()))
+        return (self.function_symbol, tuple(sorted(self.function_dictionary.items())))
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -29,7 +28,7 @@ class Function(object):
         return hash(self._members())
 
     def __call__(self, *args):
-        assert len(args) == self.function_symbol.arity
+        assert len(args) == self.function_symbol.arity and args in self.function_dictionary
         return self.function_dictionary[args]
 
     # @staticmethod

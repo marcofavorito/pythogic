@@ -9,7 +9,7 @@ class Formula(ABC):
         raise NotImplementedError
 
     def __invert__(self):
-        return Negate(self)
+        return Not(self)
 
     def __and__(self, other):
         return And(self, other)
@@ -35,6 +35,8 @@ class Formula(ABC):
 
     def __hash__(self):
         return hash(self._members())
+
+
 
 
 class PredicateFormula(Formula):
@@ -66,7 +68,6 @@ class Operator(Formula):
 
 class QuantifiedFormula(Operator):
     def __init__(self, v: Variable, f: Formula):
-        assert f.containsVariable(v)
         self.v = v
         self.f = f
 
@@ -120,12 +121,12 @@ class Equal(Operator):
         return (self.t1, self.operator_symbol, self.t2)
 
 
-class Negate(Formula):
+class Not(Formula):
     """Negation operator: ~formula
 
     >>> a=Variable.fromString("a")
     >>> A=PredicateFormula.fromString("A", a)
-    >>> e = Negate(A)
+    >>> e = Not(A)
     >>> str(e)
     '~(A^1(a))'
 

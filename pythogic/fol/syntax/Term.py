@@ -52,3 +52,7 @@ class FunctionTerm(Term):
 class ConstantTerm(FunctionTerm):
     def __init__(self, constant_symbol: ConstantSymbol):
         super().__init__(constant_symbol)
+
+    @staticmethod
+    def fromString(name:str):
+        return ConstantTerm(ConstantSymbol(name))

@@ -7,7 +7,7 @@ For the theory please see: http://mathworld.wolfram.com/First-OrderLogic.html
 
 from typing import Set
 
-from pythogic.fol.syntax.Formula import Formula, PredicateFormula, Equal, Negate, And, Or, Implies, Exists, ForAll
+from pythogic.fol.syntax.Formula import Formula, PredicateFormula, Equal, Not, And, Or, Implies, Exists, ForAll
 from pythogic.fol.syntax.Symbol import FunctionSymbol, PredicateSymbol
 from pythogic.fol.syntax.Term import Term, Variable, FunctionTerm
 
@@ -37,7 +37,7 @@ class FOL(object):
             return f.predicate_symbol in self.predicates and all(self._is_term(t) for t in f.args)
         elif isinstance(f, Equal):
             return self._is_term(f.t1) and self._is_term(f.t2)
-        elif isinstance(f, Negate):
+        elif isinstance(f, Not):
             return self._is_formula(f.f)
         elif any(isinstance(f, op) for op in [And, Or, Implies]):
             return self._is_formula(f.f1) and self._is_formula(f.f2)
@@ -45,12 +45,6 @@ class FOL(object):
             return isinstance(f.v, Variable) and self._is_formula(f.f)
         else:
             raise ValueError("Argument not a valid Formula")
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
