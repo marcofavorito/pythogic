@@ -11,3 +11,8 @@ History
 ------------------
 
 * First-Order logic support (Formulas, Interpretations, Assignment, Truth of the formulas)
+
+0.2.1 (2018-02-23)
+------------------
+
+* Fix on the repo
