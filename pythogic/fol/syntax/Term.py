@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 
-from pythogic.fol.syntax.Symbol import Symbol, FunctionSymbol, ConstantSymbol
+from pythogic.misc.Symbol import Symbol, FunctionSymbol, ConstantSymbol
 
 
 class Term(ABC):

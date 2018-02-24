@@ -1,3 +1,8 @@
+# Temporary gitignore
+pythogic/ltl/
+tests/test_ltl*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

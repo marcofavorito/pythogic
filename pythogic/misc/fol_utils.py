@@ -1,13 +1,13 @@
 from pythogic.fol.semantics.Assignment import Assignment
-from pythogic.fol.syntax.Formula import Formula, Equal, PredicateFormula, Not, And, Or, Implies, Exists, ForAll
+from pythogic.fol.syntax.FOLFormula import FOLFormula, Equal, PredicateFOLFormula, Not, And, Or, Implies, Exists, ForAll
 
 
-def truth(assignment: Assignment, formula: Formula):
+def truth(assignment: Assignment, formula: FOLFormula):
     assert assignment.interpretation.fol._is_formula(formula)
 
     if isinstance(formula, Equal):
         return assignment(formula.t1) == assignment(formula.t2)
-    elif isinstance(formula, PredicateFormula):
+    elif isinstance(formula, PredicateFOLFormula):
         return tuple(assignment(t) for t in formula.args) in assignment.interpretation.getRelation(
             formula.predicate_symbol).tuples
     elif isinstance(formula, Not):

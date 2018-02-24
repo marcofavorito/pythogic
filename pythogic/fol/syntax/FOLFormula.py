@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-from pythogic.fol.syntax.Symbol import PredicateSymbol
+from pythogic.misc.Symbol import PredicateSymbol
 from pythogic.fol.syntax.Term import Term, Variable
 
 
-class Formula(ABC):
+class FOLFormula(ABC):
     def evaluate(self):
         raise NotImplementedError
 
@@ -39,7 +39,7 @@ class Formula(ABC):
 
 
 
-class PredicateFormula(Formula):
+class PredicateFOLFormula(FOLFormula):
     def __init__(self, predicate_symbol: PredicateSymbol, *args: Term):
         assert len(args) == predicate_symbol.arity
         self.predicate_symbol = predicate_symbol
@@ -54,37 +54,31 @@ class PredicateFormula(Formula):
 
     @classmethod
     def fromString(cls, name: str, *args: Term):
-        return PredicateFormula(PredicateSymbol(name, len(args)), *args)
+        return PredicateFOLFormula(PredicateSymbol(name, len(args)), *args)
 
     def containsVariable(self, v:Variable):
         return v in self.args
 
 
-class Operator(Formula):
+class Operator(FOLFormula):
     @property
     def operator_symbol(self):
         raise NotImplementedError
 
-
-class QuantifiedFormula(Operator):
-    def __init__(self, v: Variable, f: Formula):
-        self.v = v
+class UnaryOperator(Operator):
+    def __init__(self, f: FOLFormula):
         self.f = f
 
-    def containsVariable(self, v: Variable):
-        return self.f.containsVariable(v)
+    def __str__(self):
+        return self.operator_symbol + "(" + str(self.f) + ")"
 
     def _members(self):
-        return (self.operator_symbol, self.v, self.f)
-
-    def __str__(self):
-        return self.operator_symbol + str(self.v) + "." + str(self.f)
-
+        return (self.operator_symbol, self.f)
 
 class BinaryOperator(Operator):
     """A generic binary formula"""
 
-    def __init__(self, f1:Formula, f2:Formula):
+    def __init__(self, f1:FOLFormula, f2:FOLFormula):
         self.f1 = f1
         self.f2 = f2
 
@@ -96,6 +90,21 @@ class BinaryOperator(Operator):
 
     def _members(self):
         return (self.f1, self.operator_symbol, self.f2)
+
+
+class QuantifiedFormula(Operator):
+    def __init__(self, v: Variable, f: FOLFormula):
+        self.v = v
+        self.f = f
+
+    def containsVariable(self, v: Variable):
+        return self.f.containsVariable(v)
+
+    def _members(self):
+        return (self.operator_symbol, self.v, self.f)
+
+    def __str__(self):
+        return self.operator_symbol + str(self.v) + "." + str(self.f)
 
 
 class Equal(Operator):
@@ -121,28 +130,17 @@ class Equal(Operator):
         return (self.t1, self.operator_symbol, self.t2)
 
 
-class Not(Formula):
+class Not(UnaryOperator):
     """Negation operator: ~formula
 
     >>> a=Variable.fromString("a")
-    >>> A=PredicateFormula.fromString("A", a)
+    >>> A=PredicateFOLFormula.fromString("A", a)
     >>> e = Not(A)
     >>> str(e)
     '~(A^1(a))'
 
     """
     operator_symbol = "~"
-    def __init__(self, f:Formula):
-        self.f = f
-
-    def __str__(self):
-        return self.operator_symbol + "(" + str(self.f) + ")"
-
-    def containsVariable(self, v:Variable):
-        return self.f.containsVariable(v)
-
-    def _members(self):
-        return (self.operator_symbol, self.f)
 
 
 
@@ -150,13 +148,13 @@ class And(BinaryOperator):
     """And operator: formula_1 & formula_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
-        >>> A=PredicateFormula.fromString("A", a); B=PredicateFormula.fromString("B", b)
+        >>> A=PredicateFOLFormula.fromString("A", a); B=PredicateFOLFormula.fromString("B", b)
         >>> e = And(a, b)
         >>> str(e)
         'a & b'
     """
     operator_symbol = "&"
-    def __init__(self, f1: Formula, f2: Formula):
+    def __init__(self, f1: FOLFormula, f2: FOLFormula):
         super().__init__(f1, f2)
 
     def __str__(self):
@@ -172,7 +170,7 @@ class Or(BinaryOperator):
         'a | b'
     """
     operator_symbol = "|"
-    def __init__(self, f1: Formula, f2: Formula):
+    def __init__(self, f1: FOLFormula, f2: FOLFormula):
         super().__init__(f1, f2)
 
 
@@ -190,7 +188,7 @@ class Implies(BinaryOperator):
     """
 
     operator_symbol = ">>"
-    def __init__(self, f1: Formula, f2: Formula):
+    def __init__(self, f1: FOLFormula, f2: FOLFormula):
         super().__init__(f1, f2)
 
     def __str__(self):
@@ -200,12 +198,12 @@ class Implies(BinaryOperator):
 class Exists(QuantifiedFormula):
 
     operator_symbol = "∃"
-    def __init__(self, v: Variable, f: Formula):
+    def __init__(self, v: Variable, f: FOLFormula):
         super().__init__(v, f)
 
 
 class ForAll(QuantifiedFormula):
 
     operator_symbol = "Ɐ"
-    def __init__(self, v: Variable, f: Formula):
+    def __init__(self, v: Variable, f: FOLFormula):
         super().__init__(v, f)
