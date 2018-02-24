@@ -65,3 +65,10 @@ class TrueSymbol(Symbol):
 class FalseSymbol(Symbol):
     def __init__(self):
         super().__init__("⊥")
+
+class LastSymbol(Symbol):
+    def __init__(self):
+        super().__init__("Last")
+
+
+DUMMY_SYMBOL = Symbol("dummy_proposition")

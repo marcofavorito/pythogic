@@ -9,7 +9,7 @@ from pythogic.fol.semantics.Assignment import Assignment
 from pythogic.fol.semantics.Function import Function
 from pythogic.fol.semantics.Interpretation import Interpretation
 from pythogic.fol.semantics.Relation import Relation
-from pythogic.misc.fol_utils import truth
+from pythogic.fol.fol_utils import truth
 from pythogic.misc.Symbol import Symbol, ConstantSymbol, FunctionSymbol, PredicateSymbol
 from pythogic.fol.syntax.Term import Variable, FunctionTerm, ConstantTerm
 from pythogic.fol.syntax.FOLFormula import PredicateFOLFormula, Equal, Not, And, Or, Implies, Exists, ForAll
