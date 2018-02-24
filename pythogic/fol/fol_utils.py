@@ -4,27 +4,30 @@ from pythogic.fol.syntax.FOLFormula import FOLFormula, Equal, PredicateFOLFormul
 
 def truth(assignment: Assignment, formula: FOLFormula):
     assert assignment.interpretation.fol._is_formula(formula)
+    return _truth(assignment, formula)
 
+
+def _truth(assignment: Assignment, formula: FOLFormula):
     if isinstance(formula, Equal):
         return assignment(formula.t1) == assignment(formula.t2)
     elif isinstance(formula, PredicateFOLFormula):
         return tuple(assignment(t) for t in formula.args) in assignment.interpretation.getRelation(
             formula.predicate_symbol).tuples
     elif isinstance(formula, Not):
-        return not truth(assignment, formula.f)
+        return not _truth(assignment, formula.f)
     elif isinstance(formula, And):
-        return truth(assignment, formula.f1) and truth(assignment, formula.f2)
+        return _truth(assignment, formula.f1) and _truth(assignment, formula.f2)
     elif isinstance(formula, Or):
-        return truth(assignment, formula.f1) or truth(assignment, formula.f2)
+        return _truth(assignment, formula.f1) or _truth(assignment, formula.f2)
     elif isinstance(formula, Implies):
-        return not truth(assignment, formula.f1) or truth(assignment, formula.f2)
+        return not _truth(assignment, formula.f1) or _truth(assignment, formula.f2)
     elif isinstance(formula, Exists):
         # assert formula.v not in assignment.variable2object
         res = False
         for el in assignment.interpretation.domain:
             new_mapping = assignment.variable2object.copy()
             new_mapping[formula.v] = el
-            res = res or truth(Assignment(new_mapping, assignment.interpretation), formula.f)
+            res = res or _truth(Assignment(new_mapping, assignment.interpretation), formula.f)
             if res: break
         return res
     elif isinstance(formula, ForAll):
@@ -33,7 +36,7 @@ def truth(assignment: Assignment, formula: FOLFormula):
         for el in assignment.interpretation.domain:
             new_mapping = assignment.variable2object.copy()
             new_mapping[formula.v] = el
-            res = res and truth(Assignment(new_mapping, assignment.interpretation), formula.f)
+            res = res and _truth(Assignment(new_mapping, assignment.interpretation), formula.f)
             if not res: break
         return res
     else:

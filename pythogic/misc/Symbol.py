@@ -69,3 +69,6 @@ class FalseSymbol(Symbol):
 class LastSymbol(Symbol):
     def __init__(self):
         super().__init__("Last")
+
+
+DUMMY_SYMBOL = Symbol("dummy_proposition")

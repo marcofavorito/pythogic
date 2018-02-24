@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from pythogic.misc.Symbol import Symbol, TrueSymbol, FalseSymbol, LastSymbol
+from pythogic.misc.Symbol import Symbol, TrueSymbol, FalseSymbol, LastSymbol, DUMMY_SYMBOL
 
 
 class LTLfFormula(ABC):
@@ -29,6 +29,9 @@ class LTLfAtomicProposition(LTLfFormula):
 
     def __str__(self):
         return str(self.symbol)
+
+    def __lt__(self, other):
+        return self.symbol.name.__lt__(other.symbol.name)
 
 
 class Operator(LTLfFormula):
@@ -99,13 +102,13 @@ class DerivedLTLfFormula(LTLfFormula):
         raise NotImplementedError
 
 
-class DerivedLTLfOperator(Operator):
+class DerivedLTLfOperator(DerivedLTLfFormula):
     @property
     def operator_symbol(self):
         raise NotImplementedError
 
 
-class DerivedLTLfBinaryOperator(Operator):
+class DerivedLTLfBinaryOperator(DerivedLTLfOperator):
     """A generic binary formula"""
 
     def __init__(self, f1: LTLfFormula, f2: LTLfFormula):
@@ -119,7 +122,7 @@ class DerivedLTLfBinaryOperator(Operator):
         return (self.f1, self.operator_symbol, self.f2)
 
 
-class DerivedLTLfUnaryOperator(Operator):
+class DerivedLTLfUnaryOperator(DerivedLTLfOperator):
     def __init__(self, f: LTLfFormula):
         self.f = f
 
@@ -144,7 +147,7 @@ class Or(DerivedLTLfBinaryOperator):
 
 class LTLfTrue(DerivedLTLfFormula):
     def _equivalent_formula(self):
-        dummy_proposition = LTLfAtomicProposition(Symbol("dummy_proposition"))
+        dummy_proposition = LTLfAtomicProposition(DUMMY_SYMBOL)
         return Or(dummy_proposition, Not(dummy_proposition))
 
     def _members(self):
@@ -157,8 +160,7 @@ class LTLfTrue(DerivedLTLfFormula):
 
 class LTLfFalse(DerivedLTLfFormula):
     def _equivalent_formula(self):
-        dummy_proposition = LTLfAtomicProposition(Symbol("dummy_proposition"))
-        return And(dummy_proposition, Not(dummy_proposition))
+        return Not(LTLfTrue())
 
     def __str__(self):
         return str(FalseSymbol())
