@@ -1,14 +1,14 @@
 from typing import List, Set
 
-from pythogic.ltlf.syntax.LTLf import LTLf
 from pythogic.ltlf.syntax.LTLfFormula import LTLfAtomicProposition
+from pythogic.misc.Alphabet import Alphabet
 
 
 class FiniteTrace(object):
-    def __init__(self, trace: List[Set[LTLfAtomicProposition]], ltlf: LTLf):
-        assert FiniteTrace._is_valid_trace(trace, ltlf)
+    def __init__(self, trace: List[Set[LTLfAtomicProposition]], alphabet: Alphabet):
+        assert FiniteTrace._is_valid_trace(trace, alphabet)
         self.trace = trace
-        self.ltlf = ltlf
+        self.alphabet = alphabet
 
     def length(self):
         return len(self.trace)
@@ -26,11 +26,11 @@ class FiniteTrace(object):
     def segment(self, start:int, end:int) :
         assert self._position_is_legal(start)
         assert self._position_is_legal(end)
-        return FiniteTrace(self.trace[start: end+1])
+        return FiniteTrace(self.trace[start: end+1], self.alphabet)
 
     @staticmethod
-    def _is_valid_trace(trace :List[Set[LTLfAtomicProposition]], ltlf: LTLf):
-        return all(all(e in ltlf.propositions for e in t) for t in trace)
+    def _is_valid_trace(trace :List[Set[LTLfAtomicProposition]], alphabet: Alphabet):
+        return all(all(e.symbol in alphabet.symbols for e in t) for t in trace)
 
 
     def __str__(self):

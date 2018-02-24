@@ -16,7 +16,7 @@ class Assignment(object):
             assert term in self.variable2object
             return self.variable2object[term]
         elif isinstance(term, FunctionTerm):
-            assert term.symbol in self.interpretation.fol.functions
+            assert term.symbol in self.interpretation.alphabet.functions
             args = [self(arg) for arg in term.args]
             return self.interpretation.getFunction(term.symbol)(*args)
         else:

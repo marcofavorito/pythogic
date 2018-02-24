@@ -1,13 +1,11 @@
 from abc import ABC, abstractmethod
 
+from pythogic.misc.Formula import Formula
 from pythogic.misc.Symbol import PredicateSymbol
 from pythogic.fol.syntax.Term import Term, Variable
 
 
-class FOLFormula(ABC):
-    def evaluate(self):
-        raise NotImplementedError
-
+class FOLFormula(Formula):
     def __invert__(self):
         return Not(self)
 
@@ -20,21 +18,9 @@ class FOLFormula(ABC):
     def __rshift__(self, other):
         return Implies(self, other)
 
+    @abstractmethod
     def containsVariable(self, v:Variable):
         return NotImplementedError
-
-    @abstractmethod
-    def _members(self):
-        return NotImplementedError
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self._members() == other._members()
-        else:
-            return False
-
-    def __hash__(self):
-        return hash(self._members())
 
 
 
@@ -74,6 +60,9 @@ class UnaryOperator(Operator):
 
     def _members(self):
         return (self.operator_symbol, self.f)
+
+    def containsVariable(self, v:Variable):
+        return self.f.containsVariable(v)
 
 class BinaryOperator(Operator):
     """A generic binary formula"""
