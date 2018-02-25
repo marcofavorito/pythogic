@@ -10,9 +10,15 @@ History
 0.2.0 (2018-02-23)
 ------------------
 
-* First-Order logic support (Formulas, Interpretations, Assignment, Truth of the formulas)
+* First-Order logic support (Formulas, Interpretations, Assignment, Truth of the formulas).
 
 0.2.1 (2018-02-23)
 ------------------
 
-* Fix on the repo
+* Fix on the repo.
+
+0.2.2 (2018-02-25)
+------------------
+
+* Refactoring of the formulas and formal systems functionalities.
+* Implemented LDLf.

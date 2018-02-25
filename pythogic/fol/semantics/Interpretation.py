@@ -7,17 +7,17 @@ from typing import Set
 
 from pythogic.fol.semantics.Function import Function
 from pythogic.fol.semantics.Relation import Relation
-from pythogic.fol.syntax.FOL import FOL
-from pythogic.fol.syntax.Symbol import FunctionSymbol, PredicateSymbol, ConstantSymbol
+from pythogic.fol.syntax.FOLAlphabet import FOLAlphabet
+from pythogic.base.Symbol import FunctionSymbol, PredicateSymbol, ConstantSymbol
 
 
 class Interpretation(object):
     def __init__(self,
-                 fol: FOL,
+                 alphabet: FOLAlphabet,
                  domain: Set[object],
                  relations: Set[Relation],
                  functions:Set[Function]):
-        self.fol = fol
+        self.alphabet = alphabet
         self.domain = domain
         self.relations = relations
         self.functions = functions
@@ -40,8 +40,8 @@ class Interpretation(object):
         ) for o in domain)
         constants_symbols = set(ConstantSymbol(str(o)) for o in domain)
 
-        fol = FOL(function_symbols.union(constants_symbols), predicate_symbols)
-        return Interpretation(fol, domain, relations, functions.union(constants))
+        alphabet = FOLAlphabet(function_symbols.union(constants_symbols), predicate_symbols)
+        return Interpretation(alphabet, domain, relations, functions.union(constants))
 
     def getRelation(self, name: PredicateSymbol):
         assert name in self._symbol2relation

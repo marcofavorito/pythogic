@@ -1,6 +1,6 @@
 from typing import Tuple, Dict
 
-from pythogic.fol.syntax.Symbol import FunctionSymbol
+from pythogic.base.Symbol import FunctionSymbol
 
 
 class Function(object):
