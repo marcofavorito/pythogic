@@ -1,6 +1,6 @@
 from typing import Set, Tuple
 
-from pythogic.misc.Symbol import PredicateSymbol
+from pythogic.base.Symbol import PredicateSymbol
 
 
 class Relation(object):

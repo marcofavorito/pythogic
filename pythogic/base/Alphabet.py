@@ -1,6 +1,6 @@
 from typing import Set
 
-from pythogic.misc.Symbol import Symbol
+from pythogic.base.Symbol import Symbol
 
 
 class Alphabet(object):

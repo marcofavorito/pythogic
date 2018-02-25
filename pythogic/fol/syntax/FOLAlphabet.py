@@ -1,7 +1,7 @@
 from typing import Set
 
-from pythogic.misc.Alphabet import Alphabet
-from pythogic.misc.Symbol import FunctionSymbol, PredicateSymbol
+from pythogic.base.Alphabet import Alphabet
+from pythogic.base.Symbol import FunctionSymbol, PredicateSymbol
 
 
 class FOLAlphabet(Alphabet):

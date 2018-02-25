@@ -10,9 +10,9 @@ from pythogic.fol.semantics.Function import Function
 from pythogic.fol.semantics.Interpretation import Interpretation
 from pythogic.fol.semantics.Relation import Relation
 from pythogic.fol.syntax.FOLAlphabet import FOLAlphabet
-from pythogic.misc.Symbol import Symbol, ConstantSymbol, FunctionSymbol, PredicateSymbol
+from pythogic.base.Symbol import Symbol, ConstantSymbol, FunctionSymbol, PredicateSymbol
 from pythogic.fol.syntax.Term import Variable, FunctionTerm, ConstantTerm
-from pythogic.fol.syntax.FOLFormula import PredicateFOLFormula, Equal, Not, And, Or, Implies, Exists, ForAll
+from pythogic.base.Formula import PredicateFormula, Equal, Not, And, Or, Implies, Exists, ForAll
 from pythogic.fol.FOL import FOL
 
 
@@ -48,9 +48,9 @@ class TestSyntax(TestFOL):
         self.fun_abc = FunctionTerm(self.fun_sym, self.a, self.b, self.c)
 
         # Formulas
-        self.predicate_ab = PredicateFOLFormula(self.predicate_sym, self.a, self.b)
-        self.predicate_ac = PredicateFOLFormula(self.predicate_sym, self.a, self.c)
-        self.A_a = PredicateFOLFormula(self.A, self.a)
+        self.predicate_ab = PredicateFormula(self.predicate_sym, self.a, self.b)
+        self.predicate_ac = PredicateFormula(self.predicate_sym, self.a, self.c)
+        self.A_a = PredicateFormula(self.A, self.a)
         self.a_equal_a = Equal(self.a, self.a)
         self.b_equal_c = Equal(self.b, self.c)
         self.neg_a_equal_a = Not(self.a_equal_a)
@@ -79,8 +79,8 @@ class TestSyntax(TestFOL):
         self.dummy_fun = FunctionTerm(self.dummy_fun_sym, self.a, self.b, self.dummy_variable)
         self.dummy_constant = ConstantTerm(self.dummy_constant_sym)
 
-        self.dummy_predicate = PredicateFOLFormula(self.dummy_predicate_sym, self.a, self.b)
-        self.dummy_predicate_only_one_symbol_false = PredicateFOLFormula(self.predicate_sym, self.dummy_variable, self.dummy_constant)
+        self.dummy_predicate = PredicateFormula(self.dummy_predicate_sym, self.a, self.b)
+        self.dummy_predicate_only_one_symbol_false = PredicateFormula(self.predicate_sym, self.dummy_variable, self.dummy_constant)
         self.dummy_equal = Equal(self.c, self.dummy_constant)
         self.dummy_neg = Not(self.dummy_predicate_only_one_symbol_false)
         self.dummy_and = And(self.dummy_predicate, self.predicate_ab)
@@ -152,36 +152,36 @@ class TestSyntax(TestFOL):
         self.assertNotEqual(self.a, self.fun_abc)
 
         # Formulas
-        self.assertEqual(self.predicate_ab, PredicateFOLFormula(PredicateSymbol("Predicate", 2),
-                                                                Variable.fromString("a"), Variable.fromString("b")))
-        self.assertEqual(self.A_a, PredicateFOLFormula(PredicateSymbol("A", 1),
-                                                       Variable.fromString("a")))
+        self.assertEqual(self.predicate_ab, PredicateFormula(PredicateSymbol("Predicate", 2),
+                                                             Variable.fromString("a"), Variable.fromString("b")))
+        self.assertEqual(self.A_a, PredicateFormula(PredicateSymbol("A", 1),
+                                                    Variable.fromString("a")))
         self.assertEqual(self.b_equal_c, Equal(Variable.fromString("b"), Variable.fromString("c")))
         self.assertEqual(self.neg_a_equal_a, Not(Equal(Variable.fromString("a"), Variable.fromString("a"))))
         self.assertEqual(self.forall_b_exists_a_predicate_ab,
                          ForAll(Variable.fromString("b"),
                                 Exists(Variable.fromString("a"),
-                                       PredicateFOLFormula(PredicateSymbol("Predicate", 2),
-                                                           Variable.fromString("a"),
-                                                           Variable.fromString("b")))))
+                                       PredicateFormula(PredicateSymbol("Predicate", 2),
+                                                        Variable.fromString("a"),
+                                                        Variable.fromString("b")))))
 
         self.assertNotEqual(self.predicate_ab,
-                            PredicateFOLFormula(PredicateSymbol("Predicate", 2),
-                                                Variable.fromString("a"),
-                                                Variable.fromString("c")))
+                            PredicateFormula(PredicateSymbol("Predicate", 2),
+                                             Variable.fromString("a"),
+                                             Variable.fromString("c")))
         self.assertNotEqual(self.predicate_ab,
-                            PredicateFOLFormula(PredicateSymbol("Another_Predicate", 2),
-                                                Variable.fromString("a"),
-                                                Variable.fromString("c")))
-        self.assertNotEqual(self.A_a, PredicateFOLFormula(PredicateSymbol("A", 1), Variable.fromString("b")))
+                            PredicateFormula(PredicateSymbol("Another_Predicate", 2),
+                                             Variable.fromString("a"),
+                                             Variable.fromString("c")))
+        self.assertNotEqual(self.A_a, PredicateFormula(PredicateSymbol("A", 1), Variable.fromString("b")))
         self.assertNotEqual(self.b_equal_c, Equal(Variable.fromString("b"), Variable.fromString("b")))
         self.assertNotEqual(self.neg_a_equal_a, Not(Equal(Variable.fromString("b"), Variable.fromString("a"))))
         self.assertNotEqual(self.forall_b_exists_a_predicate_ab,
                             ForAll(Variable.fromString("b"),
                                    Exists(Variable.fromString("a"),
-                                          PredicateFOLFormula(PredicateSymbol("ANOTHER_PREDICATE", 2),
-                                                              Variable.fromString("a"),
-                                                              Variable.fromString("b")))))
+                                          PredicateFormula(PredicateSymbol("ANOTHER_PREDICATE", 2),
+                                                           Variable.fromString("a"),
+                                                           Variable.fromString("b")))))
 
     def test_is_term(self):
         """Test if FOL._is_term() works correctly"""
@@ -364,20 +364,20 @@ class TestSemantics(TestFOL):
 
     def test_truth(self):
         w = Variable.fromString("w")
-        Person_x_20 = PredicateFOLFormula(self.Person_pred_sym, self.x, ConstantTerm.fromString("20"))
-        Person_x_y = PredicateFOLFormula(self.Person_pred_sym, self.x, self.y)
-        not_Person_x_21 = Not(PredicateFOLFormula(self.Person_pred_sym, self.x, ConstantTerm.fromString("21")))
+        Person_x_20 = PredicateFormula(self.Person_pred_sym, self.x, ConstantTerm.fromString("20"))
+        Person_x_y = PredicateFormula(self.Person_pred_sym, self.x, self.y)
+        not_Person_x_21 = Not(PredicateFormula(self.Person_pred_sym, self.x, ConstantTerm.fromString("21")))
         y_equal_20 = Equal(self.y, ConstantTerm.fromString("20"))
         x_equal_john = Equal(self.x, ConstantTerm.fromString("john"))
         x_equal_x = Equal(self.x, self.x)
         x_equal_y = Equal(self.x, self.y)
         x_equal_z = Equal(self.x, self.z)
 
-        x_lives_w = PredicateFOLFormula(self.Lives_pred_sym, self.x, w)
-        x_lives_y = PredicateFOLFormula(self.Lives_pred_sym, self.x, self.y)
-        x_lives_ny = PredicateFOLFormula(self.Lives_pred_sym, self.x, ConstantTerm.fromString("ny"))
-        x_lives_paris = PredicateFOLFormula(self.Lives_pred_sym, self.x, ConstantTerm.fromString("paris"))
-        w_lives_z = PredicateFOLFormula(self.Lives_pred_sym, w, self.z)
+        x_lives_w = PredicateFormula(self.Lives_pred_sym, self.x, w)
+        x_lives_y = PredicateFormula(self.Lives_pred_sym, self.x, self.y)
+        x_lives_ny = PredicateFormula(self.Lives_pred_sym, self.x, ConstantTerm.fromString("ny"))
+        x_lives_paris = PredicateFormula(self.Lives_pred_sym, self.x, ConstantTerm.fromString("paris"))
+        w_lives_z = PredicateFormula(self.Lives_pred_sym, w, self.z)
 
         exists_w__x_lives_w = Exists(w, x_lives_w)
         exists_y__x_lives_y = Exists(self.y, x_lives_y)
@@ -394,48 +394,49 @@ class TestSemantics(TestFOL):
 
         # Person(x, 20)
         # x = "john"
-        self.assertTrue(self.FOL.truth(self.assignment, Person_x_20))
+        self.assertTrue(self.FOL.truth(Person_x_20, self.assignment))
 
         # ~Person(x, 21)
         # x = "john"
-        self.assertTrue(self.FOL.truth(self.assignment, not_Person_x_21))
+        self.assertTrue(self.FOL.truth(not_Person_x_21, self.assignment))
 
         # Equals
-        self.assertTrue(self.FOL.truth(self.assignment, y_equal_20))
-        self.assertTrue(self.FOL.truth(self.assignment, x_equal_x))
-        self.assertFalse(self.FOL.truth(self.assignment, x_equal_y))
-        self.assertFalse(self.FOL.truth(self.assignment, x_equal_z))
+        self.assertTrue(self.FOL.truth(y_equal_20, self.assignment))
+        self.assertTrue(self.FOL.truth(x_equal_x, self.assignment))
+        self.assertFalse(self.FOL.truth(x_equal_y, self.assignment))
+        self.assertFalse(self.FOL.truth(x_equal_z, self.assignment))
 
         # y == 20 and x == "john" and Person(x, y)
-        self.assertTrue(self.FOL.truth(self.assignment, And(y_equal_20, And(x_equal_john, Person_x_y))))
+        self.assertTrue(self.FOL.truth(And(y_equal_20, And(x_equal_john, Person_x_y)), self.assignment))
 
+        self.assertTrue(self.FOL.truth(Or(Person_x_20, x_equal_john), self.assignment))
         # De Morgan on previous formula
         # Not (Not y == 20 or Not x == "john" ot Not Person(x, y)
-        self.assertTrue(self.FOL.truth(self.assignment, Not(Or(Not(y_equal_20), Or(Not(x_equal_john), Not(Person_x_y))))))
+        self.assertTrue(self.FOL.truth(Not(Or(Not(y_equal_20), Or(Not(x_equal_john), Not(Person_x_y)))), self.assignment))
 
         # Or with the last formula true
-        self.assertTrue(self.FOL.truth(self.assignment, Or(Equal(self.x, self.y), Or(Equal(self.x, self.y), Equal(self.z,self.z)))))
+        self.assertTrue(self.FOL.truth(Or(Equal(self.x, self.y), Or(Equal(self.x, self.y), Equal(self.z,self.z))), self.assignment))
 
         # (y==20 and x=="john") => Person(x,y)
-        self.assertTrue(self.FOL.truth(self.assignment, Implies(And(y_equal_20, x_equal_john), Person_x_y)))
+        self.assertTrue(self.FOL.truth(Implies(And(y_equal_20, x_equal_john), Person_x_y), self.assignment))
 
-        self.assertTrue(self.FOL.truth(self.assignment, Implies(Not(x_equal_x), Person_x_y)))
+        self.assertTrue(self.FOL.truth(Implies(Not(x_equal_x), Person_x_y), self.assignment))
 
         # Exists
-        self.assertTrue(self.FOL.truth(self.assignment, exists_w__x_lives_w))
-        self.assertTrue(self.FOL.truth(self.assignment, exists_x__x_equal_x))
-        self.assertTrue(self.FOL.truth(self.assignment, exists_x__x_equal_y))
+        self.assertTrue(self.FOL.truth(exists_w__x_lives_w, self.assignment))
+        self.assertTrue(self.FOL.truth(exists_x__x_equal_x, self.assignment))
+        self.assertTrue(self.FOL.truth(exists_x__x_equal_y, self.assignment))
         # quantified variable not present in the formula
-        self.assertTrue(self.FOL.truth(self.assignment, exists_y__x_lives_y))
+        self.assertTrue(self.FOL.truth(exists_y__x_lives_y, self.assignment))
         # 2 quantified variables
-        self.assertTrue(self.FOL.truth(self.assignment, exists_z_exists_w__w_lives_z))
+        self.assertTrue(self.FOL.truth(exists_z_exists_w__w_lives_z, self.assignment))
         # annidate exists
-        self.assertTrue(self.FOL.truth(self.assignment, exists_x__x_equal_john_and_exists_x__Lives_x_ny))
-        self.assertTrue(self.FOL.truth(self.assignment, exists_x__x_equal_x_and_exists_x__Lives_x_ny))
-        self.assertFalse(self.FOL.truth(self.assignment, exists_x__x_equal_john_and_Lives_x_paris))
+        self.assertTrue(self.FOL.truth(exists_x__x_equal_john_and_exists_x__Lives_x_ny, self.assignment))
+        self.assertTrue(self.FOL.truth(exists_x__x_equal_x_and_exists_x__Lives_x_ny, self.assignment))
+        self.assertFalse(self.FOL.truth(exists_x__x_equal_john_and_Lives_x_paris, self.assignment))
 
         # ForAll
-        self.assertTrue(self.FOL.truth(self.assignment, forall_x__x_equal_x))
-        self.assertFalse(self.FOL.truth(self.assignment, forall_x__x_equal_y))
-        self.assertFalse(self.FOL.truth(self.assignment, not_forall_x__x_equal_x))
+        self.assertTrue(self.FOL.truth(forall_x__x_equal_x, self.assignment))
+        self.assertFalse(self.FOL.truth(forall_x__x_equal_y, self.assignment))
+        self.assertFalse(self.FOL.truth(not_forall_x__x_equal_x, self.assignment))
 

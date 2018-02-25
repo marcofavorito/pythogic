@@ -8,7 +8,7 @@ from typing import Set
 from pythogic.fol.semantics.Function import Function
 from pythogic.fol.semantics.Relation import Relation
 from pythogic.fol.syntax.FOLAlphabet import FOLAlphabet
-from pythogic.misc.Symbol import FunctionSymbol, PredicateSymbol, ConstantSymbol
+from pythogic.base.Symbol import FunctionSymbol, PredicateSymbol, ConstantSymbol
 
 
 class Interpretation(object):
