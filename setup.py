@@ -31,7 +31,7 @@ setup(
     author="Marco Favorito",
     author_email='marco.favorito@gmail.com',
     url='https://github.com/MarcoFavorito/pythogic',
-    packages=find_packages(include=['pythogic']),
+    packages=find_packages(include=['pythogic*']),
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",
