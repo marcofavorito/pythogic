@@ -25,7 +25,7 @@ test_requirements = [
 
 setup(
     name='pythogic',
-    version='version='0.2.3'',
+    version='0.2.3',
     description="Python package for deal with logical formulas and formal systems",
     long_description=readme + '\n\n' + history,
     author="Marco Favorito",
