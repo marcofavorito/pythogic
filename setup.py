@@ -25,13 +25,13 @@ test_requirements = [
 
 setup(
     name='pythogic',
-    version='0.2.2',
+    version='0.2.3',
     description="Python package for deal with logical formulas and formal systems",
     long_description=readme + '\n\n' + history,
     author="Marco Favorito",
     author_email='marco.favorito@gmail.com',
     url='https://github.com/MarcoFavorito/pythogic',
-    packages=find_packages(include=['pythogic']),
+    packages=find_packages(include=['pythogic*']),
     include_package_data=True,
     install_requires=requirements,
     license="MIT license",

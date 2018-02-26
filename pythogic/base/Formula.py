@@ -3,18 +3,10 @@ from abc import ABC, abstractmethod
 from pythogic.base.Symbol import PredicateSymbol, Symbol, TrueSymbol, FalseSymbol, LastSymbol, DUMMY_SYMBOL
 from pythogic.fol.syntax.Term import Term, Variable
 
-
-class Formula(ABC):
+class Expression(ABC):
     @abstractmethod
     def _members(self):
         raise NotImplementedError
-
-    def equivalent_formula(self):
-        raise NotImplementedError
-
-    def containsVariable(self, v: Variable):
-        raise NotImplementedError
-
     def __eq__(self, other):
         if type(other) is type(self):
             return self._members() == other._members()
@@ -24,8 +16,17 @@ class Formula(ABC):
     def __hash__(self):
         return hash(self._members())
 
-class PathExpression(ABC):
-    pass
+
+class Formula(Expression):
+
+    def equivalent_formula(self):
+        raise NotImplementedError
+
+    def containsVariable(self, v: Variable):
+        raise NotImplementedError
+
+
+class PathExpression(Expression):
     @abstractmethod
     def _members(self):
         raise NotImplementedError
@@ -126,7 +127,7 @@ class QuantifiedFormula(Operator):
         return (self.operator_symbol, self.v, self.f)
 
     def __str__(self):
-        return self.operator_symbol + str(self.v) + "." + str(self.f)
+        return self.operator_symbol + str(self.v) + ".(%s)" % str(self.f)
 
 
 class Equal(Operator):
@@ -282,7 +283,7 @@ class PathExpressionFormula(Operator):
         return (self.p, self.brackets, self.f)
 
     def __str__(self):
-        return self.brackets[0] + str(self.p) + self.brackets[1] + str(self.f)
+        return self.brackets[0] + str(self.p) + self.brackets[1] + "(%s)"%str(self.f)
 
 
 class PathExpressionUnion(PathExpression):
@@ -319,7 +320,7 @@ class PathExpressionStar(PathExpression):
         self.p = p
 
     def __str__(self):
-        return str(self.p) + " " + self.operator_symbol
+        return "(%s)" % str(self.p) + " " + self.operator_symbol
 
     def _members(self):
         return (self.p, self.operator_symbol)
@@ -344,3 +345,7 @@ class PathExpressionEventually(PathExpressionFormula):
 
 class PathExpressionAlways(PathExpressionFormula):
     brackets = "［］"
+
+    def equivalent_formula(self):
+        return Not(PathExpressionEventually(self.p, Not(self.f)))
+

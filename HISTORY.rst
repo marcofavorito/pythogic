@@ -22,3 +22,9 @@ History
 
 * Refactoring of the formulas and formal systems functionalities.
 * Implemented LDLf.
+
+0.2.3 (2018-02-25)
+------------------
+
+* "To negative normal form" procedure for LDLf formulas.
+

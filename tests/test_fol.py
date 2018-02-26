@@ -116,8 +116,8 @@ class TestSyntax(TestFOL):
         self.assertEqual(str(self.Aa_and_b_equal_c), "A^1(a) & b = c")
         self.assertEqual(str(self.Aa_or_b_equal_c), "A^1(a) | b = c")
         self.assertEqual(str(self.Aa_implies_b_equal_c), "A^1(a) >> b = c")
-        self.assertEqual(str(self.exists_a_predicate_ab), "∃a.Predicate^2(a, b)")
-        self.assertEqual(str(self.forall_b_exists_a_predicate_ab), "Ɐb.∃a.Predicate^2(a, b)")
+        self.assertEqual(str(self.exists_a_predicate_ab), "∃a.(Predicate^2(a, b))")
+        self.assertEqual(str(self.forall_b_exists_a_predicate_ab), "Ɐb.(∃a.(Predicate^2(a, b)))")
 
     def test_eq(self):
         # Symbols
