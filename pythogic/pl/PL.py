@@ -3,6 +3,7 @@
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
 from pythogic.base.Symbol import DUMMY_SYMBOL
+from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.pl.semantics.PLInterpretation import PLInterpretation
 from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Formula, Not, Or, And, Implies
 
@@ -39,3 +40,12 @@ class PL(FormalSystem):
             return truth(formula.f1, interpretation) and truth(formula.f2, interpretation)
         else:
             raise ValueError("Formula not recognized")
+
+
+    @staticmethod
+    def _from_finite_trace(trace:FiniteTrace, position:int):
+        symbol2truth = {e: True if AtomicFormula(e) in trace.get(position) else False for e in trace.alphabet.symbols}
+        I = PLInterpretation(trace.alphabet, symbol2truth)
+        pl = PL(trace.alphabet)
+        return pl, I
+

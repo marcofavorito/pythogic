@@ -26,7 +26,7 @@ class FiniteTrace(object):
     def segment(self, start:int, end:int) :
         assert self._position_is_legal(start)
         assert self._position_is_legal(end)
-        return FiniteTrace(self.trace[start: end+1], self.alphabet)
+        return FiniteTrace(self.trace[start: end], self.alphabet)
 
     @staticmethod
     def _is_valid_trace(trace :List[Set[AtomicFormula]], alphabet: Alphabet):
