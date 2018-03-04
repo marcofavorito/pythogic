@@ -13,6 +13,9 @@ Pythogic
         :target: https://pythogic.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/MarcoFavorito/pythogic/badge.svg?branch=master
+        :target: https://coveralls.io/github/MarcoFavorito/pythogic?branch=master
+
 
 
 
