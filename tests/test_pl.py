@@ -49,9 +49,9 @@ class TestPL(unittest.TestCase):
 
         self.assertFalse(self.PL.truth(self.not_a, self.I))
         self.assertFalse(self.PL.truth(self.not_a_and_b, self.I))
-        self.assertTrue(self.PL.truth (self.not_a_or_c, self.I))
+        self.assertTrue(self. PL.truth (self.not_a_or_c, self.I))
 
-        self.assertTrue(self.PL.truth (self.true, self.I))
+        self.assertTrue(self. PL.truth (self.true, self.I))
         self.assertFalse(self.PL.truth(self.false, self.I))
 
 
