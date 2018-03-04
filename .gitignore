@@ -1,8 +1,6 @@
 # Temporary gitignore
 pythogic/ltl/
 tests/test_ltl*
-pythogic/ref/
-tests/test_ref*
 
 
 # Byte-compiled / optimized / DLL files
