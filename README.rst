@@ -8,8 +8,8 @@ Pythogic
 .. image:: https://img.shields.io/pypi/v/pythogic.svg
         :target: https://pypi.python.org/pypi/pythogic
 
-.. image:: https://img.shields.io/pypi/pyversions/zipline.svg
-        :target: https://pypi.python.org/pypi/zipline
+.. image:: https://img.shields.io/pypi/pyversions/pythogic.svg
+        :target: https://pypi.python.org/pypi/pythogic
 
 .. image:: https://img.shields.io/travis/MarcoFavorito/pythogic.svg
         :target: https://travis-ci.org/MarcoFavorito/pythogic
