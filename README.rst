@@ -23,6 +23,9 @@ Pythogic
 .. image:: https://api.codacy.com/project/badge/Coverage/51b6bb66aeff4e27ad9a9a19c421803c
         :target: https://www.codacy.com/app/MarcoFavorito/pythogic?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MarcoFavorito/pythogic&amp;utm_campaign=Badge_Coverage
 
+.. image:: https://img.shields.io/badge/License-MIT-yellow.svg
+    :alt: MIT License
+    :target: https://opensource.org/licenses/MIT
 
 Python package for deal with logical formulas and formal systems.
 
