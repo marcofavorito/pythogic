@@ -42,6 +42,7 @@ How to use
 --------
 
 First of all, create symbols and an alphabet
+
 .. code:: python
 
     from pythogic.base.Alphabet import Alphabet
@@ -53,6 +54,7 @@ First of all, create symbols and an alphabet
     alphabet = Alphabet({a_sym, b_sym, c_sym})
 
 Create some formulas:
+
 .. code:: python
 
     from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Not, And, Or
@@ -70,6 +72,7 @@ Create some formulas:
     false = FalseFormula()
 
 Using Propositional Calculus:
+
 .. code:: python
 
     from pythogic.pl.PL import PL
