@@ -55,6 +55,13 @@ class TestPL(unittest.TestCase):
         self.assertFalse(self.PL.truth(self.false, self.I))
 
 
+class TestPLIsFormula(unittest.TestCase):
 
+    def test_is_formula_atomic(self):
+        a_sym = Symbol("a")
+        alphabet = Alphabet({a_sym})
+        a = AtomicFormula(a_sym)
+        pl = PL(alphabet)
+        self.assertTrue(pl.is_formula(a))
 
 

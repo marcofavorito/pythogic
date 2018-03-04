@@ -21,7 +21,10 @@ class Symbol(object):
         return hash(self._members())
 
     def __repr__(self):
-        return "(" + ", ".join(map(str,self._members())) + ")"
+        return ", ".join(map(str,self._members()))
+
+    def __lt__(self, other):
+        return self.name.__lt__(other.name)
 
 
 

@@ -7,6 +7,7 @@ class Expression(ABC):
     @abstractmethod
     def _members(self):
         raise NotImplementedError
+
     def __eq__(self, other):
         if type(other) is type(self):
             return self._members() == other._members()
@@ -16,29 +17,18 @@ class Expression(ABC):
     def __hash__(self):
         return hash(self._members())
 
+    def __repr__(self):
+        return self.__str__()
+
 
 class Formula(Expression):
-
-    def equivalent_formula(self):
-        raise NotImplementedError
 
     def containsVariable(self, v: Variable):
         raise NotImplementedError
 
 
 class PathExpression(Expression):
-    @abstractmethod
-    def _members(self):
-        raise NotImplementedError
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self._members() == other._members()
-        else:
-            return False
-
-    def __hash__(self):
-        return hash(self._members())
+    pass
 
 
 class AtomicFormula(Formula):
@@ -55,6 +45,11 @@ class AtomicFormula(Formula):
     def __lt__(self, other):
         return self.symbol.name.__lt__(other.symbol.name)
 
+    @classmethod
+    def fromName(cls, name:str):
+        return cls(Symbol(name))
+
+
 DUMMY_ATOMIC = AtomicFormula(DUMMY_SYMBOL)
 
 class PredicateFormula(Formula):
@@ -66,9 +61,9 @@ class PredicateFormula(Formula):
     def __str__(self):
         return str(self.predicate_symbol) + "(" + ", ".join([t.__str__() for t in self.args]) + ")"
 
-
     def _members(self):
-        return (self.predicate_symbol, *self.args)
+        sorted_args = sorted(self.args)
+        return (self.predicate_symbol, *sorted_args)
 
     @classmethod
     def fromString(cls, name: str, *args: Term):
@@ -97,6 +92,9 @@ class UnaryOperator(Operator):
     def containsVariable(self, v:Variable):
         return self.f.containsVariable(v)
 
+    def __lt__(self, other):
+        return self.f.__lt__(other.f)
+
 
 class BinaryOperator(Operator):
     """A generic binary formula"""
@@ -113,6 +111,7 @@ class BinaryOperator(Operator):
 
     def _members(self):
         return (self.f1, self.operator_symbol, self.f2)
+
 
 
 class QuantifiedFormula(Operator):
@@ -188,9 +187,6 @@ class Or(BinaryOperator):
     """
     operator_symbol = "|"
 
-    def equivalent_formula(self):
-        return Not(And(Not(self.f1), Not(self.f2)))
-
 
 class Implies(BinaryOperator):
     """Logical implication: formula_1 >> formula_2
@@ -201,8 +197,6 @@ class Implies(BinaryOperator):
         'a >> b'
     """
     operator_symbol = ">>"
-    def equivalent_formula(self):
-        return Or(Not(self.f1), self.f2)
 
 
 class Exists(QuantifiedFormula):
@@ -211,8 +205,7 @@ class Exists(QuantifiedFormula):
 
 class ForAll(QuantifiedFormula):
     operator_symbol = "Ɐ"
-    def equivalent_formula(self):
-        return Not(Exists(self.v, Not(self.f)))
+
 
 class Next(UnaryOperator):
     """Next operator: ○(formula_1) """
@@ -228,15 +221,11 @@ class Eventually(UnaryOperator):
     """Eventually operator: ◇(formula_1) """
     operator_symbol = "◇"
 
-    def equivalent_formula(self):
-        return Until(TrueFormula(), self.f)
-
 
 class Always(UnaryOperator):
     """Always operator: □(formula_1) """
     operator_symbol = "□"
-    def equivalent_formula(self):
-        return Not(Eventually(Not(self.f)))
+
 
 
 class FalseFormula(Formula):
@@ -246,8 +235,7 @@ class FalseFormula(Formula):
     def __str__(self):
         return str(FalseSymbol())
 
-    def equivalent_formula(self):
-        return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+
 
 
 class TrueFormula(Formula):
@@ -257,12 +245,7 @@ class TrueFormula(Formula):
     def __str__(self):
         return str(TrueSymbol())
 
-    def equivalent_formula(self):
-        return Not(FalseFormula())
-
-
-
-class LTLfLast(Formula):
+class LDLfLast(Formula):
     def _members(self):
         return (LastSymbol())
 
@@ -286,7 +269,7 @@ class PathExpressionFormula(Operator):
         return self.brackets[0] + str(self.p) + self.brackets[1] + "(%s)"%str(self.f)
 
 
-class PathExpressionUnion(PathExpression):
+class PathExpressionUnion(Formula):
     operator_symbol = "+"
     def __init__(self, p1:PathExpression, p2:PathExpression):
         self.p1 = p1
@@ -346,6 +329,24 @@ class PathExpressionEventually(PathExpressionFormula):
 class PathExpressionAlways(PathExpressionFormula):
     brackets = "［］"
 
-    def equivalent_formula(self):
-        return Not(PathExpressionEventually(self.p, Not(self.f)))
 
+class LogicalTrue(Formula):
+    def _members(self):
+        return (Symbol("TT"))
+
+    def __str__(self):
+        return str(Symbol("TT"))
+
+class LogicalFalse(Formula):
+    def _members(self):
+        return (Symbol("FF"))
+
+    def __str__(self):
+        return str(Symbol("FF"))
+
+class End(Formula):
+    def _members(self):
+        return (Symbol("END"))
+
+    def __str__(self):
+        return str(Symbol("END"))

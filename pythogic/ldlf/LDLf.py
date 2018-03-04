@@ -1,3 +1,7 @@
+from typing import Set
+
+from pythogic.base.Symbol import Symbol
+from pythogic.base.utils import powerset
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
@@ -5,7 +9,8 @@ from pythogic.pl.PL import PL
 from pythogic.base.Formula import AtomicFormula, Formula, Not, And, Or, PathExpressionFormula, PathExpressionUnion, \
     PathExpressionSequence, PathExpressionStar, PathExpressionTest, PathExpressionEventually, PathExpressionAlways, \
     UnaryOperator, BinaryOperator, \
-    PathExpression, FalseFormula, TrueFormula
+    PathExpression, FalseFormula, TrueFormula, LDLfLast, DUMMY_ATOMIC
+from pythogic.ref.REf import REf
 
 
 class LDLf(FormalSystem):
@@ -13,7 +18,7 @@ class LDLf(FormalSystem):
         super().__init__(alphabet)
 
     allowed_formulas = {AtomicFormula, Not, And, PathExpressionEventually}
-    derived_formulas = {Or, PathExpressionAlways, TrueFormula, FalseFormula}
+    derived_formulas = {Or, PathExpressionAlways, TrueFormula, FalseFormula, LDLfLast}
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""
@@ -24,8 +29,12 @@ class LDLf(FormalSystem):
             return self.is_formula(f.f)
         elif isinstance(f, BinaryOperator):
             return self.is_formula(f.f1) and self.is_formula(f.f2)
-        elif isinstance(f, PathExpressionFormula):
-            return self._is_path(f.p) and self.is_formula(f.f)
+        elif isinstance(f, PathExpressionEventually):
+            if isinstance(f.p, PathExpressionTest):
+                return self.is_formula(f.f)
+            else:
+                ref = REf(self.alphabet)
+                return ref.is_formula(f.p) and self.is_formula(f.f)
         else:
             raise ValueError("Argument not a valid Formula")
 
@@ -43,11 +52,12 @@ class LDLf(FormalSystem):
         else:
             raise ValueError("Argument not a valid Path")
 
-    def _is_testonly(self, p:PathExpression):
+    @staticmethod
+    def _is_testonly(p:PathExpression):
         if isinstance(p, PathExpressionUnion) or isinstance(p, PathExpressionSequence):
-            return self._is_testonly(p.p1) and self._is_testonly(p.p2)
+            return LDLf._is_testonly(p.p1) and LDLf._is_testonly(p.p2)
         elif isinstance(p, PathExpressionStar):
-            return self._is_testonly(p.p)
+            return LDLf._is_testonly(p.p)
         else:
             return isinstance(p, PathExpressionTest)
 
@@ -67,30 +77,40 @@ class LDLf(FormalSystem):
         elif isinstance(f, PathExpressionEventually):
             path = f.p
             assert self._is_path(path)
-            if isinstance(path, PathExpressionTest):
-                return truth(path.f, trace, position) and truth(f.f, trace, position)
-            elif isinstance(path, PathExpressionUnion):
-                return truth(PathExpressionEventually(path.p1, f.f), trace, position) or truth(PathExpressionEventually(path.p2, f.f), trace, position)
-            elif isinstance(path, PathExpressionSequence):
-                return truth(PathExpressionEventually(path.p1, PathExpressionEventually(path.p2, f.f)), trace, position)
-            elif isinstance(path, PathExpressionStar):
-                a = truth(f.f, trace, position)
-                b = position<trace.last()
-                c = truth(PathExpressionEventually(path.p, PathExpressionEventually(path, f.f)), trace, position)
-                d = not self._is_testonly(path)
-                return a or (b and c and d)
-                # return truth(f.f, trace, position) or (
-                #     position<trace.last()
-                #     and truth(PathExpressionEventually(path.p, PathExpressionEventually(path, f.f)), trace, position)
-                #     and not self._is_testonly(path)
-                # )
-
-            # It is a Propositional Formula, maybe...
-            elif isinstance(path, Formula):
-                pl, I = PL._from_finite_trace(trace, position)
-                return position < trace.last() and pl.truth(path, I) and truth(f.f, trace, position+1)
+            if isinstance(f.p, PathExpressionTest):
+                return truth(path.f, trace, position) and truth(f.f, trace,position)
+            else:
+                ref = REf(self.alphabet)
+                return any(ref.truth(f.p, trace, position, k) and self.truth(f.f, trace, k) for k in range(position, trace.length()))
         else:
             raise ValueError("Argument not a valid Formula")
+
+    def to_equivalent_formula(self, derived_formula:Formula):
+        if isinstance(derived_formula, Or):
+            return Not(And(Not(derived_formula.f1), Not(derived_formula.f2)))
+        elif isinstance(derived_formula, PathExpressionAlways):
+            return Not(PathExpressionEventually(derived_formula.p, Not(derived_formula.f)))
+        elif isinstance(derived_formula, FalseFormula):
+            return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+        elif isinstance(derived_formula, TrueFormula):
+            return Not(FalseFormula())
+        elif isinstance(derived_formula, LDLfLast):
+            return PathExpressionAlways(TrueFormula(), FalseFormula())
+        else:
+            raise ValueError("Derived formula not recognized")
+
+
+    def _expand_formula(self, f:Formula):
+        if isinstance(f, AtomicFormula):
+            return f
+        elif isinstance(f, And):
+            return And(self.expand_formula(f.f1), self.expand_formula(f.f2))
+        elif isinstance(f, Not):
+            return Not(self.expand_formula(f.f))
+        elif isinstance(f, PathExpressionEventually):
+            return PathExpressionEventually(f.p, self.expand_formula(f.f))
+        else:
+            raise ValueError("Not valid Formula to expand")
 
 
     def to_nnf(self, formula:Formula)->Formula:
@@ -143,3 +163,103 @@ class LDLf(FormalSystem):
         else:
             raise ValueError
 
+    def compute_CL(self, formula: Formula) -> Set[Formula]:
+        old = set()
+        new = {formula}
+        while old != new:
+            old = old.union(new)
+
+            for f in old:
+                if isinstance(f, AtomicFormula):
+                    new.add(f)
+                elif isinstance(f, And) or isinstance(f, Or):
+                    new.add(f.f1)
+                    new.add(f.f2)
+                elif isinstance(f, Not):
+                    if not isinstance(f.f, Not) and f.f in old:
+                        new.add(f.f)
+                elif isinstance(f, PathExpressionEventually):
+                    new.add(f.f)
+                    if isinstance(f.p, PathExpressionTest):
+                        new.add(f.p.f)
+                    elif isinstance(f.p, PathExpressionSequence):
+                        new.add(PathExpressionEventually(f.p.p1, PathExpressionEventually(f.p.p2, f.f)))
+                    elif isinstance(f.p, PathExpressionUnion):
+                        new.add(PathExpressionEventually(f.p.p1, f.f))
+                        new.add(PathExpressionEventually(f.p.p2, f.f))
+                    elif isinstance(f.p, PathExpressionStar):
+                        new.add(PathExpressionEventually(f.p.p, PathExpressionEventually(f.p, f.f)))
+                    elif isinstance(f.p, Formula):
+                        new.add(f.p)
+                    else:
+                        raise ValueError
+
+        return old
+
+
+    def to_nfa(self, f:Formula) -> dict:
+        nnf_f = self.to_nnf(f)
+        alphabet = powerset(self.alphabet.symbols)
+        states = self.compute_CL(nnf_f)
+        initial_state = nnf_f
+        final_states = {}
+        delta = {}
+        for action in alphabet:
+            action_set = set(action)
+            for s in states:
+                delta[(s, action)] = self._compute_delta(s, action_set)
+        return {
+            "alphabet": alphabet,
+            "states": states,
+            "initial_state": initial_state,
+            "delta": delta,
+            "final_state": final_states
+        }
+
+    def _compute_delta(self, s, action: Set[Symbol]):
+        if isinstance(s, AtomicFormula):
+            return s.symbol in action
+        elif isinstance(s, And):
+            return self._compute_delta(s.f1, action) and self._compute_delta(s.f2, action)
+        elif isinstance(s, Or):
+            return self._compute_delta(s.f1, action) or self._compute_delta(s.f2, action)
+        elif isinstance(s, PathExpressionEventually):
+            if isinstance(s.p, PathExpressionTest):
+                self._compute_delta(s.p, action) and self._compute_delta(s.f, action)
+            elif isinstance(s.p, PathExpressionSequence):
+                return self._compute_delta(PathExpressionEventually(s.p.p1, PathExpressionEventually(s.p.p2, s.f)), action)
+            elif isinstance(s.p, PathExpressionUnion):
+                return self._compute_delta(PathExpressionEventually(s.p.p1, s.f), action) or self._compute_delta(
+                    PathExpressionEventually(s.p.p2, s.f), action)
+            elif isinstance(s.p, PathExpressionStar):
+                if LDLf._is_testonly(s.p.p):
+                    return self._compute_delta(s.f, action)
+                else:
+                    return self._compute_delta(s.f, action) or self._compute_delta(PathExpressionEventually(s.p.p, s),
+                                                                               action)
+            elif isinstance(s.p, Formula):
+                pl, I = PL._from_set_of_propositionals(action, self.alphabet)
+                if pl.truth(s.p, I):
+                    return s.f
+                else:
+                    return False
+        elif isinstance(s, PathExpressionAlways):
+            if isinstance(s.p, PathExpressionTest):
+                self._compute_delta(self.to_nnf(Not(s.p.f)), action) or self._compute_delta(s.f, action)
+            elif isinstance(s.p, PathExpressionSequence):
+                return self._compute_delta(PathExpressionAlways(s.p.p1, PathExpressionAlways(s.p.p2, s.f)), action)
+            elif isinstance(s.p, PathExpressionUnion):
+                return self._compute_delta(PathExpressionAlways(s.p.p1, s.f), action) and self._compute_delta(
+                    PathExpressionAlways(s.p.p2, s.f), action)
+            elif isinstance(s.p, PathExpressionStar):
+                if LDLf._is_testonly(s.p.p):
+                    return self._compute_delta(s.f, action)
+                else:
+                    return self._compute_delta(s.f, action) and self._compute_delta(PathExpressionEventually(s.p.p, s),
+                                                                                action)
+            elif isinstance(s.p, Formula):
+                pl, I = PL._from_set_of_propositionals(action, self.alphabet)
+                if pl.truth(s.p, I):
+                    return s.f
+                else:
+                    return True

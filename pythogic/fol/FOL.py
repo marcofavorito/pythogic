@@ -72,6 +72,27 @@ class FOL(FormalSystem):
         else:
             raise ValueError("Formula not recognized")
 
+    def to_equivalent_formula(self, derived_formula:Formula):
+        if isinstance(derived_formula, Or):
+            return Not(And(Not(derived_formula.f1), Not(derived_formula.f2)))
+        elif isinstance(derived_formula, Implies):
+            return Or(Not(derived_formula.f1), derived_formula.f2)
+        elif isinstance(derived_formula, ForAll):
+            return Not(Exists(derived_formula.v, Not(derived_formula.f)))
+        else:
+            raise ValueError("Derived formula not recognized")
+
+    def _expand_formula(self, f:Formula):
+        if isinstance(f, PredicateFormula) or isinstance(f, Equal):
+            return f
+        elif isinstance(f, And):
+            return And(self.expand_formula(f.f1), self.expand_formula(f.f2))
+        elif isinstance(f, Not):
+            return Not(self.expand_formula(f.f))
+        elif isinstance(f, Exists):
+            return Exists(f.v, self.expand_formula(f.f))
+        else:
+            raise ValueError("Not valid Formula to expand")
 
 if __name__ == '__main__':
     import doctest

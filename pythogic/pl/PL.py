@@ -1,11 +1,11 @@
 """Propositional Logic"""
+from typing import Set
 
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
-from pythogic.base.Symbol import DUMMY_SYMBOL
-from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
+from pythogic.base.Symbol import DUMMY_SYMBOL, Symbol
 from pythogic.pl.semantics.PLInterpretation import PLInterpretation
-from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Formula, Not, Or, And, Implies
+from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Formula, Not, Or, And, Implies, DUMMY_ATOMIC
 
 
 class PL(FormalSystem):
@@ -42,10 +42,57 @@ class PL(FormalSystem):
             raise ValueError("Formula not recognized")
 
 
+    def to_equivalent_formula(self, derived_formula:Formula):
+        if isinstance(derived_formula, Or):
+            return Not(And(Not(derived_formula.f1), Not(derived_formula.f2)))
+        elif isinstance(derived_formula, Implies):
+            return Or(Not(derived_formula.f1), derived_formula.f2)
+        elif isinstance(derived_formula, FalseFormula):
+            return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+        elif isinstance(derived_formula, TrueFormula):
+            return Not(FalseFormula())
+        else:
+            raise ValueError("Derived formula not recognized")
+
+    def _expand_formula(self, f:Formula):
+        if isinstance(f, AtomicFormula):
+            return f
+        elif isinstance(f, And):
+            return And(self.expand_formula(f.f1), self.expand_formula(f.f2))
+        elif isinstance(f, Not):
+            return Not(self.expand_formula(f.f))
+        elif type(f) in self.derived_formulas:
+            return self.expand_formula(self.to_equivalent_formula(f))
+
     @staticmethod
-    def _from_finite_trace(trace:FiniteTrace, position:int):
-        symbol2truth = {e: True if AtomicFormula(e) in trace.get(position) else False for e in trace.alphabet.symbols}
-        I = PLInterpretation(trace.alphabet, symbol2truth)
-        pl = PL(trace.alphabet)
+    def _from_set_of_propositionals(props:Set[AtomicFormula], alphabet:Alphabet):
+        symbol2truth = {e: True if AtomicFormula(e) in props else False for e in alphabet.symbols}
+        I = PLInterpretation(alphabet, symbol2truth)
+        pl = PL(alphabet)
         return pl, I
+
+
+    def to_nnf(self, f:Formula):
+        assert self.is_formula(f)
+        formula = self.expand_formula(f)
+        if isinstance(formula, AtomicFormula):
+            return formula
+        if isinstance(formula, And):
+            return And(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
+        if isinstance(formula, Or):
+            return Or(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
+        if isinstance(formula, Not):
+            subformula = formula.f
+            if isinstance(subformula, Not):
+                return self.to_nnf(subformula.f)
+            elif isinstance(subformula, And):
+                return Or(self.to_nnf(Not(subformula.f1)), self.to_nnf((Not(subformula.f2))))
+            elif isinstance(subformula, Or):
+                return Or(self.to_nnf(Not(subformula.f1)), self.to_nnf((Not(subformula.f2))))
+            elif isinstance(subformula, AtomicFormula):
+                return formula
+            else:
+                raise ValueError
+        else:
+            raise ValueError
 

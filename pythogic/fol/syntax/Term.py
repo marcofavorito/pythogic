@@ -35,6 +35,9 @@ class Variable(Term):
     def fromString(cls, name:str):
         return Variable(Symbol(name))
 
+    def __lt__(self, other):
+        return self.symbol.__lt__(other.symbol)
+
 
 class FunctionTerm(Term):
     def __init__(self, function_symbol: FunctionSymbol, *args:Term):
