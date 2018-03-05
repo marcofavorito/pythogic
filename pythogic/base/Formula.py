@@ -198,6 +198,17 @@ class Implies(BinaryOperator):
     """
     operator_symbol = ">>"
 
+class Equivalence(BinaryOperator):
+    """Equivalence: formula_1 === formula_2
+
+        >>> a=Variable.fromString("a"); b=Variable.fromString("b")
+        >>> e = Equivalence(a, b)
+        >>> str(e)
+        'a === b'
+    """
+    operator_symbol = "==="
+
+
 
 class Exists(QuantifiedFormula):
     operator_symbol = "∃"

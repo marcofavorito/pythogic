@@ -9,7 +9,7 @@ from pythogic.base.FormalSystem import FormalSystem
 from pythogic.fol.semantics.Assignment import Assignment
 from pythogic.fol.syntax.FOLAlphabet import FOLAlphabet
 from pythogic.base.Formula import PredicateFormula, UnaryOperator, BinaryOperator, QuantifiedFormula, Equal, Not, \
-    And, Or, Implies, Exists, ForAll, Formula
+    And, Or, Implies, Exists, ForAll, Formula, Equivalence
 from pythogic.base.Symbol import FunctionSymbol
 from pythogic.fol.syntax.Term import Term, Variable, FunctionTerm
 
@@ -21,7 +21,7 @@ class FOL(FormalSystem):
         super().__init__(alphabet)
 
     allowed_formulas = {PredicateFormula, Equal, Not, And, Exists}
-    derived_formulas = {Or, Implies, ForAll}
+    derived_formulas = {Or, Implies, ForAll, Equivalence}
 
     def _is_term(self, t: Term):
         """Check if a term is legal in the current FOL formal system"""
@@ -93,6 +93,10 @@ class FOL(FormalSystem):
             return Exists(f.v, self.expand_formula(f.f))
         else:
             raise ValueError("Not valid Formula to expand")
+
+
+    def to_nnf(self, f:Formula):
+        pass
 
 if __name__ == '__main__':
     import doctest
