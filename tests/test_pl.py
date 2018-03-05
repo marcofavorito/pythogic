@@ -71,15 +71,14 @@ class TestPLIsFormula(unittest.TestCase):
         a = AtomicFormula(a_sym)
         pl = PL(alphabet)
         self.assertTrue(pl.is_formula(Implies(Not(a), And(TrueFormula(), Not(FalseFormula())))))
+        self.assertFalse(pl.is_formula(Implies(Not(a), And(TrueFormula(), Next(FalseFormula())))))
 
     def test_is_formula_error(self):
         a_sym = Symbol("a")
         alphabet = Alphabet({a_sym})
         a = Next(AtomicFormula(a_sym))
         pl = PL(alphabet)
-
-        with self.assertRaises(ValueError) as ve:
-            pl.is_formula(a)
+        self.assertFalse(pl.is_formula(a))
 
 
 class TestPLExpandFormula(unittest.TestCase):

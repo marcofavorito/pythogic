@@ -59,6 +59,7 @@ class FormalSystem(ABC):
         """Formula expansion. It calls `_expand_formula`.
         See `_expand_formula` other for details.
         """
+
         if type(f) in self.derived_formulas:
             return self.expand_formula(self.to_equivalent_formula(f))
         else:

@@ -25,7 +25,7 @@ class PL(FormalSystem):
         elif isinstance(f, And):
             return self.is_formula(f.f1) and self.is_formula(f.f2)
         else:
-            raise ValueError("Argument not a valid Formula")
+            return False
 
     def _truth(self, formula: Formula, interpretation: PLInterpretation):
         assert self._is_formula(formula)
@@ -55,7 +55,7 @@ class PL(FormalSystem):
         elif isinstance(derived_formula, FalseFormula):
             return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
         elif isinstance(derived_formula, TrueFormula):
-            return Not(FalseFormula())
+            return Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
         elif derived_formula in self.allowed_formulas:
             return derived_formula
         else:
@@ -87,9 +87,9 @@ class PL(FormalSystem):
         # formula = self.expand_formula(f)
         if isinstance(formula, AtomicFormula):
             return formula
-        if isinstance(formula, And):
+        elif isinstance(formula, And):
             return And(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
-        if isinstance(formula, Not):
+        elif isinstance(formula, Not):
             subformula = formula.f
             if isinstance(subformula, Not):
                 return self.to_nnf(subformula.f)

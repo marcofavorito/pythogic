@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 from pythogic.base.Symbol import PredicateSymbol, Symbol, TrueSymbol, FalseSymbol, LastSymbol, DUMMY_SYMBOL
-from pythogic.fol.syntax.Term import Term, Variable
+from pythogic.fol.syntax.Term import Term, Variable, ConstantTerm
+
 
 class Expression(ABC):
     @abstractmethod
@@ -51,6 +52,7 @@ class AtomicFormula(Formula):
 
 
 DUMMY_ATOMIC = AtomicFormula(DUMMY_SYMBOL)
+DUMMY_TERM = ConstantTerm.fromString(DUMMY_SYMBOL.name)
 
 class PredicateFormula(Formula):
     def __init__(self, predicate_symbol: PredicateSymbol, *args: Term):
