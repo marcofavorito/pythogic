@@ -5,6 +5,7 @@ python:
 install:
 - pip install -U tox-travis
 - pip install coveralls
+- pip install codecov
 
 script:
 - tox
@@ -21,3 +22,4 @@ deploy:
     python: 3.6
 after_success:
   - coveralls
+  - codecov

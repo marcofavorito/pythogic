@@ -5,7 +5,8 @@ from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
 from pythogic.base.Symbol import DUMMY_SYMBOL, Symbol
 from pythogic.pl.semantics.PLInterpretation import PLInterpretation
-from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Formula, Not, Or, And, Implies, DUMMY_ATOMIC
+from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Formula, Not, Or, And, Implies, \
+    DUMMY_ATOMIC, Equivalence
 
 
 class PL(FormalSystem):
@@ -13,7 +14,7 @@ class PL(FormalSystem):
         super().__init__(alphabet)
 
     allowed_formulas = {AtomicFormula, Not, And}
-    derived_formulas = {Or, Implies, TrueFormula, FalseFormula}
+    derived_formulas = {Or, Implies, Equivalence, TrueFormula, FalseFormula}
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""
@@ -24,7 +25,7 @@ class PL(FormalSystem):
         elif isinstance(f, And):
             return self.is_formula(f.f1) and self.is_formula(f.f2)
         else:
-            raise ValueError("Argument not a valid Formula")
+            return False
 
     def _truth(self, formula: Formula, interpretation: PLInterpretation):
         assert self._is_formula(formula)
@@ -46,11 +47,17 @@ class PL(FormalSystem):
         if isinstance(derived_formula, Or):
             return Not(And(Not(derived_formula.f1), Not(derived_formula.f2)))
         elif isinstance(derived_formula, Implies):
-            return Or(Not(derived_formula.f1), derived_formula.f2)
+            return Not(And(derived_formula.f1, Not(derived_formula.f2)))
+        elif isinstance(derived_formula, Equivalence):
+            positive_equivalence = And(derived_formula.f1, derived_formula.f2)
+            negative_equivalence = And(Not(derived_formula.f1), Not(derived_formula.f2))
+            return Not(And(Not(positive_equivalence), Not(negative_equivalence)))
         elif isinstance(derived_formula, FalseFormula):
             return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
         elif isinstance(derived_formula, TrueFormula):
-            return Not(FalseFormula())
+            return Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
+        elif derived_formula in self.allowed_formulas:
+            return derived_formula
         else:
             raise ValueError("Derived formula not recognized")
 
@@ -63,6 +70,8 @@ class PL(FormalSystem):
             return Not(self.expand_formula(f.f))
         elif type(f) in self.derived_formulas:
             return self.expand_formula(self.to_equivalent_formula(f))
+        else:
+            raise ValueError("Formula to expand not recognized")
 
     @staticmethod
     def _from_set_of_propositionals(props:Set[AtomicFormula], alphabet:Alphabet):
@@ -75,19 +84,16 @@ class PL(FormalSystem):
     def to_nnf(self, f:Formula):
         assert self.is_formula(f)
         formula = self.expand_formula(f)
+        # formula = self.expand_formula(f)
         if isinstance(formula, AtomicFormula):
             return formula
-        if isinstance(formula, And):
+        elif isinstance(formula, And):
             return And(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
-        if isinstance(formula, Or):
-            return Or(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
-        if isinstance(formula, Not):
+        elif isinstance(formula, Not):
             subformula = formula.f
             if isinstance(subformula, Not):
                 return self.to_nnf(subformula.f)
             elif isinstance(subformula, And):
-                return Or(self.to_nnf(Not(subformula.f1)), self.to_nnf((Not(subformula.f2))))
-            elif isinstance(subformula, Or):
                 return Or(self.to_nnf(Not(subformula.f1)), self.to_nnf((Not(subformula.f2))))
             elif isinstance(subformula, AtomicFormula):
                 return formula

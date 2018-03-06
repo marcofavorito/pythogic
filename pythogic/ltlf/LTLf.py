@@ -81,3 +81,7 @@ class LTLf(FormalSystem):
             return Next(self.expand_formula(f.f))
         else:
             raise ValueError("Not valid Formula to expand")
+
+
+    def to_nnf(self, f:Formula):
+        pass

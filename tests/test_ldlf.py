@@ -3,7 +3,8 @@ import unittest
 from pythogic.ldlf.LDLf import LDLf
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.base.Formula import AtomicFormula, Not, And, Or, PathExpressionUnion, PathExpressionSequence, \
-    PathExpressionStar, PathExpressionTest, PathExpressionEventually, Next, Until, PathExpressionAlways, TrueFormula
+    PathExpressionStar, PathExpressionTest, PathExpressionEventually, Next, Until, PathExpressionAlways, TrueFormula, \
+    DUMMY_ATOMIC
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.Symbol import Symbol
 
@@ -113,112 +114,112 @@ class TestLDLf(unittest.TestCase):
         )
         nnf_f1 = PathExpressionAlways(PathExpressionSequence(
             PathExpressionTest(Or(Not(self.a), Not(self.b))),
-            PathExpressionStar(TrueFormula())
+            PathExpressionStar(Or(DUMMY_ATOMIC, Not(DUMMY_ATOMIC)))
         ), Or(Not(self.a), Or(Not(self.b), Not(self.c))))
 
         self.assertEqual(self.ldlf.to_nnf(f1), nnf_f1)
 
-
-class TestComputeCL(unittest.TestCase):
-
-    def setUp(self):
-        self.ldlf = LDLf(Alphabet({Symbol("a"), Symbol("b"), Symbol("c")}))
-
-    def test_atomic(self):
-        a = AtomicFormula.fromName("a")
-        closure = {
-            a
-        }
-        f = a
-        nnf = self.ldlf.to_nnf(f)
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
-
-    def test_atomic_not(self):
-        a = AtomicFormula.fromName("a")
-        not_a = Not(a)
-        nnf = self.ldlf.to_nnf(not_a)
-        closure = {
-            not_a
-        }
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
-
-    def test_and_atomic(self):
-        a = AtomicFormula.fromName("a")
-        b = AtomicFormula.fromName("b")
-
-        f = And(a,b)
-        nnf =  self.ldlf.to_nnf(f)
-        closure = {
-            a,
-            b,
-            And(a,b)
-        }
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
-
-    def test_or_atomic(self):
-        a = AtomicFormula.fromName("a")
-        b = AtomicFormula.fromName("b")
-
-        f = Or(a, b)
-        nnf = self.ldlf.to_nnf(f)
-        closure = {
-            a,
-            b,
-            Or(a, b)
-        }
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
-
-    def test_eventually_propositional(self):
-        a = AtomicFormula.fromName("a")
-        b = AtomicFormula.fromName("b")
-        c = AtomicFormula.fromName("c")
-
-        f = PathExpressionEventually(And(a, b), c)
-        nnf = self.ldlf.to_nnf(f)
-        closure = {
-            nnf,
-            a,
-            b,
-            And(a, b),
-            c
-        }
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
-
-    def test_eventually_testcondition(self):
-        a = AtomicFormula.fromName("a")
-        b = AtomicFormula.fromName("b")
-        c = AtomicFormula.fromName("c")
-
-        f = PathExpressionEventually(PathExpressionStar(And(a, b)), c)
-        nnf = self.ldlf.to_nnf(f)
-        closure = {
-            nnf,
-            a,
-            b,
-            And(a, b),
-            PathExpressionEventually(And(a,b), nnf),
-            c
-        }
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
-
-    def test_eventually_union(self):
-        a = AtomicFormula.fromName("a")
-        b = AtomicFormula.fromName("b")
-        c = AtomicFormula.fromName("c")
-
-        f = PathExpressionEventually(PathExpressionUnion(PathExpressionStar(c), And(a, b)), c)
-        nnf = self.ldlf.to_nnf(f)
-        closure = {
-            nnf,
-            PathExpressionEventually(PathExpressionStar(c), c),
-            PathExpressionEventually(c, PathExpressionEventually(PathExpressionStar(c), c)),
-            PathExpressionEventually(And(a, b), c),
-            a,
-            b,
-            And(a, b),
-            c
-        }
-        self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+# class TestComputeCL(unittest.TestCase):
+#
+#     def setUp(self):
+#         self.ldlf = LDLf(Alphabet({Symbol("a"), Symbol("b"), Symbol("c")}))
+#
+#     def test_atomic(self):
+#         a = AtomicFormula.fromName("a")
+#         closure = {
+#             a
+#         }
+#         f = a
+#         nnf = self.ldlf.to_nnf(f)
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+#     def test_atomic_not(self):
+#         a = AtomicFormula.fromName("a")
+#         not_a = Not(a)
+#         nnf = self.ldlf.to_nnf(not_a)
+#         closure = {
+#             not_a
+#         }
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+#     def test_and_atomic(self):
+#         a = AtomicFormula.fromName("a")
+#         b = AtomicFormula.fromName("b")
+#
+#         f = And(a,b)
+#         nnf =  self.ldlf.to_nnf(f)
+#         closure = {
+#             a,
+#             b,
+#             And(a,b)
+#         }
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+#     def test_or_atomic(self):
+#         a = AtomicFormula.fromName("a")
+#         b = AtomicFormula.fromName("b")
+#
+#         f = Or(a, b)
+#         nnf = self.ldlf.to_nnf(f)
+#         closure = {
+#             a,
+#             b,
+#             Or(a, b)
+#         }
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+#     def test_eventually_propositional(self):
+#         a = AtomicFormula.fromName("a")
+#         b = AtomicFormula.fromName("b")
+#         c = AtomicFormula.fromName("c")
+#
+#         f = PathExpressionEventually(And(a, b), c)
+#         nnf = self.ldlf.to_nnf(f)
+#         closure = {
+#             nnf,
+#             a,
+#             b,
+#             And(a, b),
+#             c
+#         }
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+#     def test_eventually_testcondition(self):
+#         a = AtomicFormula.fromName("a")
+#         b = AtomicFormula.fromName("b")
+#         c = AtomicFormula.fromName("c")
+#
+#         f = PathExpressionEventually(PathExpressionStar(And(a, b)), c)
+#         nnf = self.ldlf.to_nnf(f)
+#         closure = {
+#             nnf,
+#             a,
+#             b,
+#             And(a, b),
+#             PathExpressionEventually(And(a,b), nnf),
+#             c
+#         }
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
+#
+#     def test_eventually_union(self):
+#         a = AtomicFormula.fromName("a")
+#         b = AtomicFormula.fromName("b")
+#         c = AtomicFormula.fromName("c")
+#
+#         f = PathExpressionEventually(PathExpressionUnion(PathExpressionStar(c), And(a, b)), c)
+#         nnf = self.ldlf.to_nnf(f)
+#         closure = {
+#             nnf,
+#             PathExpressionEventually(PathExpressionStar(c), c),
+#             PathExpressionEventually(c, PathExpressionEventually(PathExpressionStar(c), c)),
+#             PathExpressionEventually(And(a, b), c),
+#             a,
+#             b,
+#             And(a, b),
+#             c
+#         }
+#         self.assertEqual(closure, self.ldlf.compute_CL(nnf))
 
 
 # class TestToNFA(unittest.TestCase):
@@ -246,7 +247,4 @@ class TestComputeCL(unittest.TestCase):
 #         self.assertEqual(afw_a["initial_state"], true_afw_a["initial_state"])
 #
 #         print(afw_a)
-
-
-
 
