@@ -114,9 +114,9 @@ class TestFOLSyntax(TestFOL):
         self.assertEqual(str(self.b_equal_c), "b = c")
         self.assertEqual(str(self.neg_a_equal_a), "~(a = a)")
         self.assertEqual(str(self.neg_Aa), "~(A^1(a))")
-        self.assertEqual(str(self.Aa_and_b_equal_c), "A^1(a) & b = c")
-        self.assertEqual(str(self.Aa_or_b_equal_c), "A^1(a) | b = c")
-        self.assertEqual(str(self.Aa_implies_b_equal_c), "A^1(a) >> b = c")
+        self.assertEqual(str(self.Aa_and_b_equal_c), "(A^1(a) & b = c)")
+        self.assertEqual(str(self.Aa_or_b_equal_c), "(A^1(a) | b = c)")
+        self.assertEqual(str(self.Aa_implies_b_equal_c), "(A^1(a) >> b = c)")
         self.assertEqual(str(self.exists_a_predicate_ab), "∃a.(Predicate^2(a, b))")
         self.assertEqual(str(self.forall_b_exists_a_predicate_ab), "Ɐb.(∃a.(Predicate^2(a, b)))")
 
@@ -219,32 +219,6 @@ class TestFOLSyntax(TestFOL):
         self.assertFalse(self.myFOL.is_formula(self.dummy_equal))
         self.assertFalse(self.myFOL.is_formula(self.dummy_neg))
         self.assertFalse(self.myFOL.is_formula(self.dummy_and))
-
-    def test_containsVariable(self):
-        """Test if Formula.containsVariable works correctly"""
-
-        # using the same objects
-        self.assertTrue(self.predicate_ab.containsVariable(self.a))
-        self.assertTrue(self.predicate_ab.containsVariable(self.b))
-        self.assertTrue(self.A_a.containsVariable(self.a))
-        self.assertTrue(self.A_a.containsVariable(self.a))
-        self.assertTrue(self.a_equal_a.containsVariable(self.a))
-        self.assertTrue(self.b_equal_c.containsVariable(self.c))
-        self.assertTrue(self.neg_a_equal_a.containsVariable(self.a))
-        self.assertTrue(self.neg_Aa.containsVariable(self.a))
-        self.assertTrue(self.Aa_and_b_equal_c.containsVariable(self.c))
-        self.assertTrue(self.Aa_or_b_equal_c.containsVariable(self.a))
-        self.assertTrue(self.Aa_or_b_equal_c.containsVariable(self.c))
-        self.assertTrue(self.Aa_or_b_equal_c.containsVariable(self.c))
-
-        self.assertFalse(self.predicate_ab.containsVariable(self.c))
-
-        # using different objects
-        new_a = Variable.fromString("a")
-        new_b = Variable.fromString("b")
-        self.assertTrue(self.predicate_ab.containsVariable(new_a))
-        self.assertTrue(self.predicate_ab.containsVariable(new_b))
-
 
 class TestFOLSemantics(TestFOL):
     """Tests for `pythogic.semantics` package."""

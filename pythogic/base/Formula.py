@@ -23,10 +23,7 @@ class Expression(ABC):
 
 
 class Formula(Expression):
-
-    def containsVariable(self, v: Variable):
-        raise NotImplementedError
-
+    pass
 
 class PathExpression(Expression):
     pass
@@ -71,8 +68,7 @@ class PredicateFormula(Formula):
     def fromString(cls, name: str, *args: Term):
         return PredicateFormula(PredicateSymbol(name, len(args)), *args)
 
-    def containsVariable(self, v:Variable):
-        return v in self.args
+
 
 
 class Operator(Formula):
@@ -91,8 +87,6 @@ class UnaryOperator(Operator):
     def _members(self):
         return (self.operator_symbol, self.f)
 
-    def containsVariable(self, v:Variable):
-        return self.f.containsVariable(v)
 
     def __lt__(self, other):
         return self.f.__lt__(other.f)
@@ -106,13 +100,19 @@ class BinaryOperator(Operator):
         self.f2 = f2
 
     def __str__(self):
-        return str(self.f1) + " " + self.operator_symbol + " " + str(self.f2)
+        return "(%s)" % (str(self.f1) + " " + self.operator_symbol + " " + str(self.f2))
 
-    def containsVariable(self, v:Variable):
-        return self.f1.containsVariable(v) or self.f2.containsVariable(v)
 
     def _members(self):
         return (self.f1, self.operator_symbol, self.f2)
+
+
+class CommutativeBinaryOperator(BinaryOperator):
+    """A generic binary formula"""
+
+    def __init__(self, f1:Formula, f2:Formula):
+        _f1, _f2 = sorted([f1, f2], key=lambda x: x.__str__())
+        super().__init__(_f1,_f2)
 
 
 
@@ -120,9 +120,6 @@ class QuantifiedFormula(Operator):
     def __init__(self, v: Variable, f: Formula):
         self.v = v
         self.f = f
-
-    def containsVariable(self, v: Variable):
-        return self.f.containsVariable(v)
 
     def _members(self):
         return (self.operator_symbol, self.v, self.f)
@@ -147,9 +144,6 @@ class Equal(Operator):
     def __str__(self):
         return str(self.t1) + " = " + str(self.t2)
 
-    def containsVariable(self, v:Variable):
-        return self.t1 == v or self.t2 == v
-
     def _members(self):
         return (self.t1, self.operator_symbol, self.t2)
 
@@ -167,25 +161,31 @@ class Not(UnaryOperator):
     operator_symbol = "~"
 
 
-class And(BinaryOperator):
+class And(CommutativeBinaryOperator):
     """And operator: formula_1 & formula_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
         >>> A=PredicateFormula.fromString("A", a); B=PredicateFormula.fromString("B", b)
         >>> e = And(a, b)
         >>> str(e)
-        'a & b'
+        '(a & b)'
+        >>> e = And(b, a)
+        >>> str(e)
+        '(a & b)'
     """
     operator_symbol = "&"
 
 
-class Or(BinaryOperator):
+class Or(CommutativeBinaryOperator):
     """Or operator: formula_1 | formula_2
 
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
         >>> e = Or(a, b)
         >>> str(e)
-        'a | b'
+        '(a | b)'
+        >>> e = Or(b, a)
+        >>> str(e)
+        '(a | b)'
     """
     operator_symbol = "|"
 
@@ -196,7 +196,7 @@ class Implies(BinaryOperator):
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
         >>> e = Implies(a, b)
         >>> str(e)
-        'a >> b'
+        '(a >> b)'
     """
     operator_symbol = ">>"
 
@@ -206,7 +206,7 @@ class Equivalence(BinaryOperator):
         >>> a=Variable.fromString("a"); b=Variable.fromString("b")
         >>> e = Equivalence(a, b)
         >>> str(e)
-        'a === b'
+        '(a === b)'
     """
     operator_symbol = "==="
 
@@ -282,7 +282,7 @@ class PathExpressionFormula(Operator):
         return self.brackets[0] + str(self.p) + self.brackets[1] + "(%s)"%str(self.f)
 
 
-class PathExpressionUnion(Formula):
+class PathExpressionUnion(PathExpression):
     operator_symbol = "+"
     def __init__(self, p1:PathExpression, p2:PathExpression):
         self.p1 = p1

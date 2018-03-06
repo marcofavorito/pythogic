@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
+from pythogic.base.Symbols import Symbols
+
 
 class Symbol(object):
+    FORBIDDEN_SYMBOL_NAMES = {"dummy_proposition", "&", "|", "~", "(", ")", }
     """A class to represent a symbol (actually, a wrap for a string)"""
     def __init__(self, name: str):
         self.name = str(name)
@@ -35,7 +38,7 @@ class FunctionSymbol(Symbol):
         self.arity = arity
 
     def __str__(self):
-        return self.name + "^" + str(self.arity)
+        return self.name + Symbols.CARET.value + str(self.arity)
 
     def _members(self):
         return (self.name, self.arity)
@@ -63,15 +66,15 @@ class PredicateSymbol(Symbol):
 
 class TrueSymbol(Symbol):
     def __init__(self):
-        super().__init__("⊤")
+        super().__init__(Symbols.TOP.value)
 
 class FalseSymbol(Symbol):
     def __init__(self):
-        super().__init__("⊥")
+        super().__init__(Symbols.BOTTOM.value)
 
 class LastSymbol(Symbol):
     def __init__(self):
-        super().__init__("Last")
+        super().__init__(Symbols.LAST.value)
 
 
-DUMMY_SYMBOL = Symbol("dummy_proposition")
+DUMMY_SYMBOL = Symbol(Symbols.DUMMY_PROPOSITION.value)
