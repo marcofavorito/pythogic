@@ -2,9 +2,6 @@
 Pythogic
 ========
 
-
-.. image:: https://img.shields.io/badge/status-development-orange.svg
-
 .. image:: https://img.shields.io/pypi/v/pythogic.svg
         :target: https://pypi.python.org/pypi/pythogic
 
@@ -21,11 +18,15 @@ Pythogic
 .. image:: https://coveralls.io/repos/github/MarcoFavorito/pythogic/badge.svg?branch=master
         :target: https://coveralls.io/github/MarcoFavorito/pythogic?branch=master
 
-.. image:: https://codecov.io/gh/MarcoFavorito/pythogic/branch/master/graph/badge.svg
-
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
-    :alt: MIT License
-    :target: https://opensource.org/licenses/MIT
+        :alt: MIT License
+        :target: https://opensource.org/licenses/MIT
+
+.. image:: https://codecov.io/gh/MarcoFavorito/pythogic/branch/master/graph/badge.svg
+        :alt: Codecov coverage
+
+.. image:: https://img.shields.io/badge/status-development-orange.svg
+        :alt: Status: Development
 
 
 
