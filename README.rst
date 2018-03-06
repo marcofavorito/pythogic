@@ -24,11 +24,11 @@ Pythogic
 
 .. image:: https://codecov.io/gh/MarcoFavorito/pythogic/branch/master/graph/badge.svg
         :alt: Codecov coverage
-        :target:
+        :target: https://codecov.io/gh/MarcoFavorito/pythogic/branch/master/graph/badge.svg
 
 .. image:: https://img.shields.io/badge/status-development-orange.svg
         :alt: Status: Development
-        :target:
+        :target: https://codecov.io/gh/MarcoFavorito/pythogic/branch/master/graph/badge.svg
 
 
 
