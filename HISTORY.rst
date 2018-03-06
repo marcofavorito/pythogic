@@ -28,3 +28,7 @@ History
 
 * "To negative normal form" procedure for LDLf formulas.
 
+0.2.4 (2018-02-06)
+------------------
+
+* Support for LDLf for Empty Traces.

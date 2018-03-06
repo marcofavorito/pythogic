@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from pythogic.base.Symbol import PredicateSymbol, Symbol, TrueSymbol, FalseSymbol, LastSymbol, DUMMY_SYMBOL
+from pythogic.base.Symbols import Symbols
 from pythogic.fol.syntax.Term import Term, Variable, ConstantTerm
 
 
@@ -72,6 +73,8 @@ class PredicateFormula(Formula):
 
 
 class Operator(Formula):
+    base_expression = Symbols.ROUND_BRACKET_LEFT.value + "%s" + Symbols.ROUND_BRACKET_RIGHT.value
+
     @property
     def operator_symbol(self):
         raise NotImplementedError
@@ -82,7 +85,7 @@ class UnaryOperator(Operator):
         self.f = f
 
     def __str__(self):
-        return self.operator_symbol + "(" + str(self.f) + ")"
+        return self.operator_symbol + Symbols.ROUND_BRACKET_LEFT.value + str(self.f) + Symbols.ROUND_BRACKET_RIGHT.value
 
     def _members(self):
         return (self.operator_symbol, self.f)
@@ -100,7 +103,7 @@ class BinaryOperator(Operator):
         self.f2 = f2
 
     def __str__(self):
-        return "(%s)" % (str(self.f1) + " " + self.operator_symbol + " " + str(self.f2))
+        return self.base_expression % (str(self.f1) + " " + self.operator_symbol + " " + str(self.f2))
 
 
     def _members(self):
@@ -125,7 +128,7 @@ class QuantifiedFormula(Operator):
         return (self.operator_symbol, self.v, self.f)
 
     def __str__(self):
-        return self.operator_symbol + str(self.v) + ".(%s)" % str(self.f)
+        return self.operator_symbol + str(self.v) + "."+ self.base_expression % str(self.f)
 
 
 class Equal(Operator):
@@ -136,13 +139,13 @@ class Equal(Operator):
         >>> str(e)
         'a = b'
     """
-    operator_symbol = "="
+    operator_symbol = Symbols.EQUAL.value
     def __init__(self, t1: Term, t2: Term):
         self.t1 = t1
         self.t2 = t2
 
     def __str__(self):
-        return str(self.t1) + " = " + str(self.t2)
+        return str(self.t1) + " " + self.operator_symbol + " " + str(self.t2)
 
     def _members(self):
         return (self.t1, self.operator_symbol, self.t2)
@@ -158,7 +161,7 @@ class Not(UnaryOperator):
     '~(A^1(a))'
 
     """
-    operator_symbol = "~"
+    operator_symbol = Symbols.NOT.value
 
 
 class And(CommutativeBinaryOperator):
@@ -173,7 +176,7 @@ class And(CommutativeBinaryOperator):
         >>> str(e)
         '(a & b)'
     """
-    operator_symbol = "&"
+    operator_symbol = Symbols.AND.value
 
 
 class Or(CommutativeBinaryOperator):
@@ -187,7 +190,7 @@ class Or(CommutativeBinaryOperator):
         >>> str(e)
         '(a | b)'
     """
-    operator_symbol = "|"
+    operator_symbol = Symbols.OR.value
 
 
 class Implies(BinaryOperator):
@@ -198,7 +201,7 @@ class Implies(BinaryOperator):
         >>> str(e)
         '(a >> b)'
     """
-    operator_symbol = ">>"
+    operator_symbol = Symbols.IMPLIES.value
 
 class Equivalence(BinaryOperator):
     """Equivalence: formula_1 === formula_2
@@ -208,36 +211,36 @@ class Equivalence(BinaryOperator):
         >>> str(e)
         '(a === b)'
     """
-    operator_symbol = "==="
+    operator_symbol = Symbols.EQUIVALENCE.value
 
 
 
 class Exists(QuantifiedFormula):
-    operator_symbol = "∃"
+    operator_symbol = Symbols.EXISTS.value
 
 
 class ForAll(QuantifiedFormula):
-    operator_symbol = "Ɐ"
+    operator_symbol = Symbols.FORALL.value
 
 
 class Next(UnaryOperator):
     """Next operator: ○(formula_1) """
-    operator_symbol = "○"
+    operator_symbol = Symbols.NEXT.value
 
 
 class Until(BinaryOperator):
     """Until operator: U(formula_1) """
-    operator_symbol = "U"
+    operator_symbol = Symbols.UNTIL.value
 
 
 class Eventually(UnaryOperator):
     """Eventually operator: ◇(formula_1) """
-    operator_symbol = "◇"
+    operator_symbol = Symbols.EVENTUALLY.value
 
 
 class Always(UnaryOperator):
     """Always operator: □(formula_1) """
-    operator_symbol = "□"
+    operator_symbol = Symbols.ALWAYS.value
 
 
 
@@ -279,11 +282,11 @@ class PathExpressionFormula(Operator):
         return (self.p, self.brackets, self.f)
 
     def __str__(self):
-        return self.brackets[0] + str(self.p) + self.brackets[1] + "(%s)"%str(self.f)
+        return self.brackets[0] + str(self.p) + self.brackets[1] + self.base_expression % str(self.f)
 
 
 class PathExpressionUnion(PathExpression):
-    operator_symbol = "+"
+    operator_symbol = Symbols.PATH_UNION.value
     def __init__(self, p1:PathExpression, p2:PathExpression):
         self.p1 = p1
         self.p2 = p2
@@ -296,7 +299,7 @@ class PathExpressionUnion(PathExpression):
 
 
 class PathExpressionSequence(PathExpression):
-    operator_symbol = ";"
+    operator_symbol = Symbols.PATH_SEQUENCE.value
 
     def __init__(self, p1:PathExpression, p2:PathExpression):
         self.p1 = p1
@@ -310,7 +313,7 @@ class PathExpressionSequence(PathExpression):
 
 
 class PathExpressionStar(PathExpression):
-    operator_symbol = "*"
+    operator_symbol = Symbols.PATH_STAR.value
 
     def __init__(self, p: PathExpression):
         self.p = p
@@ -323,7 +326,7 @@ class PathExpressionStar(PathExpression):
 
 
 class PathExpressionTest(PathExpression):
-    operator_symbol = "?"
+    operator_symbol = Symbols.PATH_TEST.value
 
     def __init__(self, f: Formula):
         self.f = f
@@ -336,30 +339,30 @@ class PathExpressionTest(PathExpression):
 
 
 class PathExpressionEventually(PathExpressionFormula):
-    brackets = "❬❭"
+    brackets = Symbols.ANGLE_BRACKET_LEFT.value + Symbols.ANGLE_BRACKET_RIGHT.value
 
 
 class PathExpressionAlways(PathExpressionFormula):
-    brackets = "［］"
+    brackets = Symbols.FULLWIDTH_SQUARE_BRACKET_LEFT.value + Symbols.FULLWIDTH_SQUARE_BRACKET_RIGHT.value
 
 
 class LogicalTrue(Formula):
     def _members(self):
-        return (Symbol("TT"))
+        return (Symbol(Symbols.LOGICAL_TRUE.value))
 
     def __str__(self):
-        return str(Symbol("TT"))
+        return str(Symbol(Symbols.LOGICAL_TRUE.value))
 
 class LogicalFalse(Formula):
     def _members(self):
-        return (Symbol("FF"))
+        return (Symbol(Symbols.LOGICAL_FALSE.value))
 
     def __str__(self):
-        return str(Symbol("FF"))
+        return str(Symbol(Symbols.LOGICAL_FALSE.value))
 
 class End(Formula):
     def _members(self):
-        return (Symbol("END"))
+        return (Symbol(Symbols.END.value))
 
     def __str__(self):
-        return str(Symbol("END"))
+        return str(Symbol(Symbols.END.value))

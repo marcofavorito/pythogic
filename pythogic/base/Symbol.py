@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from pythogic.base.Symbols import Symbols
+from pythogic.base.Symbols import Symbols, ALL_SYMBOLS
 
 
 class Symbol(object):
-    FORBIDDEN_SYMBOL_NAMES = {"dummy_proposition", "&", "|", "~", "(", ")", }
     """A class to represent a symbol (actually, a wrap for a string)"""
     def __init__(self, name: str):
         self.name = str(name)
