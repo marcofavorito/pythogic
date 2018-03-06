@@ -21,16 +21,13 @@ Pythogic
 .. image:: https://coveralls.io/repos/github/MarcoFavorito/pythogic/badge.svg?branch=master
         :target: https://coveralls.io/github/MarcoFavorito/pythogic?branch=master
 
-.. image:: https://api.codacy.com/project/badge/Grade/653da2a7dda74a3893d87c2f05aa9abd
-   :alt: Codacy Badge
-   :target: https://app.codacy.com/app/MarcoFavorito/pythogic?utm_source=github.com&utm_medium=referral&utm_content=MarcoFavorito/pythogic&utm_campaign=badger
-
-.. image:: https://api.codacy.com/project/badge/Coverage/51b6bb66aeff4e27ad9a9a19c421803c
-        :target: https://www.codacy.com/app/MarcoFavorito/pythogic?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MarcoFavorito/pythogic&amp;utm_campaign=Badge_Coverage
+.. image:: https://codecov.io/gh/MarcoFavorito/pythogic/branch/master/graph/badge.svg
 
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
     :alt: MIT License
     :target: https://opensource.org/licenses/MIT
+
+
 
 Python package for deal with logical formulas and formal systems.
 
