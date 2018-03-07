@@ -13,8 +13,8 @@ class PL(FormalSystem):
     def __init__(self, alphabet: Alphabet):
         super().__init__(alphabet)
 
-    allowed_formulas = {AtomicFormula, Not, And}
-    derived_formulas = {Or, Implies, Equivalence, TrueFormula, FalseFormula}
+    allowed_formulas = {AtomicFormula, Not, And, TrueFormula, FalseFormula}
+    derived_formulas = {Or, Implies, Equivalence}
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""
@@ -24,6 +24,8 @@ class PL(FormalSystem):
             return self.is_formula(f.f)
         elif isinstance(f, And):
             return self.is_formula(f.f1) and self.is_formula(f.f2)
+        elif isinstance(f, TrueFormula) or isinstance(f, FalseFormula):
+            return f
         else:
             return False
 
@@ -35,6 +37,10 @@ class PL(FormalSystem):
                 return interpretation.symbol2truth[formula.symbol]
             except:
                 return False
+        elif isinstance(formula, FalseFormula):
+            return False
+        elif isinstance(formula, TrueFormula):
+            return True
         elif isinstance(formula, Not):
             return not truth(formula.f, interpretation)
         elif isinstance(formula, And):
@@ -52,10 +58,6 @@ class PL(FormalSystem):
             positive_equivalence = And(derived_formula.f1, derived_formula.f2)
             negative_equivalence = And(Not(derived_formula.f1), Not(derived_formula.f2))
             return Not(And(Not(positive_equivalence), Not(negative_equivalence)))
-        elif isinstance(derived_formula, FalseFormula):
-            return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
-        elif isinstance(derived_formula, TrueFormula):
-            return Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
         elif derived_formula in self.allowed_formulas:
             return derived_formula
         else:
@@ -70,6 +72,10 @@ class PL(FormalSystem):
             return Not(self.expand_formula(f.f))
         elif type(f) in self.derived_formulas:
             return self.expand_formula(self.to_equivalent_formula(f))
+        elif isinstance(f, FalseFormula):
+            return FalseFormula()
+        elif isinstance(f, TrueFormula):
+            return TrueFormula()
         else:
             raise ValueError("Formula to expand not recognized")
 
@@ -85,7 +91,7 @@ class PL(FormalSystem):
         assert self.is_formula(f)
         formula = self.expand_formula(f)
         # formula = f
-        if isinstance(formula, AtomicFormula):
+        if isinstance(formula, AtomicFormula) or isinstance(formula, TrueFormula) or isinstance(formula, FalseFormula):
             return formula
         elif isinstance(formula, And):
             return And(self.to_nnf(formula.f1), self.to_nnf(formula.f2))

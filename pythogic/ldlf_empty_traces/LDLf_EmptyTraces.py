@@ -28,8 +28,8 @@ class LDLf_EmptyTraces(FormalSystem):
     def __init__(self, alphabet: Alphabet):
         super().__init__(alphabet)
 
-    allowed_formulas = {LogicalTrue, Not, And, PathExpressionEventually}
-    derived_formulas = {LogicalFalse, Or, Next, Until, End, PathExpressionAlways, TrueFormula, FalseFormula, LDLfLast}
+    allowed_formulas = {LogicalTrue, Not, And, PathExpressionEventually, TrueFormula, FalseFormula}
+    derived_formulas = {LogicalFalse, Or, Next, Until, End, PathExpressionAlways, LDLfLast}
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""
@@ -44,7 +44,7 @@ class LDLf_EmptyTraces(FormalSystem):
         elif isinstance(f, And):
             return self.is_formula(f.f1) and self.is_formula(f.f2)
         elif isinstance(f, PathExpressionEventually):
-                return self._is_path(f.p) and self.is_formula(f.f)
+            return self._is_path(f.p) and self.is_formula(f.f)
         else:
             return False
 
@@ -152,22 +152,26 @@ class LDLf_EmptyTraces(FormalSystem):
         elif isinstance(derived_formula, PathExpressionAlways):
             return Not(PathExpressionEventually(derived_formula.p, Not(derived_formula.f)))
         elif isinstance(derived_formula, Next):
-            return PathExpressionEventually(ef(TrueFormula()), And(derived_formula.f, Not(ef(End()))))
+            return PathExpressionEventually(TrueFormula(), And(derived_formula.f, Not(ef(End()))))
         elif isinstance(derived_formula, End):
-            return ef(PathExpressionAlways(ef(TrueFormula()), ef(LogicalFalse())))
+            return ef(PathExpressionAlways(TrueFormula(), ef(LogicalFalse())))
         elif isinstance(derived_formula, Until):
             return PathExpressionEventually(
                 PathExpressionStar(PathExpressionSequence(PathExpressionTest(derived_formula.f1), ef(TrueFormula()))),
                 And(derived_formula.f2, Not(ef(End())))
             )
         elif isinstance(derived_formula, FalseFormula):
-            return And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+            return FalseFormula()
         elif isinstance(derived_formula, TrueFormula):
-            return Not(ef(FalseFormula()))
+            return TrueFormula()
         elif isinstance(derived_formula, LDLfLast):
             return PathExpressionEventually(ef(TrueFormula()), ef(End()))
+        # propositional
         elif isinstance(derived_formula, Formula):
-            return PathExpressionEventually(derived_formula, LogicalTrue())
+            pl = PL(self.alphabet)
+            assert pl.is_formula(derived_formula)
+            f = pl.to_nnf(derived_formula)
+            return PathExpressionEventually(f, LogicalTrue())
         else:
             raise ValueError("Derived formula not recognized")
 
@@ -316,7 +320,7 @@ class LDLf_EmptyTraces(FormalSystem):
                        self.delta(PathExpressionEventually(f.p.p2, f.f), action, epsilon)
             elif isinstance(f.p, PathExpressionSequence):
                 return self.delta(PathExpressionEventually(f.p.p1,
-                        PathExpressionEventually(f.p.p2, f.f)), action)
+                                                           PathExpressionEventually(f.p.p2, f.f)), action)
             elif isinstance(f.p, PathExpressionStar):
                 return self.delta(f.f, action, epsilon) or \
                        self.delta(PathExpressionEventually(f.p.p, F(f)), action, epsilon)

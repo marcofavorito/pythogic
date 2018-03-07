@@ -114,7 +114,8 @@ class TestLDLf(unittest.TestCase):
         )
         nnf_f1 = PathExpressionAlways(PathExpressionSequence(
             PathExpressionTest(Or(Not(self.a), Not(self.b))),
-            PathExpressionStar(Or(DUMMY_ATOMIC, Not(DUMMY_ATOMIC)))
+            # PathExpressionStar(Or(DUMMY_ATOMIC, Not(DUMMY_ATOMIC)))
+            PathExpressionStar(TrueFormula())
         ), Or(Not(self.a), Or(Not(self.b), Not(self.c))))
 
         self.assertEqual(self.ldlf.to_nnf(f1), nnf_f1)
