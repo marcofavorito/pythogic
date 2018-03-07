@@ -3,8 +3,8 @@ digraph {
 	"{(⊤⊤ & ⊤⊤)}" [root=true shape=doublecircle]
 	"{}" [shape=doublecircle]
 	fake0 -> "{(⊤⊤ & ⊤⊤)}" [style=bold]
-	"{}" -> "{}" [label="{a}"]
-	"{(⊤⊤ & ⊤⊤)}" -> "{}" [label="{}"]
 	"{(⊤⊤ & ⊤⊤)}" -> "{}" [label="{a}"]
 	"{}" -> "{}" [label="{}"]
+	"{}" -> "{}" [label="{a}"]
+	"{(⊤⊤ & ⊤⊤)}" -> "{}" [label="{}"]
 }

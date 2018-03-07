@@ -13,7 +13,7 @@
 <g id="node1" class="node"><title>fake0</title>
 </g>
 <!-- {❬⊤❭(⊤⊤)} -->
-<g id="node4" class="node"><title>{❬⊤❭(⊤⊤)}</title>
+<g id="node3" class="node"><title>{❬⊤❭(⊤⊤)}</title>
 <ellipse fill="none" stroke="black" cx="56.545" cy="-249.09" rx="56.59" ry="18"/>
 <text text-anchor="middle" x="56.545" y="-245.39" font-family="Times,serif" font-size="14.00">{❬⊤❭(⊤⊤)}</text>
 </g>
@@ -35,40 +35,40 @@
 <text text-anchor="middle" x="108.043" y="-19.7983" font-family="Times,serif" font-size="14.00">{a}</text>
 </g>
 <!-- {}&#45;&gt;{} -->
-<g id="edge6" class="edge"><title>{}&#45;&gt;{}</title>
+<g id="edge7" class="edge"><title>{}&#45;&gt;{}</title>
 <path fill="none" stroke="black" d="M78.9578,-31.125C97.8997,-34.3843 118.043,-31.842 118.043,-23.4983 118.043,-16.6538 104.488,-13.7132 89.1612,-14.6766"/>
 <polygon fill="black" stroke="black" points="88.4827,-11.232 78.9578,-15.8716 89.2971,-18.1845 88.4827,-11.232"/>
 <text text-anchor="middle" x="125.043" y="-19.7983" font-family="Times,serif" font-size="14.00">{}</text>
 </g>
 <!-- {⊤⊤} -->
-<g id="node3" class="node"><title>{⊤⊤}</title>
+<g id="node4" class="node"><title>{⊤⊤}</title>
 <ellipse fill="none" stroke="black" cx="56.545" cy="-139.043" rx="37.0889" ry="37.0889"/>
 <ellipse fill="none" stroke="black" cx="56.545" cy="-139.043" rx="41.0935" ry="41.0935"/>
 <text text-anchor="middle" x="56.545" y="-135.343" font-family="Times,serif" font-size="14.00">{⊤⊤}</text>
 </g>
+<!-- {❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤} -->
+<g id="edge2" class="edge"><title>{❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤}</title>
+<path fill="none" stroke="black" d="M44.6828,-231.42C41.3785,-225.856 38.2335,-219.448 36.545,-213.09 34.2401,-204.411 34.5885,-195.164 36.3386,-186.269"/>
+<polygon fill="black" stroke="black" points="39.7691,-186.98 38.8433,-176.426 32.9853,-185.254 39.7691,-186.98"/>
+<text text-anchor="middle" x="46.545" y="-201.89" font-family="Times,serif" font-size="14.00">{a}</text>
+</g>
+<!-- {❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤} -->
+<g id="edge3" class="edge"><title>{❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤}</title>
+<path fill="none" stroke="black" d="M56.545,-230.73C56.545,-219.786 56.545,-205.04 56.545,-190.623"/>
+<polygon fill="black" stroke="black" points="60.0451,-190.242 56.545,-180.242 53.0451,-190.242 60.0451,-190.242"/>
+<text text-anchor="middle" x="63.545" y="-201.89" font-family="Times,serif" font-size="14.00">{}</text>
+</g>
 <!-- {⊤⊤}&#45;&gt;{} -->
-<g id="edge3" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
+<g id="edge5" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
 <path fill="none" stroke="black" d="M39.2785,-101.769C35.6852,-90.0781 33.735,-77.0324 36.545,-64.9965 37.4615,-61.071 38.8163,-57.089 40.3966,-53.2316"/>
 <polygon fill="black" stroke="black" points="43.6441,-54.5476 44.6676,-44.0023 37.2914,-51.6077 43.6441,-54.5476"/>
 <text text-anchor="middle" x="46.545" y="-68.7965" font-family="Times,serif" font-size="14.00">{a}</text>
 </g>
 <!-- {⊤⊤}&#45;&gt;{} -->
-<g id="edge5" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
+<g id="edge6" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
 <path fill="none" stroke="black" d="M56.545,-97.6918C56.545,-84.4454 56.545,-69.8939 56.545,-57.2791"/>
 <polygon fill="black" stroke="black" points="60.0451,-57.2092 56.545,-47.2093 53.0451,-57.2093 60.0451,-57.2092"/>
 <text text-anchor="middle" x="63.545" y="-68.7965" font-family="Times,serif" font-size="14.00">{}</text>
-</g>
-<!-- {❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤} -->
-<g id="edge2" class="edge"><title>{❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤}</title>
-<path fill="none" stroke="black" d="M46.4479,-231.216C43.6385,-225.641 40.9684,-219.278 39.545,-213.09 37.615,-204.699 37.8163,-195.769 39.1766,-187.139"/>
-<polygon fill="black" stroke="black" points="42.635,-187.699 41.2476,-177.195 35.7821,-186.272 42.635,-187.699"/>
-<text text-anchor="middle" x="46.545" y="-201.89" font-family="Times,serif" font-size="14.00">{}</text>
-</g>
-<!-- {❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤} -->
-<g id="edge7" class="edge"><title>{❬⊤❭(⊤⊤)}&#45;&gt;{⊤⊤}</title>
-<path fill="none" stroke="black" d="M56.545,-230.73C56.545,-219.786 56.545,-205.04 56.545,-190.623"/>
-<polygon fill="black" stroke="black" points="60.0451,-190.242 56.545,-180.242 53.0451,-190.242 60.0451,-190.242"/>
-<text text-anchor="middle" x="66.545" y="-201.89" font-family="Times,serif" font-size="14.00">{a}</text>
 </g>
 </g>
 </svg>
