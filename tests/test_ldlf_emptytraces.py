@@ -1,15 +1,11 @@
 import unittest
 from pprint import pprint
 
-import PySimpleAutomata
-from PySimpleAutomata import automata_IO
-
-from pythogic.ldlf.LDLf import LDLf
 from pythogic.ldlf_empty_traces.LDLf_EmptyTraces import LDLf_EmptyTraces
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.base.Formula import AtomicFormula, Not, And, Or, PathExpressionUnion, PathExpressionSequence, \
     PathExpressionStar, PathExpressionTest, PathExpressionEventually, Next, Until, PathExpressionAlways, TrueFormula, \
-    LogicalTrue, LogicalFalse, End, FalseFormula, LDLfLast, DUMMY_ATOMIC
+    LogicalTrue, LogicalFalse, End, FalseFormula, LDLfLast
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.Symbol import Symbol
 from pythogic.pl.PL import PL
@@ -660,8 +656,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         delta = {
             (frozenset(),                       frozenset(),    frozenset()),
             (frozenset(),                       frozenset({a}), frozenset()),
-            (frozenset({eventually_true_tt}), frozenset(), frozenset({tt})),
-            (frozenset({eventually_true_tt}), frozenset({a}), frozenset({tt})),
+            (frozenset({eventually_true_tt}),   frozenset(), frozenset({tt})),
+            (frozenset({eventually_true_tt}),   frozenset({a}), frozenset({tt})),
             (frozenset({tt}),                   frozenset(),    frozenset()),
             (frozenset({tt}),                   frozenset({a}), frozenset()),
 
