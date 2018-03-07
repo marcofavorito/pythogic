@@ -59,7 +59,7 @@ class LDLf(FormalSystem):
         truth = self._truth
         # LDLfFormulas
         if isinstance(f, AtomicFormula):
-            return f in trace.get(position)
+            return f.symbol in trace.get(position)
         elif isinstance(f, Not):
             return not self.truth(f.f, trace, position)
         elif isinstance(f, And):

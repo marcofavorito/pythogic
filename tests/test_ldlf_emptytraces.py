@@ -1,4 +1,8 @@
 import unittest
+from pprint import pprint
+
+import PySimpleAutomata
+from PySimpleAutomata import automata_IO
 
 from pythogic.ldlf.LDLf import LDLf
 from pythogic.ldlf_empty_traces.LDLf_EmptyTraces import LDLf_EmptyTraces
@@ -8,9 +12,13 @@ from pythogic.base.Formula import AtomicFormula, Not, And, Or, PathExpressionUni
     LogicalTrue, LogicalFalse, End, FalseFormula, LDLfLast, DUMMY_ATOMIC
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.Symbol import Symbol
+from pythogic.pl.PL import PL
+from tests.utils import print_nfa
+
 
 class TestLDLfEmptyTraces(unittest.TestCase):
     """Tests for `pythogic.ldlf_empty_traces` package."""
+
     def setUp(self):
         # Symbols
         self.a_sym = Symbol("a")
@@ -70,23 +78,51 @@ class TestLDLfEmptyTraces(unittest.TestCase):
         # Traces
         self.ldlf = LDLf_EmptyTraces(self.alphabet)
         self.trace_1_list = [
-            {self.a, self.b},
-            {self.a, self.c},
-            {self.a, self.b},
-            {self.a, self.c},
-            {self.b, self.c},
+            {self.a_sym, self.b_sym},
+            {self.a_sym, self.c_sym},
+            {self.a_sym, self.b_sym},
+            {self.a_sym, self.c_sym},
+            {self.b_sym, self.c_sym},
         ]
         self.trace_1 = FiniteTrace(self.trace_1_list, self.alphabet)
+
+    def test_truth(self):
+        self.assertFalse(self.ldlf.truth(self.not_a, self.trace_1, 0))
+        self.assertTrue(self.ldlf.truth(self.not_a, self.trace_1, 4))
+        self.assertTrue(self.ldlf.truth(self.a_and_b, self.trace_1, 0))
+        self.assertFalse(self.ldlf.truth(self.a_and_b, self.trace_1, 1))
+        self.assertTrue(self.ldlf.truth(self.a_or_b, self.trace_1, 1))
+        self.assertTrue(self.ldlf.truth(Not(And(self.b, self.c)), self.trace_1, 0))
+
+        self.assertTrue(self.ldlf.truth(self.eventually_seq_a_and_b__a_and_c__not_c, self.trace_1, 0))
+        self.assertFalse(self.ldlf.truth(self.eventually_seq_a_and_b__a_and_c__not_c, self.trace_1, 1))
+        self.assertTrue(self.ldlf.truth(self.eventually_propositional_a_and_b__a_and_c, self.trace_1, 0))
+        self.assertFalse(self.ldlf.truth(self.eventually_test_a__c, self.trace_1, 0))
+        self.assertTrue(self.ldlf.truth(self.eventually_test_a__b, self.trace_1, 0))
+        self.assertTrue(self.ldlf.truth(self.eventually_seq_a_and_b__a_and_c__not_c, self.trace_1, 0))
+        self.assertFalse(self.ldlf.truth(self.eventually_seq_a_and_b__a_and_c__c, self.trace_1, 0))
+        self.assertTrue(self.ldlf.truth(self.next_a_and_c, self.trace_1, 0))
+        self.assertTrue(self.ldlf.truth(self.liveness_b_and_c, self.trace_1, 0))
+        self.assertFalse(self.ldlf.truth(self.liveness_abc, self.trace_1, 0))
+
+        self.assertFalse(self.ldlf.truth(self.always_true__a, self.trace_1, 0))
+        self.assertTrue(self.ldlf.truth(self.always_true__a, self.trace_1.segment(0, self.trace_1.length() - 1), 0))
+        self.assertTrue(self.ldlf.truth(self.always_true__b_or_c, self.trace_1, 0))
+
+        # self.assertTrue(self.ldlf.truth(self.always_not_abc__b_and_c, self.trace_1, 0))
+
+        # self.assertTrue(self.ldlf.truth(self.trace_1, 0, self.eventually_b_or_c_star__b_and_c))
+
 
 class TestLDLfEmptyTracesIsFormula(TestLDLfEmptyTraces):
 
     def test_is_formula_allowed_formulas(self):
         tt = LogicalTrue()
-        and_tt = And(tt,tt)
+        and_tt = And(tt, tt)
         and_ab = And(self.a, self.b)
         test_tt = PathExpressionTest(tt)
 
-        eventually_atomic_tt = PathExpressionEventually(self.a,tt)
+        eventually_atomic_tt = PathExpressionEventually(self.a, tt)
         eventually_not_tt = PathExpressionEventually(Not(self.a), tt)
         eventually_and_tt = PathExpressionEventually(and_ab, tt)
         eventually_and_tt_error = PathExpressionEventually(And(self.a, AtomicFormula.fromName("d")), tt)
@@ -113,7 +149,8 @@ class TestLDLfEmptyTracesIsFormula(TestLDLfEmptyTraces):
         and_tt = And(tt, Not(tt))
         and_ab = And(self.a, self.b)
 
-        complex_path = PathExpressionSequence(PathExpressionUnion(and_ab, PathExpressionStar(and_ab)), PathExpressionTest(PathExpressionEventually(and_ab,tt)))
+        complex_path = PathExpressionSequence(PathExpressionUnion(and_ab, PathExpressionStar(and_ab)),
+                                              PathExpressionTest(PathExpressionEventually(and_ab, tt)))
         complex_eventually = PathExpressionEventually(complex_path, and_tt)
 
         self.assertTrue(self.ldlf.is_formula(complex_eventually))
@@ -124,7 +161,6 @@ class TestLDLfEmptyTracesIsFormula(TestLDLfEmptyTraces):
         and_ab = And(self.a, self.b)
         eventually_test_tt = PathExpressionEventually(PathExpressionTest(self.a), tt)
         eventually_test_tt_error = PathExpressionEventually(PathExpressionTest(AtomicFormula.fromName("d")), tt)
-
 
         self.assertTrue(self.ldlf.is_formula(LogicalFalse()))
         self.assertTrue(self.ldlf.is_formula(Or(tt, tt)))
@@ -174,7 +210,6 @@ class TestLDLfEmptyTracesExpandFormula(TestLDLfEmptyTraces):
         self.assertEqual(self.ldlf.expand_formula(eventually_union_tt), eventually_union_tt)
         self.assertEqual(self.ldlf.expand_formula(eventually_star_tt), eventually_star_tt)
 
-
     def test_expand_formula_derived_formula(self):
         tt = LogicalTrue()
         and_ab = And(self.a, self.b)
@@ -185,7 +220,8 @@ class TestLDLfEmptyTracesExpandFormula(TestLDLfEmptyTraces):
         expanded_trueformula = Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
         expanded_end = Not(PathExpressionEventually(expanded_trueformula, Not(expanded_logicalFalse)))
         expanded_last = PathExpressionEventually(expanded_trueformula, expanded_end)
-        expanded_eventually_test_tt = PathExpressionEventually(PathExpressionTest(PathExpressionEventually(self.a, tt)), tt)
+        expanded_eventually_test_tt = PathExpressionEventually(PathExpressionTest(PathExpressionEventually(self.a, tt)),
+                                                               tt)
 
         always_ = PathExpressionAlways(and_ab, tt)
         next_ = Next(tt)
@@ -193,24 +229,27 @@ class TestLDLfEmptyTracesExpandFormula(TestLDLfEmptyTraces):
         expanded_always_ = Not(PathExpressionEventually(and_ab, Not(tt)))
         expanded_next_ = PathExpressionEventually(expanded_trueformula, And(tt, Not(expanded_end)))
         expanded_until = PathExpressionEventually(
-                PathExpressionStar(PathExpressionSequence(PathExpressionTest(tt), expanded_trueformula)),
-                And(tt, Not(expanded_end))
+            PathExpressionStar(PathExpressionSequence(PathExpressionTest(tt), expanded_trueformula)),
+            And(tt, Not(expanded_end))
         )
-
 
         self.assertEqual(self.ldlf.expand_formula(LogicalFalse()), expanded_logicalFalse)
         self.assertEqual(self.ldlf.expand_formula(Or(tt, tt)), Not(And(Not(tt), Not(tt))))
         self.assertEqual(self.ldlf.expand_formula(always_), expanded_always_)
-        self.assertEqual(self.ldlf.expand_formula(PathExpressionEventually(TrueFormula(), tt)), PathExpressionEventually(expanded_trueformula, tt))
-        self.assertEqual(self.ldlf.expand_formula(PathExpressionEventually(FalseFormula(), tt)), PathExpressionEventually(expanded_falseformula, tt))
-        self.assertEqual(self.ldlf.expand_formula(PathExpressionEventually(TrueFormula(), End())),PathExpressionEventually(expanded_trueformula, expanded_end))
-        self.assertEqual(self.ldlf.expand_formula(LDLfLast()),expanded_last)
+        self.assertEqual(self.ldlf.expand_formula(PathExpressionEventually(TrueFormula(), tt)),
+                         PathExpressionEventually(expanded_trueformula, tt))
+        self.assertEqual(self.ldlf.expand_formula(PathExpressionEventually(FalseFormula(), tt)),
+                         PathExpressionEventually(expanded_falseformula, tt))
+        self.assertEqual(self.ldlf.expand_formula(PathExpressionEventually(TrueFormula(), End())),
+                         PathExpressionEventually(expanded_trueformula, expanded_end))
+        self.assertEqual(self.ldlf.expand_formula(LDLfLast()), expanded_last)
         self.assertEqual(self.ldlf.expand_formula(next_), expanded_next_)
         self.assertEqual(self.ldlf.expand_formula(until_), expanded_until)
         # a propositional is not an elementary formula
         self.assertEqual(self.ldlf.expand_formula(and_ab), PathExpressionEventually(and_ab, tt))
         # a propositional is not an elementary formula, neither in the Test expression
         self.assertEqual(self.ldlf.expand_formula(eventually_test_tt), expanded_eventually_test_tt)
+
 
 class TestLDLfEmptyTracesToNNF(TestLDLfEmptyTraces):
 
@@ -257,7 +296,8 @@ class TestLDLfEmptyTracesToNNF(TestLDLfEmptyTraces):
         to_nnf_not_end = PathExpressionEventually(to_nnf_trueformula, tt)
         to_nnf_last = PathExpressionEventually(to_nnf_trueformula, to_nnf_end)
         to_nnf_not_last = PathExpressionAlways(to_nnf_trueformula, to_nnf_not_end)
-        to_nnf_eventually_test_tt = PathExpressionEventually(PathExpressionTest(PathExpressionEventually(self.a, tt)),tt)
+        to_nnf_eventually_test_tt = PathExpressionEventually(PathExpressionTest(PathExpressionEventually(self.a, tt)),
+                                                             tt)
 
         always_ = PathExpressionAlways(and_ab, tt)
         not_always_ = PathExpressionEventually(and_ab, ff)
@@ -281,14 +321,20 @@ class TestLDLfEmptyTracesToNNF(TestLDLfEmptyTraces):
         self.assertEqual(self.ldlf.to_nnf(always_), always_)
         self.assertEqual(self.ldlf.to_nnf(Not(always_)), not_always_)
 
-        self.assertEqual(self.ldlf.to_nnf(PathExpressionEventually(TrueFormula(), tt)),  PathExpressionEventually(to_nnf_trueformula, tt))
-        self.assertEqual(self.ldlf.to_nnf(Not(PathExpressionEventually(TrueFormula(), tt))), PathExpressionAlways(to_nnf_trueformula, ff))
+        self.assertEqual(self.ldlf.to_nnf(PathExpressionEventually(TrueFormula(), tt)),
+                         PathExpressionEventually(to_nnf_trueformula, tt))
+        self.assertEqual(self.ldlf.to_nnf(Not(PathExpressionEventually(TrueFormula(), tt))),
+                         PathExpressionAlways(to_nnf_trueformula, ff))
 
-        self.assertEqual(self.ldlf.to_nnf(PathExpressionEventually(FalseFormula(), tt)), PathExpressionEventually(to_nnf_false_formula, tt))
-        self.assertEqual(self.ldlf.to_nnf(Not(PathExpressionEventually(FalseFormula(), tt))),PathExpressionAlways(to_nnf_false_formula, ff))
+        self.assertEqual(self.ldlf.to_nnf(PathExpressionEventually(FalseFormula(), tt)),
+                         PathExpressionEventually(to_nnf_false_formula, tt))
+        self.assertEqual(self.ldlf.to_nnf(Not(PathExpressionEventually(FalseFormula(), tt))),
+                         PathExpressionAlways(to_nnf_false_formula, ff))
 
-        self.assertEqual(self.ldlf.to_nnf(PathExpressionEventually(TrueFormula(), End())), PathExpressionEventually(to_nnf_trueformula, to_nnf_end))
-        self.assertEqual(self.ldlf.to_nnf(Not(PathExpressionEventually(TrueFormula(), End()))), PathExpressionAlways(to_nnf_trueformula, to_nnf_not_end))
+        self.assertEqual(self.ldlf.to_nnf(PathExpressionEventually(TrueFormula(), End())),
+                         PathExpressionEventually(to_nnf_trueformula, to_nnf_end))
+        self.assertEqual(self.ldlf.to_nnf(Not(PathExpressionEventually(TrueFormula(), End()))),
+                         PathExpressionAlways(to_nnf_trueformula, to_nnf_not_end))
 
         self.assertEqual(self.ldlf.to_nnf(LDLfLast()), to_nnf_last)
         self.assertEqual(self.ldlf.to_nnf(Not(LDLfLast())), to_nnf_not_last)
@@ -305,7 +351,259 @@ class TestLDLfEmptyTracesToNNF(TestLDLfEmptyTraces):
         self.assertEqual(self.ldlf.to_nnf(eventually_test_tt), to_nnf_eventually_test_tt)
 
 
+class TestLDLfEmptyTracesDelta(TestLDLfEmptyTraces):
+
+    def test_delta_simple_recursion(self):
+        ldlf = self.ldlf
+        tt = LogicalTrue()
+        ff = LogicalFalse()
+        and_ab = And(self.a, self.b)
+        self.assertEqual(ldlf.delta(tt, frozenset()), TrueFormula())
+        self.assertEqual(ldlf.delta(ff, frozenset()), FalseFormula())
+        # self.assertEqual(ldlf.delta(and_ab, frozenset()), )
 
 
+class TestLDLfEmptyTracesToNFA(unittest.TestCase):
+    def setUp(self):
+        self.a_sym = Symbol("a")
+        alphabet_a = Alphabet({self.a_sym})
+        self.ldlf_a = LDLf_EmptyTraces(alphabet_a)
+
+    def test_to_nfa_alphabet_a_logical_true(self):
+        """tt"""
+        a = self.a_sym
+        tt = LogicalTrue()
+        x = self.ldlf_a.to_nfa(tt)
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        # (frozenset([TrueFormula()]),  frozenset(),                frozenset([LogicalTrue()])),
+        # (frozenset([TrueFormula()]),  frozenset({a}),             frozenset([LogicalTrue()])),
+        delta = {
+            (frozenset(),       frozenset(),    frozenset()),
+            (frozenset([tt]),   frozenset(),    frozenset()),  # frozenset([TrueFormula()])),
+            (frozenset(),       frozenset({a}), frozenset()),
+            (frozenset([tt]),   frozenset({a}), frozenset())  # frozenset([TrueFormula()])),
+        }
+
+        final_states = {frozenset([LogicalTrue()]), frozenset()}
+        initial_state = {frozenset([LogicalTrue()])}
+        states = {frozenset([LogicalTrue()]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "00_alphabet_a_logical_true", "./tests/nfa/")
+
+    def test_to_nfa_alphabet_a_logical_false(self):
+        """ff"""
+        ff = LogicalFalse()
+        a = self.a_sym
+        x = self.ldlf_a.to_nfa(ff)
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(), frozenset(), frozenset()),
+            (frozenset(), frozenset({a}), frozenset()),
+        }
+
+        final_states = {frozenset()}
+        initial_state = {frozenset([LogicalFalse()])}
+        states = {frozenset([LogicalFalse()]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "01_alphabet_a_logical_false", "./tests/nfa/")
+
+    def test_to_nfa_alphabet_a_tt_and_tt(self):
+        """tt AND tt"""
+        tt = LogicalTrue()
+        tt_and_tt = And(tt, tt)
+        a = self.a_sym
+        x = self.ldlf_a.to_nfa(tt_and_tt)
+
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(),               frozenset(),    frozenset()),
+            (frozenset([tt_and_tt]),    frozenset(),    frozenset()),
+            (frozenset(),               frozenset({a}), frozenset()),
+            (frozenset([tt_and_tt]),    frozenset({a}), frozenset())
+        }
+        final_states = {frozenset(),frozenset([tt_and_tt])}
+        initial_state = {frozenset([tt_and_tt])}
+        states = {frozenset([tt_and_tt]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "02_alphabet_a_tt_and_tt", "./tests/nfa/")
+
+
+    def test_to_nfa_alphabet_a_tt_and_ff(self):
+        """tt AND ff"""
+        tt = LogicalTrue()
+        ff = LogicalFalse()
+        tt_and_ff = And(tt, ff)
+        a = self.a_sym
+        x = self.ldlf_a.to_nfa(tt_and_ff)
+
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(), frozenset(),    frozenset()),
+            (frozenset(), frozenset({a}), frozenset()),
+        }
+        final_states = {frozenset()}
+        initial_state = {frozenset([tt_and_ff])}
+        states = {frozenset([tt_and_ff]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "03_alphabet_a_tt_and_ff", "./tests/nfa/")
+
+    def test_to_nfa_alphabet_a_tt_or_ff(self):
+        """tt OR ff"""
+        tt = LogicalTrue()
+        ff = LogicalFalse()
+        tt_or_ff = Or(tt, ff)
+        a = self.a_sym
+        x = self.ldlf_a.to_nfa(tt_or_ff)
+
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(),              frozenset(),    frozenset()),
+            (frozenset([tt_or_ff]),    frozenset(),    frozenset()),
+            (frozenset(),              frozenset({a}), frozenset()),
+            (frozenset([tt_or_ff]),    frozenset({a}), frozenset())
+        }
+        final_states = {frozenset(), frozenset([tt_or_ff])}
+        initial_state = {frozenset([tt_or_ff])}
+        states = {frozenset([tt_or_ff]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "04_alphabet_a_tt_and_ff", "./tests/nfa/")
+
+
+    def test_to_nfa_alphabet_eventually_a_tt(self):
+        """<a>tt"""
+        a = self.a_sym
+        tt = LogicalTrue()
+        eventually_a_tt = PathExpressionEventually(AtomicFormula(a), tt)
+
+        x = self.ldlf_a.to_nfa(eventually_a_tt)
+
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(),                   frozenset(),    frozenset()),
+            (frozenset([tt]),               frozenset(),    frozenset()),
+            (frozenset(),                   frozenset({a}), frozenset()),
+            (frozenset([eventually_a_tt]),  frozenset({a}), frozenset({tt})),
+            (frozenset([tt]),               frozenset({a}), frozenset())
+        }
+        final_states = {frozenset(), frozenset([tt])}
+        initial_state = {frozenset([eventually_a_tt])}
+        states = {frozenset([eventually_a_tt]), frozenset([tt]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "05_alphabet_a_eventually_a_tt", "./tests/nfa/")
+
+    def test_to_nfa_alphabet_eventually_a_ff(self):
+        """<a>ff"""
+        a = self.a_sym
+        ff = LogicalFalse()
+        eventually_a_ff = PathExpressionEventually(AtomicFormula(a), ff)
+
+        x = self.ldlf_a.to_nfa(eventually_a_ff)
+
+        # pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(),                   frozenset(),    frozenset()),
+            (frozenset(),                   frozenset({a}), frozenset()),
+            (frozenset([eventually_a_ff]),  frozenset({a}), frozenset({ff})),
+        }
+        final_states = {frozenset()}
+        initial_state = {frozenset([eventually_a_ff])}
+        states = {frozenset([eventually_a_ff]), frozenset([ff]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "06_alphabet_a_eventually_a_ff", "./tests/nfa/")
+
+    def test_to_nfa_alphabet_a_propositional_a(self):
+        """a === <a>tt"""
+        a = self.a_sym
+        tt = LogicalTrue()
+        atomic_a = AtomicFormula(a)
+        eventually_a_tt = PathExpressionEventually(atomic_a, tt)
+
+        self.assertEqual(self.ldlf_a.to_nfa(atomic_a), self.ldlf_a.to_nfa(eventually_a_tt))
+
+    def test_to_nfa_alphabet_propositional_false(self):
+        """false"""
+        a = self.a_sym
+        tt = LogicalTrue()
+        eventually_false_tt = PathExpressionEventually(FalseFormula(), tt)
+
+        pl = PL(self.ldlf_a.alphabet)
+        expanded_false = pl.expand_formula(FalseFormula())
+        expanded_eventually_false_tt = PathExpressionEventually(expanded_false, tt)
+        x = self.ldlf_a.to_nfa(eventually_false_tt)
+
+        pprint(x)
+        alphabet = {frozenset(), frozenset({a})}
+
+        delta = {
+            (frozenset(), frozenset(),    frozenset()),
+            (frozenset(), frozenset({a}), frozenset()),
+        }
+        final_states = {frozenset()}
+        initial_state = {frozenset([expanded_eventually_false_tt])}
+        states = {frozenset([expanded_eventually_false_tt]), frozenset()}
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_state)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "07_alphabet_a_eventually_false_tt", "./tests/nfa/")
 
 

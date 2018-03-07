@@ -7,7 +7,6 @@ from pythogic.base.Formula import Formula, And
 
 class FormalSystem(ABC):
     def __init__(self, alphabet: Alphabet):
-        assert len(alphabet.symbols) > 0
         self.alphabet = alphabet
 
     @property
@@ -69,10 +68,11 @@ class FormalSystem(ABC):
         """Formula evaluation.
         It calls `_truth` with all the provided arguments."""
         assert self.is_formula(f)
-        if type(f) in self.derived_formulas:
-            return self.truth(self.to_equivalent_formula(f), *args)
-        else:
-            return self._truth(f, *args)
+        # if type(f) in self.derived_formulas:
+        #     return self.truth(self.to_equivalent_formula(f), *args)
+        # else:
+        #     return self._truth(f, *args)
+        return self._truth(self.expand_formula(f), *args)
 
     def is_formula(self, f: Formula):
         """Syntactic check on the formula.

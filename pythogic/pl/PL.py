@@ -74,8 +74,8 @@ class PL(FormalSystem):
             raise ValueError("Formula to expand not recognized")
 
     @staticmethod
-    def _from_set_of_propositionals(props:Set[AtomicFormula], alphabet:Alphabet):
-        symbol2truth = {e: True if AtomicFormula(e) in props else False for e in alphabet.symbols}
+    def _from_set_of_propositionals(props:Set[Symbol], alphabet:Alphabet):
+        symbol2truth = {e: True if e in props else False for e in alphabet.symbols}
         I = PLInterpretation(alphabet, symbol2truth)
         pl = PL(alphabet)
         return pl, I
@@ -84,7 +84,7 @@ class PL(FormalSystem):
     def to_nnf(self, f:Formula):
         assert self.is_formula(f)
         formula = self.expand_formula(f)
-        # formula = self.expand_formula(f)
+        # formula = f
         if isinstance(formula, AtomicFormula):
             return formula
         elif isinstance(formula, And):

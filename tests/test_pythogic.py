@@ -33,4 +33,5 @@ class TestPythogic(unittest.TestCase):
             (a, b, c, d)
 
         }
-        self.assertTrue(ps == true_ps)
+        true_ps_frozenset = {frozenset(t) for t in true_ps}
+        self.assertTrue(ps == true_ps_frozenset)

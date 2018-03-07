@@ -1,13 +1,30 @@
+from typing import Set, FrozenSet
+
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
 from pythogic.base.Formula import Formula, Not, And, Or, PathExpressionFormula, PathExpressionUnion, \
     PathExpressionSequence, PathExpressionStar, PathExpressionTest, PathExpressionEventually, PathExpressionAlways, \
-    PathExpression, FalseFormula, TrueFormula, LDLfLast, DUMMY_ATOMIC, LogicalTrue, LogicalFalse, Until, Next, End
+    PathExpression, FalseFormula, TrueFormula, LDLfLast, DUMMY_ATOMIC, LogicalTrue, LogicalFalse, Until, Next, End, \
+    AtomicFormula
+from pythogic.base.Symbol import Symbol
+from pythogic.base.utils import powerset
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.pl.PL import PL
 
 
+class F(Formula):
+    def __init__(self, f: Formula):
+        self.f = f
+
+
+class T(Formula):
+    def __init__(self, f: Formula):
+        self.f = f
+
 class LDLf_EmptyTraces(FormalSystem):
+
+
+
     def __init__(self, alphabet: Alphabet):
         super().__init__(alphabet)
 
@@ -92,8 +109,11 @@ class LDLf_EmptyTraces(FormalSystem):
     def _truth(self, f: Formula, trace: FiniteTrace, position: int):
         assert trace.alphabet == self.alphabet
         truth = self._truth
-        # LDLfFormulas
-        if isinstance(f, LogicalTrue):
+
+        pl = PL(self.alphabet)
+        if pl.is_formula(f):
+            return self.truth(PathExpressionEventually(f, LogicalTrue()), trace, position)
+        elif isinstance(f, LogicalTrue):
             return True
         elif isinstance(f, Not):
             return not self.truth(f.f, trace, position)
@@ -115,11 +135,10 @@ class LDLf_EmptyTraces(FormalSystem):
                     and truth(PathExpressionEventually(path.p, PathExpressionEventually(path, f.f)), trace, position)
                     and not self._is_testonly(path)
                 )
-
-            # Should be a Propositional Formula
+            # path should be a Propositional Formula
             else:
                 pl, I = PL._from_set_of_propositionals(trace.get(position), trace.alphabet)
-                return position < trace.last() and pl.truth(path, I) and truth(f.f, trace, position + 1)
+                return position < trace.length() and pl.truth(path, I) and truth(f.f, trace, position + 1)
         else:
             raise ValueError("Argument not a valid Formula")
 
@@ -201,3 +220,138 @@ class LDLf_EmptyTraces(FormalSystem):
             return pl.to_nnf(path)
         else:
             raise ValueError
+
+
+    def to_nfa(self, f:Formula):
+        # TODO: optimize!!!
+        assert self.is_formula(f)
+        nnf_f = self.to_nnf(f)
+
+        alphabet = powerset(self.alphabet.symbols)
+        initial_states = {frozenset([nnf_f])}
+        final_states = {frozenset()}
+        delta = set()
+
+        if FalseFormula() != self.delta(nnf_f, frozenset(), epsilon=True):
+            final_states.add(frozenset([nnf_f]))
+
+        states = {frozenset(), frozenset([nnf_f])}
+
+        states_changed, delta_changed = True, True
+        while states_changed or delta_changed:
+
+            states_changed, delta_changed = False, False
+            for actions_set in alphabet:
+                states_list = list(states)
+                for q in states_list:
+
+                    # q_delta = set([self.delta(subf, actions_set) for subf in q])
+                    # q_delta_conjunction = And.chain(list(q_delta))
+
+                    q_prime = frozenset([self.delta(subf, actions_set) for subf in q])
+                    if TrueFormula() in q_prime:
+                        q_prime = frozenset()
+                    elif FalseFormula() in q_prime:
+                        continue
+
+                    len_before = len(states)
+                    states.add(q_prime)
+                    if len(states) == len_before + 1:
+                        states_list.append(q_prime)
+                        states_changed = True
+
+                    len_before = len(delta)
+                    delta.add((q, actions_set, q_prime))
+                    if len(delta) == len_before + 1:
+                        delta_changed = True
+
+                    # check if q_prime should be added as final state
+                    if len(q_prime) == 0:
+                        final_states.add(q_prime)
+                    else:
+                        q_prime_delta_conjunction = And.chain([self.delta(subf, frozenset(), epsilon=True) for subf in q_prime])
+                        pl, I = PL._from_set_of_propositionals(set(), Alphabet(set()))
+                        if pl.truth(q_prime_delta_conjunction, I):
+                            final_states.add(q_prime)
+
+
+
+
+        return {
+            "alphabet": alphabet,
+            "states": states,
+            "initial_states": initial_states,
+            "transitions": delta,
+            "accepting_states": final_states
+        }
+
+
+
+
+
+
+    def delta(self, f:Formula, action: FrozenSet[Symbol], epsilon=False):
+        # TODO: should return [True|False]Formula or simply True/False?
+        pl, I = PL._from_set_of_propositionals(action, self.alphabet)
+        if pl.is_formula(f):
+            return self.delta(PathExpressionEventually(f, LogicalTrue()), action, epsilon)
+        elif isinstance(f, LogicalTrue):
+            return TrueFormula()
+        elif isinstance(f, LogicalFalse):
+            return FalseFormula()
+        elif isinstance(f, And):
+            return self.delta(f.f1, action) and self.delta(f.f2, action, epsilon)
+        elif isinstance(f, Or):
+            return self.delta(f.f1, action) or self.delta(f.f2, action, epsilon)
+        elif isinstance(f, PathExpressionEventually):
+            if pl.is_formula(f.p):
+                if not epsilon and pl.truth(f.p, I):
+                    return self._expand(f.f)
+                else:
+                    return FalseFormula()
+            elif isinstance(f.p, PathExpressionTest):
+                return self.delta(f.p.f, action) and self.delta(f.f, action, epsilon)
+            elif isinstance(f.p, PathExpressionUnion):
+                return self.delta(PathExpressionEventually(f.p.p1, f.f), action, epsilon) and \
+                       self.delta(PathExpressionEventually(f.p.p2, f.f), action, epsilon)
+            elif isinstance(f.p, PathExpressionSequence):
+                return self.delta(PathExpressionEventually(f.p.p1,
+                        PathExpressionEventually(f.p.p2, f.f)), action)
+            elif isinstance(f.p, PathExpressionStar):
+                return self.delta(f.f, action, epsilon) or \
+                       self.delta(PathExpressionEventually(f.p.p, F(f)), action, epsilon)
+
+        elif isinstance(f, PathExpressionAlways):
+            if pl.is_formula(f.p):
+                if not epsilon and pl.truth(f.p, I):
+                    return self._expand(f.f)
+                else:
+                    return TrueFormula()
+            elif isinstance(f.p, PathExpressionTest):
+                return self.delta(self.to_nnf(Not(f.p.f)), action, epsilon) or \
+                       self.delta(f.f, action, epsilon)
+            elif isinstance(f.p, PathExpressionUnion):
+                return self.delta(PathExpressionAlways(f.p.p1, f.f), action, epsilon) and \
+                       self.delta(PathExpressionAlways(f.p.p2, f.f), action, epsilon)
+            elif isinstance(f.p, PathExpressionSequence):
+                return self.delta(PathExpressionAlways(f.p.p1, PathExpressionAlways(f.p.p2, f.f)), action, epsilon)
+            elif isinstance(f.p, PathExpressionStar):
+                return self.delta(f.f, action, epsilon) and \
+                       self.delta(PathExpressionAlways(f.p.p, T(f)), action, epsilon)
+        elif isinstance(f, F):
+            return FalseFormula()
+        elif isinstance(f, T):
+            return TrueFormula()
+        else:
+            raise ValueError
+
+
+    def _expand(self, f:Formula):
+        if isinstance(f, F) or isinstance(f, T):
+            return self._expand(f.f)
+        elif isinstance(f, PathExpressionEventually) or isinstance(f, PathExpressionAlways):
+            return type(f)(f.p, self._expand(f.f))
+        else:
+            return f
+
+

@@ -71,11 +71,11 @@ class TestLDLf(unittest.TestCase):
         # Traces
         self.ldlf = LDLf(self.alphabet)
         self.trace_1_list = [
-            {self.a, self.b},
-            {self.a, self.c},
-            {self.a, self.b},
-            {self.a, self.c},
-            {self.b, self.c},
+            {self.a_sym, self.b_sym},
+            {self.a_sym, self.c_sym},
+            {self.a_sym, self.b_sym},
+            {self.a_sym, self.c_sym},
+            {self.b_sym, self.c_sym},
         ]
         self.trace_1 = FiniteTrace(self.trace_1_list, self.alphabet)
 

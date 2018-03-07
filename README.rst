@@ -52,6 +52,8 @@ First of all, create symbols and an alphabet
     b_sym = Symbol("b")
     c_sym = Symbol("c")
     alphabet = Alphabet({a_sym, b_sym, c_sym})
+    # you can also write:
+    alphabet = Alphabet.fromStrings({"a", "b", "c"})
 
 Create some formulas:
 

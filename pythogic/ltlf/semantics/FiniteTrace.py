@@ -2,10 +2,11 @@ from typing import List, Set
 
 from pythogic.base.Formula import AtomicFormula
 from pythogic.base.Alphabet import Alphabet
+from pythogic.base.Symbol import Symbol
 
 
 class FiniteTrace(object):
-    def __init__(self, trace: List[Set[AtomicFormula]], alphabet: Alphabet):
+    def __init__(self, trace: List[Set[Symbol]], alphabet: Alphabet):
         assert FiniteTrace._is_valid_trace(trace, alphabet)
         self.trace = trace
         self.alphabet = alphabet
@@ -19,7 +20,7 @@ class FiniteTrace(object):
     def _position_is_legal(self, position:int):
         return position>=0 and position <= self.last()
 
-    def get(self, position:int) -> Set[AtomicFormula]:
+    def get(self, position:int) -> Set[Symbol]:
         assert self._position_is_legal(position)
         return self.trace[position]
 
@@ -29,8 +30,8 @@ class FiniteTrace(object):
         return FiniteTrace(self.trace[start: end], self.alphabet)
 
     @staticmethod
-    def _is_valid_trace(trace :List[Set[AtomicFormula]], alphabet: Alphabet):
-        return all(all(e.symbol in alphabet.symbols for e in t) for t in trace)
+    def _is_valid_trace(trace :List[Set[Symbol]], alphabet: Alphabet):
+        return all(all(e in alphabet.symbols for e in t) for t in trace)
 
 
     def __str__(self):
