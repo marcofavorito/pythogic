@@ -642,7 +642,7 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         print_nfa(x, "08_alphabet_a_eventually_true_tt", "./tests/nfa/")
 
 
-    def test_to_nfa_alphabet_a_propositional_true(self):
+    def test_to_nfa_alphabet_a_propositional_not_a(self):
         """false"""
         a = self.a_sym
         tt = LogicalTrue()
