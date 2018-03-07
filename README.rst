@@ -15,8 +15,8 @@ Pythogic
         :target: https://pythogic.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
-.. image:: https://coveralls.io/repos/github/MarcoFavorito/pythogic/badge.svg?branch=master
-        :target: https://coveralls.io/github/MarcoFavorito/pythogic?branch=master&service=github
+.. image:: https://coveralls.io/repos/github/MarcoFavorito/pythogic/badge.svg?branch=master&service=github
+        :target: https://coveralls.io/github/MarcoFavorito/pythogic?branch=master
 
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
         :alt: MIT License
