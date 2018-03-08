@@ -258,6 +258,7 @@ class LDLf_EmptyTraces(FormalSystem):
                     elif FalseFormula() in q_prime:
                         continue
 
+
                     len_before = len(states)
                     states.add(q_prime)
                     if len(states) == len_before + 1:
@@ -314,7 +315,7 @@ class LDLf_EmptyTraces(FormalSystem):
                 else:
                     return FalseFormula()
             elif isinstance(f.p, PathExpressionTest):
-                return self.delta(f.p.f, action) and self.delta(f.f, action, epsilon)
+                return And(self.delta(f.p.f, action, epsilon), self.delta(f.f, action, epsilon))
             elif isinstance(f.p, PathExpressionUnion):
                 return self.delta(PathExpressionEventually(f.p.p1, f.f), action, epsilon) and \
                        self.delta(PathExpressionEventually(f.p.p2, f.f), action, epsilon)
