@@ -28,7 +28,7 @@ class Formula(Expression):
     pass
 
 
-class PathExpression(Expression):
+class PathExpression(Formula):
     pass
 
 
@@ -111,7 +111,9 @@ class BinaryOperator(Operator):
     @classmethod
     def chain(cls, formulas: List[Formula]):
         """apply the operator to a list of formulas"""
-        if len(formulas) == 1:
+        if len(formulas)==0:
+            return cls(TrueFormula(), TrueFormula())
+        elif len(formulas) == 1:
             return cls(formulas[0], TrueFormula())
         else:
             return cls(formulas[0], cls.chain(formulas[1:]))
@@ -275,7 +277,7 @@ class LDLfLast(Formula):
 
 
 class PathExpressionFormula(Operator):
-    def __init__(self, p: PathExpression, f: Formula):
+    def __init__(self, p: Formula, f: Formula):
         self.p = p
         self.f = f
 
@@ -307,7 +309,7 @@ class PathExpressionUnion(PathExpression):
 class PathExpressionSequence(PathExpression):
     operator_symbol = Symbols.PATH_SEQUENCE.value
 
-    def __init__(self, p1: PathExpression, p2: PathExpression):
+    def __init__(self, p1: Formula, p2: Formula):
         self.p1 = p1
         self.p2 = p2
 
@@ -321,7 +323,7 @@ class PathExpressionSequence(PathExpression):
 class PathExpressionStar(PathExpression):
     operator_symbol = Symbols.PATH_STAR.value
 
-    def __init__(self, p: PathExpression):
+    def __init__(self, p: Formula):
         self.p = p
 
     def __str__(self):

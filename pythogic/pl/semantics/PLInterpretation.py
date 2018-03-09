@@ -10,16 +10,16 @@ class PLInterpretation(object):
         assert alphabet.symbols == symbol2truth.keys() and all(type(v)==bool for v in symbol2truth.values())
         self.alphabet = alphabet
         self.symbol2truth = symbol2truth
-    #
-    # def __call__(self, f:Formula):
-    #     if isinstance(f, AtomicFormula):
-    #         assert f.symbol in self.alphabet
-    #         return self.symbol2truth[f.symbol]
-    #     elif isinstance(f, Not):
-    #         return not self(f.f)
-    #     elif isinstance(f, And):
-    #         return self(f.f1) and self(f.f2)
-    #     elif isinstance(f, Or):
-    #         return self(f.f1) and self(f.f2)
-    #     else:
-    #         raise ValueError("Term is nor a Variable neither a FunctionTerm")
+
+
+    def __eq__(self, other):
+        if type(self) == type(other):
+            return self.alphabet == other.alphabet and self.symbol2truth == other.symbol2truth
+        else:
+            return False
+
+    def _members(self):
+        return self.alphabet, tuple(sorted(self.symbol2truth.items()))
+
+    def __hash__(self):
+        return hash(self._members())

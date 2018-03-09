@@ -16,10 +16,27 @@ class F(Formula):
     def __init__(self, f: Formula):
         self.f = f
 
+    def _members(self):
+        return ("F", self.f)
+
+    def __str__(self):
+        return "_".join(map(str,self._members()))
+
+
+
+
 
 class T(Formula):
     def __init__(self, f: Formula):
         self.f = f
+
+    def _members(self):
+        return ("T", self.f)
+
+    def __str__(self):
+        return "_".join(map(str,self._members()))
+
+
 
 class LDLf_EmptyTraces(FormalSystem):
 
@@ -185,7 +202,7 @@ class LDLf_EmptyTraces(FormalSystem):
         elif isinstance(formula, And):
             return And(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
         elif isinstance(formula, PathExpressionFormula):
-            return type(formula)(self.to_nnf_path(formula.p), self.to_nnf(formula.f))
+                return type(formula)(self.to_nnf_path(formula.p), self.to_nnf(formula.f))
         elif isinstance(formula, Not):
             return self._not_to_nnf(formula)
         else:
@@ -221,7 +238,10 @@ class LDLf_EmptyTraces(FormalSystem):
             return PathExpressionStar(self.to_nnf_path(path.p))
         elif isinstance(path, Formula):
             pl = PL(self.alphabet)
-            return pl.to_nnf(path)
+            if pl.is_formula(path):
+                return path
+            else:
+                raise ValueError
         else:
             raise ValueError
 
@@ -236,7 +256,9 @@ class LDLf_EmptyTraces(FormalSystem):
         final_states = {frozenset()}
         delta = set()
 
-        if FalseFormula() != self.delta(nnf_f, frozenset(), epsilon=True):
+        pl, I = PL._from_set_of_propositionals(set(), Alphabet(set()))
+        d = self.delta(nnf_f, frozenset(), epsilon=True)
+        if pl.truth(d, I):
             final_states.add(frozenset([nnf_f]))
 
         states = {frozenset(), frozenset([nnf_f])}
@@ -249,38 +271,40 @@ class LDLf_EmptyTraces(FormalSystem):
                 states_list = list(states)
                 for q in states_list:
 
-                    # q_delta = set([self.delta(subf, actions_set) for subf in q])
-                    # q_delta_conjunction = And.chain(list(q_delta))
+                    delta_formulas = [self.delta(subf, actions_set) for subf in q]
+                    atomics = [s for subf in delta_formulas for s in PL.find_atomics(subf)]
 
-                    q_prime = frozenset([self.delta(subf, actions_set) for subf in q])
-                    if TrueFormula() in q_prime:
-                        q_prime = frozenset()
-                    elif FalseFormula() in q_prime:
+                    symbol2formula = {Symbol(str(f)) : f for f in atomics if f != TrueFormula() and f!=FalseFormula()}
+                    formula2atomic_formulas = {f : AtomicFormula.fromName(str(f)) if f != TrueFormula() and f!=FalseFormula() else f for f in atomics}
+                    transformed_delta_formulas = [self._tranform_delta(f, formula2atomic_formulas) for f in delta_formulas]
+                    conjunctions = And.chain(transformed_delta_formulas)
+
+                    models = frozenset(PL(Alphabet(set(symbol2formula))).minimal_models(conjunctions))
+                    if len(models)==0:
                         continue
+                    for min_model in models:
+                        q_prime = frozenset({symbol2formula[s] for s in min_model.symbol2truth if min_model.symbol2truth[s]})
 
 
-                    len_before = len(states)
-                    states.add(q_prime)
-                    if len(states) == len_before + 1:
-                        states_list.append(q_prime)
-                        states_changed = True
+                        len_before = len(states)
+                        states.add(q_prime)
+                        if len(states) == len_before + 1:
+                            states_list.append(q_prime)
+                            states_changed = True
 
-                    len_before = len(delta)
-                    delta.add((q, actions_set, q_prime))
-                    if len(delta) == len_before + 1:
-                        delta_changed = True
+                        len_before = len(delta)
+                        delta.add((q, actions_set, q_prime))
+                        if len(delta) == len_before + 1:
+                            delta_changed = True
 
-                    # check if q_prime should be added as final state
-                    if len(q_prime) == 0:
-                        final_states.add(q_prime)
-                    else:
-                        q_prime_delta_conjunction = And.chain([self.delta(subf, frozenset(), epsilon=True) for subf in q_prime])
-                        pl, I = PL._from_set_of_propositionals(set(), Alphabet(set()))
-                        if pl.truth(q_prime_delta_conjunction, I):
+                        # check if q_prime should be added as final state
+                        if len(q_prime) == 0:
                             final_states.add(q_prime)
-
-
-
+                        else:
+                            q_prime_delta_conjunction = And.chain([self.delta(subf, frozenset(), epsilon=True) for subf in q_prime])
+                            pl, I = PL._from_set_of_propositionals(set(), Alphabet(set()))
+                            if pl.truth(q_prime_delta_conjunction, I):
+                                final_states.add(q_prime)
 
         return {
             "alphabet": alphabet,
@@ -292,7 +316,15 @@ class LDLf_EmptyTraces(FormalSystem):
 
 
 
-
+    def _tranform_delta(self, f:Formula, formula2AtomicFormula):
+        if isinstance(f, Not):
+            return Not(self._tranform_delta(f, formula2AtomicFormula))
+        elif isinstance(f, And) or isinstance(f, Or):
+            return type(f)(self._tranform_delta(f.f1, formula2AtomicFormula), self._tranform_delta(f.f2, formula2AtomicFormula))
+        elif isinstance(f, TrueFormula) or isinstance(f, FalseFormula):
+            return f
+        else:
+            return formula2AtomicFormula[f]
 
 
     def delta(self, f:Formula, action: FrozenSet[Symbol], epsilon=False):
@@ -305,9 +337,9 @@ class LDLf_EmptyTraces(FormalSystem):
         elif isinstance(f, LogicalFalse):
             return FalseFormula()
         elif isinstance(f, And):
-            return self.delta(f.f1, action) and self.delta(f.f2, action, epsilon)
+            return And(self.delta(f.f1, action), self.delta(f.f2, action, epsilon))
         elif isinstance(f, Or):
-            return self.delta(f.f1, action) or self.delta(f.f2, action, epsilon)
+            return Or(self.delta(f.f1, action), self.delta(f.f2, action, epsilon))
         elif isinstance(f, PathExpressionEventually):
             if pl.is_formula(f.p):
                 if not epsilon and pl.truth(f.p, I):
@@ -317,15 +349,16 @@ class LDLf_EmptyTraces(FormalSystem):
             elif isinstance(f.p, PathExpressionTest):
                 return And(self.delta(f.p.f, action, epsilon), self.delta(f.f, action, epsilon))
             elif isinstance(f.p, PathExpressionUnion):
-                return self.delta(PathExpressionEventually(f.p.p1, f.f), action, epsilon) and \
-                       self.delta(PathExpressionEventually(f.p.p2, f.f), action, epsilon)
+                return And(self.delta(PathExpressionEventually(f.p.p1, f.f), action, epsilon),
+                       self.delta(PathExpressionEventually(f.p.p2, f.f), action, epsilon))
             elif isinstance(f.p, PathExpressionSequence):
-                return self.delta(PathExpressionEventually(f.p.p1,
-                                                           PathExpressionEventually(f.p.p2, f.f)), action)
+                e2 = PathExpressionEventually(f.p.p2, f.f)
+                e1 = PathExpressionEventually(f.p.p1, e2)
+                return self.delta(e1, action, epsilon)
             elif isinstance(f.p, PathExpressionStar):
-                return self.delta(f.f, action, epsilon) or \
-                       self.delta(PathExpressionEventually(f.p.p, F(f)), action, epsilon)
-
+                o1 = self.delta(f.f, action, epsilon)
+                o2 = self.delta(PathExpressionEventually(f.p.p, F(f)), action, epsilon)
+                return Or(o1, o2)
         elif isinstance(f, PathExpressionAlways):
             if pl.is_formula(f.p):
                 if not epsilon and pl.truth(f.p, I):
@@ -333,16 +366,18 @@ class LDLf_EmptyTraces(FormalSystem):
                 else:
                     return TrueFormula()
             elif isinstance(f.p, PathExpressionTest):
-                return self.delta(self.to_nnf(Not(f.p.f)), action, epsilon) or \
-                       self.delta(f.f, action, epsilon)
+                o1 = self.delta(self.to_nnf(Not(f.p.f)), action, epsilon)
+                o2 = self.delta(f.f, action, epsilon)
+                return Or(o1, o2)
             elif isinstance(f.p, PathExpressionUnion):
-                return self.delta(PathExpressionAlways(f.p.p1, f.f), action, epsilon) and \
-                       self.delta(PathExpressionAlways(f.p.p2, f.f), action, epsilon)
+                return And(self.delta(PathExpressionAlways(f.p.p1, f.f), action, epsilon),
+                       self.delta(PathExpressionAlways(f.p.p2, f.f), action, epsilon))
             elif isinstance(f.p, PathExpressionSequence):
                 return self.delta(PathExpressionAlways(f.p.p1, PathExpressionAlways(f.p.p2, f.f)), action, epsilon)
             elif isinstance(f.p, PathExpressionStar):
-                return self.delta(f.f, action, epsilon) and \
-                       self.delta(PathExpressionAlways(f.p.p, T(f)), action, epsilon)
+                a1 = self.delta(f.f, action, epsilon)
+                a2 = self.delta(PathExpressionAlways(f.p.p, T(f)), action, epsilon)
+                return And(a1, a2)
         elif isinstance(f, F):
             return FalseFormula()
         elif isinstance(f, T):

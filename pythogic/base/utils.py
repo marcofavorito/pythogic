@@ -8,6 +8,7 @@ def powerset(iterable):
     s = list(set(iterable))
     combs = chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
     res = set(frozenset(x) for x in combs)
+    # res = map(frozenset, combs)
     return res
 
 
@@ -24,5 +25,12 @@ def print_nfa(nfa:dict, name, path):
     nfa["states"] = set(map(str, nfa["states"]))
     nfa["initial_states"] = set(map(str, nfa["initial_states"]))
     nfa["accepting_states"] = set(map(str, nfa["accepting_states"]))
-    nfa["transitions"] = {(str(v[0]), str(v[1])): [str(v[2])] for v in nfa["transitions"]}
+
+    # more destinations for the same start state and action
+    import collections
+    transitions = collections.defaultdict(list)
+    for v in nfa["transitions"]:
+        transitions[(str(v[0]), str(v[1]))].append(str(v[2]))
+
+    nfa["transitions"] = transitions
     automata_IO.nfa_to_dot(nfa, name, path)
