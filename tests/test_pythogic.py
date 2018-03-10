@@ -24,7 +24,6 @@ class TestPythogic(unittest.TestCase):
         c = Symbol("c")
         d = Symbol("d")
         s = [a,b,c,d]
-        ps = powerset(s)
         true_ps = {
             (),
             (a,),(b,),(c,),(d,),
@@ -33,4 +32,6 @@ class TestPythogic(unittest.TestCase):
             (a, b, c, d)
 
         }
-        self.assertTrue(ps == true_ps)
+        set_true_ps_frozenset = {frozenset(t) for t in true_ps}
+        self.assertEqual(set(powerset(s)), set_true_ps_frozenset)
+

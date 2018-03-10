@@ -59,4 +59,4 @@ class REf(FormalSystem):
         raise NotImplementedError
 
     def _expand_formula(self, f: Formula):
-        raise NotImplementedError
+        return f

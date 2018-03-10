@@ -32,3 +32,8 @@ History
 ------------------
 
 * Support for LDLf for Empty Traces.
+
+0.2.6 (2018-02-06)
+------------------
+
+* Non-deterministic state automata conversion procedure for LDLf_EmptyTraces formulas.

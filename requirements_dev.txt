@@ -9,4 +9,4 @@ Sphinx==1.7.1
 twine==1.9.1
 cryptography==2.1.4
 PyYAML==3.12
-
+PySimpleAutomata

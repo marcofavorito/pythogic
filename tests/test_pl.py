@@ -99,8 +99,10 @@ class TestPLExpandFormula(unittest.TestCase):
         alphabet = Alphabet({a_sym, b_sym})
         a = AtomicFormula(a_sym)
         b = AtomicFormula(b_sym)
-        T = Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
-        F = And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+        # T = Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
+        # F = And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+        T = TrueFormula()
+        F = FalseFormula()
         pl = PL(alphabet)
         self.assertEqual(pl.expand_formula(TrueFormula()), T)
         self.assertEqual(pl.expand_formula(FalseFormula()), F)
@@ -114,8 +116,10 @@ class TestPLExpandFormula(unittest.TestCase):
         a_sym = Symbol("a")
         alphabet = Alphabet({a_sym})
         a = AtomicFormula(a_sym)
-        T = Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
-        F = And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+        # T = Not(And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC))
+        # F = And(Not(DUMMY_ATOMIC), DUMMY_ATOMIC)
+        T = TrueFormula()
+        F = FalseFormula()
         pl = PL(alphabet)
         self.assertEqual(pl.expand_formula(And(TrueFormula(), FalseFormula())), And(T, F))
         self.assertEqual(pl.expand_formula(Or(TrueFormula(), FalseFormula())), Not(And(Not(T), Not(F))))
@@ -163,3 +167,38 @@ class TestPLToNNF(unittest.TestCase):
         pl = PL(alphabet)
         self.assertEqual(pl.to_nnf(Not(Or(b, Not(a)))), And(Not(b), a))
         self.assertEqual(pl.to_nnf(Not(Implies(b, Not(a)))), And(b, a))
+
+
+class TestPLFindSymbols(unittest.TestCase):
+
+    def test_find_symbols(self):
+        a = Symbol("a")
+        b = Symbol("b")
+        c = Symbol("c")
+        atomic_a = AtomicFormula(a)
+        atomic_b = AtomicFormula(b)
+        atomic_c = AtomicFormula(c)
+        self.assertEqual(PL.find_atomics(And(atomic_a, And(atomic_b, atomic_c))), {atomic_a, atomic_b, atomic_c})
+
+
+class TestPLMinimalModel(unittest.TestCase):
+    def test_minimal_models(self):
+        a = Symbol("a")
+        b = Symbol("b")
+        c = Symbol("c")
+        alphabet = Alphabet({a, b, c})
+        pl = PL(alphabet)
+
+        atomic_a = AtomicFormula(a)
+        atomic_b = AtomicFormula(b)
+        atomic_c = AtomicFormula(c)
+
+        self.assertEqual(pl.minimal_models(TrueFormula()),                                  {PLInterpretation(alphabet, {a:False, b:False, c:False})})
+        self.assertEqual(pl.minimal_models(FalseFormula()),                                 set())
+        self.assertEqual(pl.minimal_models(atomic_a),                                       {PLInterpretation(alphabet, {a:True, b:False, c:False})})
+        self.assertEqual(pl.minimal_models(Not(atomic_a)),                                  {PLInterpretation(alphabet, {a: False, b: False, c: False})})
+        self.assertEqual(pl.minimal_models(And(atomic_a, atomic_b)),                        {PLInterpretation(alphabet, {a: True, b: True, c: False})})
+        self.assertEqual(pl.minimal_models(And(atomic_a, Not(atomic_a))),                   set())
+        self.assertEqual(pl.minimal_models(Or(atomic_a, atomic_b)),                         {PLInterpretation(alphabet, {a: False, b: True, c: False}), PLInterpretation(alphabet, {a: True,  b: False, c: False})})
+        self.assertEqual(pl.minimal_models(And.chain([atomic_a, atomic_b, atomic_c])),      {PLInterpretation(alphabet, {a: True, b: True, c: True})})
+

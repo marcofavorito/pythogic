@@ -32,7 +32,7 @@ class LTLf(FormalSystem):
         assert trace.alphabet == self.alphabet
         truth = self.truth
         if isinstance(formula, AtomicFormula):
-            return formula in trace.get(position)
+            return formula.symbol in trace.get(position)
         elif isinstance(formula, Not):
             return not truth(formula.f, trace, position)
         elif isinstance(formula, And):

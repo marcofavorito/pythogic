@@ -5,7 +5,7 @@ from pythogic.base.Symbols import Symbols, ALL_SYMBOLS
 class Symbol(object):
     """A class to represent a symbol (actually, a wrap for a string)"""
     def __init__(self, name: str):
-        self.name = str(name)
+        self.name = name
 
     def __str__(self):
         return self.name
