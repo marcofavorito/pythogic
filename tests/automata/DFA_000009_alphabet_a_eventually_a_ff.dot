@@ -1,0 +1,7 @@
+digraph {
+	fake [style=invisible]
+	"{'{⊥⊥}'}"
+	"{'{❬a❭(⊥⊥)}'}" [root=true]
+	fake -> "{'{❬a❭(⊥⊥)}'}" [style=bold]
+	"{'{❬a❭(⊥⊥)}'}" -> "{'{⊥⊥}'}" [label="{a}"]
+}
