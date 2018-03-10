@@ -1,0 +1,12 @@
+digraph {
+	fake0 [style=invisible]
+	"{}" [shape=doublecircle]
+	"{⊥⊥}"
+	"{［(~(a)) *］(［⊤］(⊥⊥))}" [root=true shape=doublecircle]
+	"{［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥}"
+	fake0 -> "{［(~(a)) *］(［⊤］(⊥⊥))}" [style=bold]
+	"{}" -> "{}" [label="{a}"]
+	"{［(~(a)) *］(［⊤］(⊥⊥))}" -> "{⊥⊥}" [label="{a}"]
+	"{［(~(a)) *］(［⊤］(⊥⊥))}" -> "{［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥}" [label="{}"]
+	"{}" -> "{}" [label="{}"]
+}

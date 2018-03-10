@@ -1,0 +1,14 @@
+digraph {
+	fake0 [style=invisible]
+	"{⊤⊤}" [shape=doublecircle]
+	"{❬~(a)❭(⊤⊤)}"
+	"{❬a ; ~(a)❭(⊤⊤)}" [root=true]
+	"{}" [shape=doublecircle]
+	fake0 -> "{❬a ; ~(a)❭(⊤⊤)}" [style=bold]
+	"{}" -> "{}" [label="{}"]
+	"{}" -> "{}" [label="{a}"]
+	"{⊤⊤}" -> "{}" [label="{}"]
+	"{⊤⊤}" -> "{}" [label="{a}"]
+	"{❬~(a)❭(⊤⊤)}" -> "{⊤⊤}" [label="{}"]
+	"{❬a ; ~(a)❭(⊤⊤)}" -> "{❬~(a)❭(⊤⊤)}" [label="{a}"]
+}
