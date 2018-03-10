@@ -1595,7 +1595,7 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         print_nfa(x, "000037_alphabet_a_always_star_not_a_end", "./tests/nfa/")
 
 
-    def test_to_nfa_alphabet_abc_sequence(self):
+    def test_to_nfa_alphabet_abc_starred_sequences(self):
         atomic_a = AtomicFormula(self.a_sym)
         atomic_b = AtomicFormula(self.b_sym)
         atomic_c = AtomicFormula(self.c_sym)
@@ -1678,5 +1678,182 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "001000_alphabet_abc_", "./tests/nfa/")
+        print_nfa(x, "001000_alphabet_abc_starred_sequences", "./tests/nfa/")
 
+
+    def test_to_nfa_alphabet_abc_eventually_union_a_star_b_end(self):
+        atomic_a = AtomicFormula(self.a_sym)
+        atomic_b = AtomicFormula(self.b_sym)
+        atomic_c = AtomicFormula(self.c_sym)
+        tt = LogicalTrue()
+        ff = LogicalFalse()
+
+        star_b = PathExpressionStar(atomic_b)
+        main = PathExpressionEventually(PathExpressionUnion(atomic_a, star_b), End())
+        x = self.ldlf_abc.to_nfa(main)
+        nnf_end = PathExpressionAlways(TrueFormula(), ff)
+        nnf_main = PathExpressionEventually(PathExpressionUnion(atomic_a, star_b), nnf_end)
+        eventually_star_b_end = PathExpressionEventually(star_b, nnf_end)
+
+        # pprint(x)
+        alphabet = {
+            frozenset(), frozenset([self.a_sym]), frozenset([self.b_sym]), frozenset([self.c_sym]),
+            frozenset([self.a_sym, self.b_sym]), frozenset([self.a_sym, self.c_sym]), frozenset([self.b_sym, self.c_sym]),
+            frozenset([self.a_sym, self.b_sym, self.c_sym])
+        }
+
+        states = {
+            frozenset([nnf_main]),
+            frozenset([ff]),
+            frozenset([nnf_end]),
+            frozenset([eventually_star_b_end]),
+            frozenset()
+        }
+
+        initial_states = {
+            frozenset([nnf_main]),
+        }
+        final_states = {
+            frozenset(),
+            frozenset([nnf_main]),
+            frozenset([nnf_end]),
+            frozenset([eventually_star_b_end]),
+        }
+
+        delta = {
+            (frozenset(), frozenset(), frozenset()),
+            (frozenset(), frozenset({self.a_sym}), frozenset()),
+            (frozenset(), frozenset({self.b_sym}), frozenset()),
+            (frozenset(), frozenset({self.c_sym}), frozenset()),
+            (frozenset(), frozenset({self.a_sym, self.b_sym}), frozenset()),
+            (frozenset(), frozenset({self.a_sym, self.c_sym}), frozenset()),
+            (frozenset(), frozenset({self.b_sym, self.c_sym}), frozenset()),
+            (frozenset(), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset()),
+
+            (frozenset([nnf_main]), frozenset(),                          frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.a_sym}),              frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.b_sym}),              frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.c_sym}),              frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym}),  frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.c_sym}),  frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.b_sym, self.c_sym}),  frozenset({ff})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({ff})),
+
+            (frozenset([nnf_main]), frozenset({self.a_sym}),                         frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym}),             frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.c_sym}),             frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({nnf_end})),
+
+            (frozenset([nnf_main]), frozenset({self.b_sym}),                         frozenset({eventually_star_b_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym}),             frozenset({eventually_star_b_end})),
+            (frozenset([nnf_main]), frozenset({self.b_sym, self.c_sym}),             frozenset({eventually_star_b_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({eventually_star_b_end})),
+
+            (frozenset([eventually_star_b_end]), frozenset({self.b_sym}),                         frozenset({eventually_star_b_end})),
+            (frozenset([eventually_star_b_end]), frozenset({self.b_sym, self.a_sym}),             frozenset({eventually_star_b_end})),
+            (frozenset([eventually_star_b_end]), frozenset({self.b_sym, self.c_sym}),             frozenset({eventually_star_b_end})),
+            (frozenset([eventually_star_b_end]), frozenset({self.b_sym, self.a_sym, self.c_sym}), frozenset({eventually_star_b_end})),
+
+            (frozenset([eventually_star_b_end]), frozenset(), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.a_sym}), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.b_sym}), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.c_sym}), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.a_sym, self.b_sym}), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.a_sym, self.c_sym}), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.b_sym, self.c_sym}), frozenset({ff})),
+            (frozenset([eventually_star_b_end]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({ff})),
+
+            (frozenset([nnf_end]), frozenset(), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym}), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.b_sym}), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.c_sym}), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym, self.b_sym}), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym, self.c_sym}), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.b_sym, self.c_sym}), frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({ff})),
+
+        }
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_states)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "001001_alphabet_abc_eventually_union_a_star_b_end", "./tests/nfa/")
+
+
+    def test_to_nfa_alphabet_abc_always_union_a_b_end(self):
+        atomic_a = AtomicFormula(self.a_sym)
+        atomic_b = AtomicFormula(self.b_sym)
+        atomic_c = AtomicFormula(self.c_sym)
+        tt = LogicalTrue()
+        ff = LogicalFalse()
+
+        star_b = PathExpressionStar(atomic_b)
+        main = PathExpressionAlways(PathExpressionUnion(atomic_a, atomic_b), End())
+        x = self.ldlf_abc.to_nfa(main)
+        nnf_end = PathExpressionAlways(TrueFormula(), ff)
+        nnf_main = PathExpressionAlways(PathExpressionUnion(atomic_a, atomic_b), nnf_end)
+        eventually_star_b_end = PathExpressionEventually(star_b, nnf_end)
+
+        # pprint(x)
+        alphabet = {
+            frozenset(), frozenset([self.a_sym]), frozenset([self.b_sym]), frozenset([self.c_sym]),
+            frozenset([self.a_sym, self.b_sym]), frozenset([self.a_sym, self.c_sym]), frozenset([self.b_sym, self.c_sym]),
+            frozenset([self.a_sym, self.b_sym, self.c_sym])
+        }
+
+        states = {
+            frozenset([nnf_main]),
+            frozenset([ff]),
+            frozenset([nnf_end]),
+            frozenset()
+        }
+
+        initial_states = {
+            frozenset([nnf_main]),
+        }
+        final_states = {
+            frozenset(),
+            frozenset([nnf_main]),
+            frozenset([nnf_end]),
+        }
+
+        delta = {
+            (frozenset(), frozenset(), frozenset()),
+            (frozenset(), frozenset({self.a_sym}), frozenset()),
+            (frozenset(), frozenset({self.b_sym}), frozenset()),
+            (frozenset(), frozenset({self.c_sym}), frozenset()),
+            (frozenset(), frozenset({self.a_sym, self.b_sym}), frozenset()),
+            (frozenset(), frozenset({self.a_sym, self.c_sym}), frozenset()),
+            (frozenset(), frozenset({self.b_sym, self.c_sym}), frozenset()),
+            (frozenset(), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset()),
+
+            (frozenset([nnf_main]), frozenset(),                                     frozenset({})),
+            (frozenset([nnf_main]), frozenset({self.a_sym}),                         frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.b_sym}),                         frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.c_sym}),                         frozenset({})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym}),             frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.c_sym}),             frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.b_sym, self.c_sym}),             frozenset({nnf_end})),
+            (frozenset([nnf_main]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({nnf_end})),
+
+            (frozenset([nnf_end]), frozenset(),                                     frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym}),                         frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.b_sym}),                         frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.c_sym}),                         frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym, self.b_sym}),             frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym, self.c_sym}),             frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.b_sym, self.c_sym}),             frozenset({ff})),
+            (frozenset([nnf_end]), frozenset({self.a_sym, self.b_sym, self.c_sym}), frozenset({ff})),
+
+        }
+
+        self.assertEqual(x["alphabet"], alphabet)
+        self.assertEqual(x["states"], states)
+        self.assertEqual(x["initial_states"], initial_states)
+        self.assertEqual(x["accepting_states"], final_states)
+        self.assertEqual(x["transitions"], delta)
+
+        print_nfa(x, "001002_alphabet_abc_always_union_a_b_end", "./tests/nfa/")
