@@ -33,7 +33,20 @@ History
 
 * Support for LDLf for Empty Traces.
 
-0.2.6 (2018-02-06)
+0.2.6 (2018-03-09)
 ------------------
 
 * Non-deterministic state automata conversion procedure for LDLf_EmptyTraces formulas.
+
+0.2.7 (2018-03-10)
+------------------
+
+* Fix bug in delta function for NFA computation from LDLf_EmptyTraces formulas
+* Fix bug in rewriting automata for PySimpleAutomata package
+
+
+
+
+
+
+fix bug in delta function for NFA computation from LDLf_EmptyTraces formulas
