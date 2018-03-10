@@ -1,0 +1,10 @@
+digraph {
+	fake0 [style=invisible]
+	"{}" [shape=doublecircle]
+	"{(((⊤⊤ | ⊥⊥) | ⊥⊥) | ⊤⊤)}" [root=true shape=doublecircle]
+	fake0 -> "{(((⊤⊤ | ⊥⊥) | ⊥⊥) | ⊤⊤)}" [style=bold]
+	"{}" -> "{}" [label="{a}"]
+	"{(((⊤⊤ | ⊥⊥) | ⊥⊥) | ⊤⊤)}" -> "{}" [label="{a}"]
+	"{(((⊤⊤ | ⊥⊥) | ⊥⊥) | ⊤⊤)}" -> "{}" [label="{}"]
+	"{}" -> "{}" [label="{}"]
+}

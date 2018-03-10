@@ -1,0 +1,13 @@
+digraph {
+	fake [style=invisible]
+	"{'{}'}" [shape=doublecircle]
+	"{'{⊤⊤}'}" [shape=doublecircle]
+	"{'{［a］(⊤⊤)}'}" [root=true shape=doublecircle]
+	fake -> "{'{［a］(⊤⊤)}'}" [style=bold]
+	"{'{}'}" -> "{'{}'}" [label="{a}"]
+	"{'{⊤⊤}'}" -> "{'{}'}" [label="{a}"]
+	"{'{［a］(⊤⊤)}'}" -> "{'{⊤⊤}'}" [label="{a}"]
+	"{'{［a］(⊤⊤)}'}" -> "{'{}'}" [label="{}"]
+	"{'{⊤⊤}'}" -> "{'{}'}" [label="{}"]
+	"{'{}'}" -> "{'{}'}" [label="{}"]
+}

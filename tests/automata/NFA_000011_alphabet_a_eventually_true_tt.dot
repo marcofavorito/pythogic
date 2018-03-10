@@ -1,0 +1,13 @@
+digraph {
+	fake0 [style=invisible]
+	"{⊤⊤}" [shape=doublecircle]
+	"{}" [shape=doublecircle]
+	"{❬⊤❭(⊤⊤)}" [root=true]
+	fake0 -> "{❬⊤❭(⊤⊤)}" [style=bold]
+	"{❬⊤❭(⊤⊤)}" -> "{⊤⊤}" [label="{a}"]
+	"{❬⊤❭(⊤⊤)}" -> "{⊤⊤}" [label="{}"]
+	"{}" -> "{}" [label="{}"]
+	"{}" -> "{}" [label="{a}"]
+	"{⊤⊤}" -> "{}" [label="{}"]
+	"{⊤⊤}" -> "{}" [label="{a}"]
+}
