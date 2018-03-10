@@ -400,8 +400,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000000_alphabet_a_logical_true", "./tests/nfa/")
-        print_dfa(x, "DFA_000000_alphabet_a_logical_true", "./tests/nfa/")
+        print_nfa(x, "000000_alphabet_a_logical_true.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000000_alphabet_a_logical_true.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_logical_false(self):
         """ff"""
@@ -426,8 +426,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000001_alphabet_a_logical_false", "./tests/nfa/")
-        print_dfa(x, "DFA_000001_alphabet_a_logical_false", "./tests/nfa/")
+        print_nfa(x, "000001_alphabet_a_logical_false.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000001_alphabet_a_logical_false.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_tt_and_tt(self):
         """tt AND tt"""
@@ -455,8 +455,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000002_alphabet_a_tt_and_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000002_alphabet_a_tt_and_tt", "./tests/nfa/")
+        print_nfa(x, "000002_alphabet_a_tt_and_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000002_alphabet_a_tt_and_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_tt_and_tt_and_tt_and_tt(self):
@@ -485,8 +485,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000003_alphabet_a_tt_and_tt_and_tt_and_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000003_alphabet_a_tt_and_tt_and_tt_and_tt", "./tests/nfa/")
+        print_nfa(x, "000003_alphabet_a_tt_and_tt_and_tt_and_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000003_alphabet_a_tt_and_tt_and_tt_and_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_tt_and_ff(self):
@@ -514,8 +514,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000004_alphabet_a_tt_and_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000004_alphabet_a_tt_and_ff", "./tests/nfa/")
+        print_nfa(x, "000004_alphabet_a_tt_and_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000004_alphabet_a_tt_and_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_tt_and_tt_and_tt_and_ff(self):
@@ -543,8 +543,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000005_alphabet_a_tt_and_tt_and_tt_and_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000005_alphabet_a_tt_and_tt_and_tt_and_ff", "./tests/nfa/")
+        print_nfa(x, "000005_alphabet_a_tt_and_tt_and_tt_and_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000005_alphabet_a_tt_and_tt_and_tt_and_ff.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_tt_or_ff(self):
         """tt OR ff"""
@@ -573,8 +573,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000006_alphabet_a_tt_and_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000006_alphabet_a_tt_and_ff", "./tests/nfa/")
+        print_nfa(x, "000006_alphabet_a_tt_and_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000006_alphabet_a_tt_and_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_tt_or_ff_or_tt_or_ff(self):
@@ -604,8 +604,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000007_alphabet_a_tt_or_ff_or_tt_or_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000007_alphabet_a_tt_or_ff_or_tt_or_ff", "./tests/nfa/")
+        print_nfa(x, "000007_alphabet_a_tt_or_ff_or_tt_or_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000007_alphabet_a_tt_or_ff_or_tt_or_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_tt_or_ff_and_tt_or_ff(self):
@@ -635,8 +635,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000008_alphabet_a_tt_or_ff_and_tt_or_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000008_alphabet_a_tt_or_ff_and_tt_or_ff", "./tests/nfa/")
+        print_nfa(x, "000008_alphabet_a_tt_or_ff_and_tt_or_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000008_alphabet_a_tt_or_ff_and_tt_or_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_eventually_a_ff(self):
@@ -665,8 +665,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000009_alphabet_a_eventually_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000009_alphabet_a_eventually_a_ff", "./tests/nfa/")
+        print_nfa(x, "000009_alphabet_a_eventually_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000009_alphabet_a_eventually_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_propositional_false(self):
@@ -698,8 +698,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000010_alphabet_a_eventually_false_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000010_alphabet_a_eventually_false_tt", "./tests/nfa/")
+        print_nfa(x, "000010_alphabet_a_eventually_false_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000010_alphabet_a_eventually_false_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_propositional_true(self):
@@ -732,8 +732,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000011_alphabet_a_eventually_true_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000011_alphabet_a_eventually_true_tt", "./tests/nfa/")
+        print_nfa(x, "000011_alphabet_a_eventually_true_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000011_alphabet_a_eventually_true_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_propositional_not_a(self):
@@ -766,8 +766,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000012_alphabet_a_eventually_not_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000012_alphabet_a_eventually_not_a_tt", "./tests/nfa/")
+        print_nfa(x, "000012_alphabet_a_eventually_not_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000012_alphabet_a_eventually_not_a_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_propositional_a(self):
@@ -799,8 +799,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000013_alphabet_a_eventually_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000013_alphabet_a_eventually_a_tt", "./tests/nfa/")
+        print_nfa(x, "000013_alphabet_a_eventually_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000013_alphabet_a_eventually_a_tt.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_propositional_a_equivalence(self):
         """a === <a>tt"""
@@ -842,8 +842,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000014_alphabet_a_eventually_test_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000014_alphabet_a_eventually_test_a_tt", "./tests/nfa/")
+        print_nfa(x, "000014_alphabet_a_eventually_test_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000014_alphabet_a_eventually_test_a_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_eventually_sequence_a_not_a_tt(self):
@@ -877,8 +877,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000015_alphabet_a_eventually_sequence_a_not_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000015_alphabet_a_eventually_sequence_a_not_a_tt", "./tests/nfa/")
+        print_nfa(x, "000015_alphabet_a_eventually_sequence_a_not_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000015_alphabet_a_eventually_sequence_a_not_a_tt.DFA", "./tests/automata/dfa")
 
 
 
@@ -910,8 +910,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000016_alphabet_a_eventually_star_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000016_alphabet_a_eventually_star_a_tt", "./tests/nfa/")
+        print_nfa(x, "000016_alphabet_a_eventually_star_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000016_alphabet_a_eventually_star_a_tt.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_eventually_star_a_ff(self):
         """<a*>ff"""
@@ -940,8 +940,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000017_alphabet_a_eventually_star_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000017_alphabet_a_eventually_star_a_ff", "./tests/nfa/")
+        print_nfa(x, "000017_alphabet_a_eventually_star_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000017_alphabet_a_eventually_star_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_eventually_star_not_a_tt(self):
@@ -972,8 +972,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000018_alphabet_a_eventually_star_not_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000018_alphabet_a_eventually_star_not_a_tt", "./tests/nfa/")
+        print_nfa(x, "000018_alphabet_a_eventually_star_not_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000018_alphabet_a_eventually_star_not_a_tt.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_eventually_star_not_a_ff(self):
         """<a*>ff"""
@@ -1002,8 +1002,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000019_alphabet_a_eventually_star_not_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000019_alphabet_a_eventually_star_not_a_ff", "./tests/nfa/")
+        print_nfa(x, "000019_alphabet_a_eventually_star_not_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000019_alphabet_a_eventually_star_not_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_eventually_star_not_a_a(self):
@@ -1038,8 +1038,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000020_alphabet_a_eventually_star_not_a_a", "./tests/nfa/")
-        print_dfa(x, "DFA_000020_alphabet_a_eventually_star_not_a_a", "./tests/nfa/")
+        print_nfa(x, "000020_alphabet_a_eventually_star_not_a_a.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000020_alphabet_a_eventually_star_not_a_a.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_eventually_star_sequence_not_a_true_a(self):
         """<not-a;T*>ff"""
@@ -1082,8 +1082,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000021_alphabet_a_eventually_star_sequence_not_a_true_a", "./tests/nfa/")
-        print_dfa(x, "DFA_000021_alphabet_a_eventually_star_sequence_not_a_true_a", "./tests/nfa/")
+        print_nfa(x, "000021_alphabet_a_eventually_star_sequence_not_a_true_a.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000021_alphabet_a_eventually_star_sequence_not_a_true_a.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_eventually_star_sequence_not_a_a_a(self):
@@ -1126,8 +1126,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000022_alphabet_a_eventually_star_sequence_not_a_a_a", "./tests/nfa/")
-        print_dfa(x, "DFA_000022_alphabet_a_eventually_star_sequence_not_a_a_a", "./tests/nfa/")
+        print_nfa(x, "000022_alphabet_a_eventually_star_sequence_not_a_a_a.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000022_alphabet_a_eventually_star_sequence_not_a_a_a.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_eventually_star_sequence_a_not_a_a(self):
@@ -1171,8 +1171,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000023_alphabet_a_eventually_star_sequence_not_a_a_a", "./tests/nfa/")
-        print_dfa(x, "DFA_000023_alphabet_a_eventually_star_sequence_not_a_a_a", "./tests/nfa/")
+        print_nfa(x, "000023_alphabet_a_eventually_star_sequence_not_a_a_a.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000023_alphabet_a_eventually_star_sequence_not_a_a_a.DFA", "./tests/automata/dfa")
 
 
 
@@ -1203,8 +1203,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000024_alphabet_always_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000024_alphabet_always_a_ff", "./tests/nfa/")
+        print_nfa(x, "000024_alphabet_always_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000024_alphabet_always_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_propositional_false(self):
@@ -1236,8 +1236,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000025_alphabet_a_always_false_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000025_alphabet_a_always_false_tt", "./tests/nfa/")
+        print_nfa(x, "000025_alphabet_a_always_false_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000025_alphabet_a_always_false_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_propositional_true(self):
@@ -1269,8 +1269,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000026_alphabet_a_always_true_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000026_alphabet_a_always_true_tt", "./tests/nfa/")
+        print_nfa(x, "000026_alphabet_a_always_true_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000026_alphabet_a_always_true_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_propositional_not_a(self):
@@ -1303,8 +1303,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000027_alphabet_a_always_not_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000027_alphabet_a_always_not_a_tt", "./tests/nfa/")
+        print_nfa(x, "000027_alphabet_a_always_not_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000027_alphabet_a_always_not_a_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_a_tt(self):
@@ -1336,8 +1336,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000028_alphabet_a_always_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000028_alphabet_a_always_a_tt", "./tests/nfa/")
+        print_nfa(x, "000028_alphabet_a_always_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000028_alphabet_a_always_a_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_test_a_tt(self):
@@ -1369,8 +1369,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000029_alphabet_a_always_test_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000029_alphabet_a_always_test_a_tt", "./tests/nfa/")
+        print_nfa(x, "000029_alphabet_a_always_test_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000029_alphabet_a_always_test_a_tt.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_test_a_ff(self):
@@ -1402,8 +1402,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000030_alphabet_a_always_test_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000030_alphabet_a_always_test_a_ff", "./tests/nfa/")
+        print_nfa(x, "000030_alphabet_a_always_test_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000030_alphabet_a_always_test_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_sequence_a_not_a_tt(self):
@@ -1439,8 +1439,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000031_alphabet_a_always_sequence_a_not_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000031_alphabet_a_always_sequence_a_not_a_tt", "./tests/nfa/")
+        print_nfa(x, "000031_alphabet_a_always_sequence_a_not_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000031_alphabet_a_always_sequence_a_not_a_tt.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_always_star_a_tt(self):
         a = self.a_sym
@@ -1469,8 +1469,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000032_alphabet_a_always_star_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000032_alphabet_a_always_star_a_tt", "./tests/nfa/")
+        print_nfa(x, "000032_alphabet_a_always_star_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000032_alphabet_a_always_star_a_tt.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_always_star_a_ff(self):
         """[a*]ff"""
@@ -1498,8 +1498,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000033_alphabet_a_always_star_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000033_alphabet_a_always_star_a_ff", "./tests/nfa/")
+        print_nfa(x, "000033_alphabet_a_always_star_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000033_alphabet_a_always_star_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_star_not_a_tt(self):
@@ -1530,8 +1530,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000034_alphabet_a_always_star_not_a_tt", "./tests/nfa/")
-        print_dfa(x, "DFA_000034_alphabet_a_always_star_not_a_tt", "./tests/nfa/")
+        print_nfa(x, "000034_alphabet_a_always_star_not_a_tt.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000034_alphabet_a_always_star_not_a_tt.DFA", "./tests/automata/dfa")
 
     def test_to_nfa_alphabet_a_always_star_not_a_ff(self):
         """<a*>ff"""
@@ -1559,8 +1559,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000035_alphabet_a_always_star_not_a_ff", "./tests/nfa/")
-        print_dfa(x, "DFA_000035_alphabet_a_always_star_not_a_ff", "./tests/nfa/")
+        print_nfa(x, "000035_alphabet_a_always_star_not_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000035_alphabet_a_always_star_not_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_star_not_a_a(self):
@@ -1594,8 +1594,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000036_alphabet_a_always_star_not_a_a", "./tests/nfa/")
-        print_dfa(x, "DFA_000036_alphabet_a_always_star_not_a_a", "./tests/nfa/")
+        print_nfa(x, "000036_alphabet_a_always_star_not_a_a.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000036_alphabet_a_always_star_not_a_a.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_star_not_a_end(self):
@@ -1629,8 +1629,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_000037_alphabet_a_always_star_not_a_end", "./tests/nfa/")
-        print_dfa(x, "DFA_000037_alphabet_a_always_star_not_a_end", "./tests/nfa/")
+        print_nfa(x, "000037_alphabet_a_always_star_not_a_end.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000037_alphabet_a_always_star_not_a_end.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_abc_starred_sequences(self):
@@ -1716,8 +1716,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_001000_alphabet_abc_starred_sequences", "./tests/nfa/")
-        print_dfa(x, "DFA_001000_alphabet_abc_starred_sequences", "./tests/nfa/")
+        print_nfa(x, "001000_alphabet_abc_starred_sequences.NFA", "./tests/automata/nfa")
+        print_dfa(x, "001000_alphabet_abc_starred_sequences.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_abc_eventually_union_a_star_b_end(self):
@@ -1819,8 +1819,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_001001_alphabet_abc_eventually_union_a_star_b_end", "./tests/nfa/")
-        print_dfa(x, "DFA_001001_alphabet_abc_eventually_union_a_star_b_end", "./tests/nfa/")
+        print_nfa(x, "001001_alphabet_abc_eventually_union_a_star_b_end.NFA", "./tests/automata/nfa")
+        print_dfa(x, "001001_alphabet_abc_eventually_union_a_star_b_end.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_abc_always_union_a_b_end(self):
@@ -1896,5 +1896,5 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "NFA_001002_alphabet_abc_always_union_a_b_end", "./tests/nfa/")
-        print_dfa(x, "DFA_001002_alphabet_abc_always_union_a_b_end", "./tests/nfa/")
+        print_nfa(x, "001002_alphabet_abc_always_union_a_b_end.NFA", "./tests/automata/nfa")
+        print_dfa(x, "001002_alphabet_abc_always_union_a_b_end.DFA", "./tests/automata/dfa")
