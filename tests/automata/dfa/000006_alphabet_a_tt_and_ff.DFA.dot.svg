@@ -13,7 +13,7 @@
 <g id="node1" class="node"><title>fake</title>
 </g>
 <!-- {&#39;{(⊤⊤ | ⊥⊥)}&#39;} -->
-<g id="node2" class="node"><title>{&#39;{(⊤⊤ | ⊥⊥)}&#39;}</title>
+<g id="node3" class="node"><title>{&#39;{(⊤⊤ | ⊥⊥)}&#39;}</title>
 <ellipse fill="none" stroke="black" cx="83.293" cy="-204.687" rx="79.0964" ry="79.0964"/>
 <ellipse fill="none" stroke="black" cx="83.293" cy="-204.687" rx="83.0864" ry="83.0864"/>
 <text text-anchor="middle" x="83.293" y="-200.987" font-family="Times,serif" font-size="14.00">{&#39;{(⊤⊤ | ⊥⊥)}&#39;}</text>
@@ -24,13 +24,25 @@
 <polygon fill="black" stroke="black" stroke-width="2" points="86.7931,-298.224 83.293,-288.224 79.7931,-298.224 86.7931,-298.224"/>
 </g>
 <!-- {&#39;{}&#39;} -->
-<g id="node3" class="node"><title>{&#39;{}&#39;}</title>
+<g id="node2" class="node"><title>{&#39;{}&#39;}</title>
 <ellipse fill="none" stroke="black" cx="83.293" cy="-35.1972" rx="31.373" ry="31.373"/>
 <ellipse fill="none" stroke="black" cx="83.293" cy="-35.1972" rx="35.3956" ry="35.3956"/>
 <text text-anchor="middle" x="83.293" y="-31.4972" font-family="Times,serif" font-size="14.00">{&#39;{}&#39;}</text>
 </g>
+<!-- {&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;} -->
+<g id="edge2" class="edge"><title>{&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;}</title>
+<path fill="none" stroke="black" d="M118.084,-40.8099C128.436,-40.6423 136.49,-38.7715 136.49,-35.1972 136.49,-32.9075 133.185,-31.3168 128.087,-30.4252"/>
+<polygon fill="black" stroke="black" points="128.342,-26.9344 118.084,-29.5846 127.756,-33.9098 128.342,-26.9344"/>
+<text text-anchor="middle" x="143.49" y="-31.4972" font-family="Times,serif" font-size="14.00">{}</text>
+</g>
+<!-- {&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;} -->
+<g id="edge3" class="edge"><title>{&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;}</title>
+<path fill="none" stroke="black" d="M116.988,-45.8293C136.41,-47.9991 154.49,-44.455 154.49,-35.1972 154.49,-27.6029 142.324,-23.8535 127.23,-23.949"/>
+<polygon fill="black" stroke="black" points="126.759,-20.4709 116.988,-24.5652 127.18,-27.4583 126.759,-20.4709"/>
+<text text-anchor="middle" x="164.49" y="-31.4972" font-family="Times,serif" font-size="14.00">{a}</text>
+</g>
 <!-- {&#39;{(⊤⊤ | ⊥⊥)}&#39;}&#45;&gt;{&#39;{}&#39;} -->
-<g id="edge3" class="edge"><title>{&#39;{(⊤⊤ | ⊥⊥)}&#39;}&#45;&gt;{&#39;{}&#39;}</title>
+<g id="edge4" class="edge"><title>{&#39;{(⊤⊤ | ⊥⊥)}&#39;}&#45;&gt;{&#39;{}&#39;}</title>
 <path fill="none" stroke="black" d="M62.0334,-123.949C61.0062,-112.024 61.1678,-99.8807 63.293,-88.3945 63.9683,-84.7445 64.8883,-81.0199 65.9648,-77.3245"/>
 <polygon fill="black" stroke="black" points="69.3364,-78.2748 69.1193,-67.6822 62.6834,-76.0983 69.3364,-78.2748"/>
 <text text-anchor="middle" x="73.293" y="-92.1945" font-family="Times,serif" font-size="14.00">{a}</text>
@@ -40,18 +52,6 @@
 <path fill="none" stroke="black" d="M83.293,-120.924C83.293,-107.016 83.293,-93.0721 83.293,-80.6268"/>
 <polygon fill="black" stroke="black" points="86.7931,-80.5588 83.293,-70.5588 79.7931,-80.5589 86.7931,-80.5588"/>
 <text text-anchor="middle" x="90.293" y="-92.1945" font-family="Times,serif" font-size="14.00">{}</text>
-</g>
-<!-- {&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;} -->
-<g id="edge2" class="edge"><title>{&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;}</title>
-<path fill="none" stroke="black" d="M118.084,-40.8099C128.436,-40.6423 136.49,-38.7715 136.49,-35.1972 136.49,-32.9075 133.185,-31.3168 128.087,-30.4252"/>
-<polygon fill="black" stroke="black" points="128.342,-26.9344 118.084,-29.5846 127.756,-33.9098 128.342,-26.9344"/>
-<text text-anchor="middle" x="146.49" y="-31.4972" font-family="Times,serif" font-size="14.00">{a}</text>
-</g>
-<!-- {&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;} -->
-<g id="edge4" class="edge"><title>{&#39;{}&#39;}&#45;&gt;{&#39;{}&#39;}</title>
-<path fill="none" stroke="black" d="M116.882,-45.7441C137.168,-48.0879 156.49,-44.5722 156.49,-35.1972 156.49,-27.4336 143.239,-23.6882 127.164,-23.9611"/>
-<polygon fill="black" stroke="black" points="126.626,-20.4892 116.882,-24.6504 127.094,-27.4736 126.626,-20.4892"/>
-<text text-anchor="middle" x="163.49" y="-31.4972" font-family="Times,serif" font-size="14.00">{}</text>
 </g>
 </g>
 </svg>

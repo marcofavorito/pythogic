@@ -13,7 +13,7 @@
 <g id="node1" class="node"><title>fake0</title>
 </g>
 <!-- {❬a❭(⊥⊥)} -->
-<g id="node3" class="node"><title>{❬a❭(⊥⊥)}</title>
+<g id="node4" class="node"><title>{❬a❭(⊥⊥)}</title>
 <ellipse fill="none" stroke="black" cx="51.9954" cy="-105" rx="51.9908" ry="18"/>
 <text text-anchor="middle" x="51.9954" y="-101.3" font-family="Times,serif" font-size="14.00">{❬a❭(⊥⊥)}</text>
 </g>
@@ -27,14 +27,8 @@
 <ellipse fill="none" stroke="black" cx="51.9954" cy="-18" rx="37.0935" ry="18"/>
 <text text-anchor="middle" x="51.9954" y="-14.3" font-family="Times,serif" font-size="14.00">{⊥⊥}</text>
 </g>
-<!-- {❬a❭(⊥⊥)}&#45;&gt;{⊥⊥} -->
-<g id="edge2" class="edge"><title>{❬a❭(⊥⊥)}&#45;&gt;{⊥⊥}</title>
-<path fill="none" stroke="black" d="M51.9954,-86.799C51.9954,-75.1626 51.9954,-59.5479 51.9954,-46.2368"/>
-<polygon fill="black" stroke="black" points="55.4955,-46.1754 51.9954,-36.1754 48.4955,-46.1755 55.4955,-46.1754"/>
-<text text-anchor="middle" x="61.9954" y="-57.8" font-family="Times,serif" font-size="14.00">{a}</text>
-</g>
 <!-- {} -->
-<g id="node4" class="node"><title>{}</title>
+<g id="node3" class="node"><title>{}</title>
 <ellipse fill="none" stroke="black" cx="123.995" cy="-183.498" rx="19.4968" ry="19.4968"/>
 <ellipse fill="none" stroke="black" cx="123.995" cy="-183.498" rx="23.4965" ry="23.4965"/>
 <text text-anchor="middle" x="123.995" y="-179.798" font-family="Times,serif" font-size="14.00">{}</text>
@@ -50,6 +44,12 @@
 <path fill="none" stroke="black" d="M146.728,-189.899C165.576,-192.546 185.494,-190.412 185.494,-183.498 185.494,-177.827 172.091,-175.372 156.87,-176.134"/>
 <polygon fill="black" stroke="black" points="156.352,-172.667 146.728,-177.097 157.014,-179.636 156.352,-172.667"/>
 <text text-anchor="middle" x="192.494" y="-179.798" font-family="Times,serif" font-size="14.00">{}</text>
+</g>
+<!-- {❬a❭(⊥⊥)}&#45;&gt;{⊥⊥} -->
+<g id="edge2" class="edge"><title>{❬a❭(⊥⊥)}&#45;&gt;{⊥⊥}</title>
+<path fill="none" stroke="black" d="M51.9954,-86.799C51.9954,-75.1626 51.9954,-59.5479 51.9954,-46.2368"/>
+<polygon fill="black" stroke="black" points="55.4955,-46.1754 51.9954,-36.1754 48.4955,-46.1755 55.4955,-46.1754"/>
+<text text-anchor="middle" x="61.9954" y="-57.8" font-family="Times,serif" font-size="14.00">{a}</text>
 </g>
 </g>
 </svg>

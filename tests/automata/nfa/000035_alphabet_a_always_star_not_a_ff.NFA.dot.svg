@@ -13,7 +13,7 @@
 <g id="node1" class="node"><title>fake0</title>
 </g>
 <!-- {［(~(a)) *］(⊥⊥)} -->
-<g id="node2" class="node"><title>{［(~(a)) *］(⊥⊥)}</title>
+<g id="node3" class="node"><title>{［(~(a)) *］(⊥⊥)}</title>
 <ellipse fill="none" stroke="black" cx="87.7422" cy="-18" rx="87.9851" ry="18"/>
 <text text-anchor="middle" x="87.7422" y="-14.3" font-family="Times,serif" font-size="14.00">{［(~(a)) *］(⊥⊥)}</text>
 </g>
@@ -23,7 +23,7 @@
 <polygon fill="black" stroke="black" stroke-width="2" points="91.2423,-46.0264 87.7422,-36.0264 84.2423,-46.0265 91.2423,-46.0264"/>
 </g>
 <!-- {} -->
-<g id="node3" class="node"><title>{}</title>
+<g id="node2" class="node"><title>{}</title>
 <ellipse fill="none" stroke="black" cx="159.742" cy="-96.4983" rx="19.4968" ry="19.4968"/>
 <ellipse fill="none" stroke="black" cx="159.742" cy="-96.4983" rx="23.4965" ry="23.4965"/>
 <text text-anchor="middle" x="159.742" y="-92.7983" font-family="Times,serif" font-size="14.00">{}</text>

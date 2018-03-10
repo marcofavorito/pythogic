@@ -22,35 +22,11 @@
 <path fill="none" stroke="black" stroke-width="2" d="M51.9954,-303.903C51.9954,-295.879 51.9954,-286.137 51.9954,-277.159"/>
 <polygon fill="black" stroke="black" stroke-width="2" points="55.4955,-277.119 51.9954,-267.119 48.4955,-277.119 55.4955,-277.119"/>
 </g>
-<!-- {⊤⊤} -->
-<g id="node2" class="node"><title>{⊤⊤}</title>
-<ellipse fill="none" stroke="black" cx="51.9954" cy="-139.043" rx="37.0889" ry="37.0889"/>
-<ellipse fill="none" stroke="black" cx="51.9954" cy="-139.043" rx="41.0935" ry="41.0935"/>
-<text text-anchor="middle" x="51.9954" y="-135.343" font-family="Times,serif" font-size="14.00">{⊤⊤}</text>
-</g>
 <!-- {} -->
-<g id="node4" class="node"><title>{}</title>
+<g id="node2" class="node"><title>{}</title>
 <ellipse fill="none" stroke="black" cx="51.9954" cy="-23.4983" rx="19.4968" ry="19.4968"/>
 <ellipse fill="none" stroke="black" cx="51.9954" cy="-23.4983" rx="23.4965" ry="23.4965"/>
 <text text-anchor="middle" x="51.9954" y="-19.7983" font-family="Times,serif" font-size="14.00">{}</text>
-</g>
-<!-- {⊤⊤}&#45;&gt;{} -->
-<g id="edge2" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
-<path fill="none" stroke="black" d="M34.729,-101.769C31.1356,-90.0781 29.1854,-77.0324 31.9954,-64.9965 32.9119,-61.071 34.2667,-57.089 35.847,-53.2316"/>
-<polygon fill="black" stroke="black" points="39.0945,-54.5476 40.118,-44.0023 32.7418,-51.6077 39.0945,-54.5476"/>
-<text text-anchor="middle" x="41.9954" y="-68.7965" font-family="Times,serif" font-size="14.00">{a}</text>
-</g>
-<!-- {⊤⊤}&#45;&gt;{} -->
-<g id="edge6" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
-<path fill="none" stroke="black" d="M51.9954,-97.6918C51.9954,-84.4454 51.9954,-69.8939 51.9954,-57.2791"/>
-<polygon fill="black" stroke="black" points="55.4955,-57.2092 51.9954,-47.2093 48.4955,-57.2093 55.4955,-57.2092"/>
-<text text-anchor="middle" x="58.9954" y="-68.7965" font-family="Times,serif" font-size="14.00">{}</text>
-</g>
-<!-- {❬a❭(⊤⊤)}&#45;&gt;{⊤⊤} -->
-<g id="edge4" class="edge"><title>{❬a❭(⊤⊤)}&#45;&gt;{⊤⊤}</title>
-<path fill="none" stroke="black" d="M51.9954,-230.73C51.9954,-219.786 51.9954,-205.04 51.9954,-190.623"/>
-<polygon fill="black" stroke="black" points="55.4955,-190.242 51.9954,-180.242 48.4955,-190.242 55.4955,-190.242"/>
-<text text-anchor="middle" x="61.9954" y="-201.89" font-family="Times,serif" font-size="14.00">{a}</text>
 </g>
 <!-- {}&#45;&gt;{} -->
 <g id="edge3" class="edge"><title>{}&#45;&gt;{}</title>
@@ -63,6 +39,30 @@
 <path fill="none" stroke="black" d="M74.4082,-31.125C93.3501,-34.3843 113.494,-31.842 113.494,-23.4983 113.494,-16.6538 99.9388,-13.7132 84.6116,-14.6766"/>
 <polygon fill="black" stroke="black" points="83.9331,-11.232 74.4082,-15.8716 84.7475,-18.1845 83.9331,-11.232"/>
 <text text-anchor="middle" x="120.494" y="-19.7983" font-family="Times,serif" font-size="14.00">{}</text>
+</g>
+<!-- {⊤⊤} -->
+<g id="node4" class="node"><title>{⊤⊤}</title>
+<ellipse fill="none" stroke="black" cx="51.9954" cy="-139.043" rx="37.0889" ry="37.0889"/>
+<ellipse fill="none" stroke="black" cx="51.9954" cy="-139.043" rx="41.0935" ry="41.0935"/>
+<text text-anchor="middle" x="51.9954" y="-135.343" font-family="Times,serif" font-size="14.00">{⊤⊤}</text>
+</g>
+<!-- {❬a❭(⊤⊤)}&#45;&gt;{⊤⊤} -->
+<g id="edge4" class="edge"><title>{❬a❭(⊤⊤)}&#45;&gt;{⊤⊤}</title>
+<path fill="none" stroke="black" d="M51.9954,-230.73C51.9954,-219.786 51.9954,-205.04 51.9954,-190.623"/>
+<polygon fill="black" stroke="black" points="55.4955,-190.242 51.9954,-180.242 48.4955,-190.242 55.4955,-190.242"/>
+<text text-anchor="middle" x="61.9954" y="-201.89" font-family="Times,serif" font-size="14.00">{a}</text>
+</g>
+<!-- {⊤⊤}&#45;&gt;{} -->
+<g id="edge2" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
+<path fill="none" stroke="black" d="M34.729,-101.769C31.1356,-90.0781 29.1854,-77.0324 31.9954,-64.9965 32.9119,-61.071 34.2667,-57.089 35.847,-53.2316"/>
+<polygon fill="black" stroke="black" points="39.0945,-54.5476 40.118,-44.0023 32.7418,-51.6077 39.0945,-54.5476"/>
+<text text-anchor="middle" x="41.9954" y="-68.7965" font-family="Times,serif" font-size="14.00">{a}</text>
+</g>
+<!-- {⊤⊤}&#45;&gt;{} -->
+<g id="edge6" class="edge"><title>{⊤⊤}&#45;&gt;{}</title>
+<path fill="none" stroke="black" d="M51.9954,-97.6918C51.9954,-84.4454 51.9954,-69.8939 51.9954,-57.2791"/>
+<polygon fill="black" stroke="black" points="55.4955,-57.2092 51.9954,-47.2093 48.4955,-57.2093 55.4955,-57.2092"/>
+<text text-anchor="middle" x="58.9954" y="-68.7965" font-family="Times,serif" font-size="14.00">{}</text>
 </g>
 </g>
 </svg>

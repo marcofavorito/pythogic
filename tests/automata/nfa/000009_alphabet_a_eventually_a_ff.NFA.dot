@@ -1,8 +1,8 @@
 digraph {
 	fake0 [style=invisible]
 	"{⊥⊥}"
-	"{❬a❭(⊥⊥)}" [root=true]
 	"{}" [shape=doublecircle]
+	"{❬a❭(⊥⊥)}" [root=true]
 	fake0 -> "{❬a❭(⊥⊥)}" [style=bold]
 	"{❬a❭(⊥⊥)}" -> "{⊥⊥}" [label="{a}"]
 	"{}" -> "{}" [label="{a}"]

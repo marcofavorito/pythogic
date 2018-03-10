@@ -1203,8 +1203,8 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "000024_alphabet_always_a_ff.NFA", "./tests/automata/nfa")
-        print_dfa(x, "000024_alphabet_always_a_ff.DFA", "./tests/automata/dfa")
+        print_nfa(x, "000024_alphabet_a_always_a_ff.NFA", "./tests/automata/nfa")
+        print_dfa(x, "000024_alphabet_a_always_a_ff.DFA", "./tests/automata/dfa")
 
 
     def test_to_nfa_alphabet_a_always_propositional_false(self):

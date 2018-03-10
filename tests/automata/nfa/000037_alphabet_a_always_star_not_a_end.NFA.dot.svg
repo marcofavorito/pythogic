@@ -13,7 +13,7 @@
 <g id="node1" class="node"><title>fake0</title>
 </g>
 <!-- {［(~(a)) *］(［⊤］(⊥⊥))} -->
-<g id="node2" class="node"><title>{［(~(a)) *］(［⊤］(⊥⊥))}</title>
+<g id="node5" class="node"><title>{［(~(a)) *］(［⊤］(⊥⊥))}</title>
 <ellipse fill="none" stroke="black" cx="135.047" cy="-211.239" rx="120.471" ry="120.471"/>
 <ellipse fill="none" stroke="black" cx="135.047" cy="-211.239" rx="124.479" ry="124.479"/>
 <text text-anchor="middle" x="135.047" y="-207.539" font-family="Times,serif" font-size="14.00">{［(~(a)) *］(［⊤］(⊥⊥))}</text>
@@ -24,26 +24,14 @@
 <polygon fill="black" stroke="black" stroke-width="2" points="138.547,-345.609 135.047,-335.609 131.547,-345.609 138.547,-345.609"/>
 </g>
 <!-- {⊥⊥} -->
-<g id="node3" class="node"><title>{⊥⊥}</title>
+<g id="node2" class="node"><title>{⊥⊥}</title>
 <ellipse fill="none" stroke="black" cx="37.0467" cy="-18" rx="37.0935" ry="18"/>
 <text text-anchor="middle" x="37.0467" y="-14.3" font-family="Times,serif" font-size="14.00">{⊥⊥}</text>
 </g>
-<!-- {［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{⊥⊥} -->
-<g id="edge2" class="edge"><title>{［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{⊥⊥}</title>
-<path fill="none" stroke="black" d="M78.7496,-100.38C68.0419,-79.4847 57.8097,-59.5174 50.1605,-44.5906"/>
-<polygon fill="black" stroke="black" points="53.2033,-42.8536 45.5278,-35.5503 46.9736,-46.046 53.2033,-42.8536"/>
-<text text-anchor="middle" x="71.0467" y="-57.8" font-family="Times,serif" font-size="14.00">{a}</text>
-</g>
-<!-- {⊥⊥, ［(~(a)) *］(［⊤］(⊥⊥))} -->
-<g id="node5" class="node"><title>{⊥⊥, ［(~(a)) *］(［⊤］(⊥⊥))}</title>
+<!-- {［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥} -->
+<g id="node3" class="node"><title>{［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥}</title>
 <ellipse fill="none" stroke="black" cx="234.047" cy="-18" rx="142.175" ry="18"/>
-<text text-anchor="middle" x="234.047" y="-14.3" font-family="Times,serif" font-size="14.00">{⊥⊥, ［(~(a)) *］(［⊤］(⊥⊥))}</text>
-</g>
-<!-- {［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{⊥⊥, ［(~(a)) *］(［⊤］(⊥⊥))} -->
-<g id="edge5" class="edge"><title>{［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{⊥⊥, ［(~(a)) *］(［⊤］(⊥⊥))}</title>
-<path fill="none" stroke="black" d="M191.775,-100.657C202.478,-79.9825 212.72,-60.1976 220.441,-45.2817"/>
-<polygon fill="black" stroke="black" points="223.642,-46.7123 225.131,-36.2226 217.425,-43.4942 223.642,-46.7123"/>
-<text text-anchor="middle" x="222.047" y="-57.8" font-family="Times,serif" font-size="14.00">{}</text>
+<text text-anchor="middle" x="234.047" y="-14.3" font-family="Times,serif" font-size="14.00">{［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥}</text>
 </g>
 <!-- {} -->
 <g id="node4" class="node"><title>{}</title>
@@ -62,6 +50,18 @@
 <path fill="none" stroke="black" d="M229.779,-402.378C248.627,-405.025 268.545,-402.891 268.545,-395.977 268.545,-390.305 255.142,-387.85 239.921,-388.612"/>
 <polygon fill="black" stroke="black" points="239.403,-385.146 229.779,-389.576 240.065,-392.114 239.403,-385.146"/>
 <text text-anchor="middle" x="275.545" y="-392.277" font-family="Times,serif" font-size="14.00">{}</text>
+</g>
+<!-- {［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{⊥⊥} -->
+<g id="edge5" class="edge"><title>{［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{⊥⊥}</title>
+<path fill="none" stroke="black" d="M78.7496,-100.38C68.0419,-79.4847 57.8097,-59.5174 50.1605,-44.5906"/>
+<polygon fill="black" stroke="black" points="53.2033,-42.8536 45.5278,-35.5503 46.9736,-46.046 53.2033,-42.8536"/>
+<text text-anchor="middle" x="71.0467" y="-57.8" font-family="Times,serif" font-size="14.00">{a}</text>
+</g>
+<!-- {［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥} -->
+<g id="edge2" class="edge"><title>{［(~(a)) *］(［⊤］(⊥⊥))}&#45;&gt;{［(~(a)) *］(［⊤］(⊥⊥)), ⊥⊥}</title>
+<path fill="none" stroke="black" d="M191.775,-100.657C202.478,-79.9825 212.72,-60.1976 220.441,-45.2817"/>
+<polygon fill="black" stroke="black" points="223.642,-46.7123 225.131,-36.2226 217.425,-43.4942 223.642,-46.7123"/>
+<text text-anchor="middle" x="222.047" y="-57.8" font-family="Times,serif" font-size="14.00">{}</text>
 </g>
 </g>
 </svg>

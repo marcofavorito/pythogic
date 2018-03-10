@@ -3,8 +3,8 @@ digraph {
 	"{'{}'}" [shape=doublecircle]
 	"{'{❬(a) *❭(⊤⊤)}'}" [root=true shape=doublecircle]
 	fake -> "{'{❬(a) *❭(⊤⊤)}'}" [style=bold]
-	"{'{}'}" -> "{'{}'}" [label="{a}"]
 	"{'{❬(a) *❭(⊤⊤)}'}" -> "{'{}'}" [label="{a}"]
 	"{'{}'}" -> "{'{}'}" [label="{}"]
 	"{'{❬(a) *❭(⊤⊤)}'}" -> "{'{}'}" [label="{}"]
+	"{'{}'}" -> "{'{}'}" [label="{a}"]
 }

@@ -13,7 +13,7 @@
 <g id="node1" class="node"><title>fake0</title>
 </g>
 <!-- {(⊤⊤ &amp; ⊥⊥)} -->
-<g id="node2" class="node"><title>{(⊤⊤ &amp; ⊥⊥)}</title>
+<g id="node3" class="node"><title>{(⊤⊤ &amp; ⊥⊥)}</title>
 <ellipse fill="none" stroke="black" cx="73.4435" cy="-18" rx="73.387" ry="18"/>
 <text text-anchor="middle" x="73.4435" y="-14.3" font-family="Times,serif" font-size="14.00">{(⊤⊤ &amp; ⊥⊥)}</text>
 </g>
@@ -23,7 +23,7 @@
 <polygon fill="black" stroke="black" stroke-width="2" points="76.9436,-46.0264 73.4435,-36.0264 69.9436,-46.0265 76.9436,-46.0264"/>
 </g>
 <!-- {} -->
-<g id="node3" class="node"><title>{}</title>
+<g id="node2" class="node"><title>{}</title>
 <ellipse fill="none" stroke="black" cx="145.443" cy="-96.4983" rx="19.4968" ry="19.4968"/>
 <ellipse fill="none" stroke="black" cx="145.443" cy="-96.4983" rx="23.4965" ry="23.4965"/>
 <text text-anchor="middle" x="145.443" y="-92.7983" font-family="Times,serif" font-size="14.00">{}</text>

@@ -1,7 +1,7 @@
 digraph {
 	fake0 [style=invisible]
-	"{(((⊤⊤ & ⊥⊥) & ⊤⊤) & ⊤⊤)}" [root=true]
 	"{}" [shape=doublecircle]
+	"{(((⊤⊤ & ⊥⊥) & ⊤⊤) & ⊤⊤)}" [root=true]
 	fake0 -> "{(((⊤⊤ & ⊥⊥) & ⊤⊤) & ⊤⊤)}" [style=bold]
 	"{}" -> "{}" [label="{a}"]
 	"{}" -> "{}" [label="{}"]
