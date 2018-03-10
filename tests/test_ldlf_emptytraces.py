@@ -383,8 +383,6 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         # pprint(x)
         alphabet = {frozenset(), frozenset({a})}
 
-        # (frozenset([TrueFormula()]),  frozenset(),                frozenset([LogicalTrue()])),
-        # (frozenset([TrueFormula()]),  frozenset({a}),             frozenset([LogicalTrue()])),
         delta = {
             (frozenset(),       frozenset(),    frozenset()),
             (frozenset([tt]),   frozenset(),    frozenset()),  # frozenset([TrueFormula()])),

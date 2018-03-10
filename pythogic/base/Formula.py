@@ -295,7 +295,7 @@ class PathExpressionFormula(Operator):
 class PathExpressionUnion(PathExpression):
     operator_symbol = Symbols.PATH_UNION.value
 
-    def __init__(self, p1: PathExpression, p2: PathExpression):
+    def __init__(self, p1: Formula, p2: Formula):
         self.p1 = p1
         self.p2 = p2
 

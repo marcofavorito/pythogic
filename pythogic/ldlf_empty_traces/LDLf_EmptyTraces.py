@@ -239,7 +239,7 @@ class LDLf_EmptyTraces(FormalSystem):
         elif isinstance(path, Formula):
             pl = PL(self.alphabet)
             if pl.is_formula(path):
-                return path
+                return pl.to_nnf(path)
             else:
                 raise ValueError
         else:
