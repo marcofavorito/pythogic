@@ -349,7 +349,7 @@ class LDLf_EmptyTraces(FormalSystem):
             elif isinstance(f.p, PathExpressionTest):
                 return And(self.delta(f.p.f, action, epsilon), self.delta(f.f, action, epsilon))
             elif isinstance(f.p, PathExpressionUnion):
-                return And(self.delta(PathExpressionEventually(f.p.p1, f.f), action, epsilon),
+                return Or(self.delta(PathExpressionEventually(f.p.p1, f.f), action, epsilon),
                        self.delta(PathExpressionEventually(f.p.p2, f.f), action, epsilon))
             elif isinstance(f.p, PathExpressionSequence):
                 e2 = PathExpressionEventually(f.p.p2, f.f)
