@@ -43,10 +43,3 @@ History
 
 * Fix bug in delta function for NFA computation from LDLf_EmptyTraces formulas
 * Fix bug in rewriting automata for PySimpleAutomata package
-
-
-
-
-
-
-fix bug in delta function for NFA computation from LDLf_EmptyTraces formulas
