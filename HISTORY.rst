@@ -48,3 +48,8 @@ History
 ------------------
 
 * Implemented DFA conversion for NFAs from LDLf_EmptyTraces formulas
+
+0.2.9 (2018-03-16)
+------------------
+
+* Migrating from PySimpleAutomata to `Pythomata <https://github.com/MarcoFavorito/pythomata>`_

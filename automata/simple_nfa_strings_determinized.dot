@@ -1,0 +1,20 @@
+digraph {
+	fake [style=invisible]
+	"{'s2', 's1'}" [shape=doublecircle]
+	"{}"
+	"{'s2'}" [shape=doublecircle]
+	"{'s1'}" [root=true]
+	fake -> "{'s1'}" [style=bold]
+	"{'s2'}" -> "{'s1'}" [label=a]
+	"{'s2'}" -> "{'s2', 's1'}" [label=c]
+	"{'s2'}" -> "{'s2'}" [label=b]
+	"{'s2', 's1'}" -> "{'s1'}" [label=a]
+	"{'s2', 's1'}" -> "{'s2', 's1'}" [label=c]
+	"{'s2', 's1'}" -> "{'s2'}" [label=b]
+	"{}" -> "{}" [label=a]
+	"{}" -> "{}" [label=c]
+	"{}" -> "{}" [label=b]
+	"{'s1'}" -> "{'s1'}" [label=a]
+	"{'s1'}" -> "{'s2', 's1'}" [label=c]
+	"{'s1'}" -> "{'s2'}" [label=b]
+}

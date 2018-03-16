@@ -5,17 +5,40 @@ from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
 from pythogic.base.Symbol import DUMMY_SYMBOL, Symbol
 from pythogic.base.utils import powerset
+from pythogic.pl import PLutils
 from pythogic.pl.semantics.PLInterpretation import PLInterpretation
 from pythogic.base.Formula import AtomicFormula, TrueFormula, FalseFormula, Formula, Not, Or, And, Implies, \
     DUMMY_ATOMIC, Equivalence
 
 
+class PropositionalFormula(Formula):
+    def __init__(self, f:Formula):
+        self.f = f
+
+    def _members(self):
+        return self.f._members()
+
+    def __str__(self):
+        return self.f.__str__()
+
 class PL(FormalSystem):
     def __init__(self, alphabet: Alphabet):
         super().__init__(alphabet)
 
-    allowed_formulas = {AtomicFormula, Not, And, TrueFormula, FalseFormula}
-    derived_formulas = {Or, Implies, Equivalence}
+    allowed_formulas = {AtomicFormula, Not, And}
+    derived_formulas = {
+        Or:           PLutils._or_to_and,
+        Implies:      PLutils._implies_to_or,
+        Equivalence:  PLutils._equivalence_to_equivalent_formula,
+        TrueFormula:  PLutils._trueFormula_to_equivalent_formula,
+        FalseFormula: PLutils._falseFormula_to_equivalent_formula
+    }
+
+    def getPropositionalFormula(self, f:Formula):
+        if self.is_formula(f):
+            return PropositionalFormula(f)
+        else:
+            raise ValueError
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""
@@ -32,7 +55,7 @@ class PL(FormalSystem):
             return False
 
     def _truth(self, formula: Formula, interpretation: PLInterpretation):
-        assert self._is_formula(formula)
+
         truth = self.truth
         if isinstance(formula, AtomicFormula):
             try:
@@ -50,19 +73,11 @@ class PL(FormalSystem):
         else:
             raise ValueError("Formula not recognized")
 
-    def to_equivalent_formula(self, derived_formula:Formula):
-        if isinstance(derived_formula, Or):
-            return Not(And(Not(derived_formula.f1), Not(derived_formula.f2)))
-        elif isinstance(derived_formula, Implies):
-            return Not(And(derived_formula.f1, Not(derived_formula.f2)))
-        elif isinstance(derived_formula, Equivalence):
-            positive_equivalence = And(derived_formula.f1, derived_formula.f2)
-            negative_equivalence = And(Not(derived_formula.f1), Not(derived_formula.f2))
-            return Not(And(Not(positive_equivalence), Not(negative_equivalence)))
-        elif derived_formula in PL.allowed_formulas:
-            return derived_formula
+    def expand_formula(self, f: Formula):
+        if isinstance(f, TrueFormula) or isinstance(f, FalseFormula):
+            return f
         else:
-            raise ValueError("Derived formula not recognized")
+            return super().expand_formula(f)
 
     def _expand_formula(self, f:Formula):
         if isinstance(f, AtomicFormula):
@@ -71,12 +86,6 @@ class PL(FormalSystem):
             return And(self.expand_formula(f.f1), self.expand_formula(f.f2))
         elif isinstance(f, Not):
             return Not(self.expand_formula(f.f))
-        elif type(f) in self.derived_formulas:
-            return self.expand_formula(self.to_equivalent_formula(f))
-        elif isinstance(f, FalseFormula):
-            return FalseFormula()
-        elif isinstance(f, TrueFormula):
-            return TrueFormula()
         else:
             raise ValueError("Formula to expand not recognized")
 
@@ -89,21 +98,27 @@ class PL(FormalSystem):
 
 
     def to_nnf(self, f:Formula):
-        assert self.is_formula(f)
-        formula = self.expand_formula(f)
-        # formula = f
+        # assert self.is_formula(f)
+        # formula = self.expand_formula(f)
+        formula = f
         if isinstance(formula, AtomicFormula) or isinstance(formula, TrueFormula) or isinstance(formula, FalseFormula):
             return formula
-        elif isinstance(formula, And):
-            return And(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
+        elif isinstance(formula, And) or isinstance(formula, Or):
+            return type(formula)(self.to_nnf(formula.f1), self.to_nnf(formula.f2))
+        elif type(formula) in self.derived_formulas:
+            return self.to_nnf(self.derived_formulas[type(formula)](formula))
         elif isinstance(formula, Not):
             subformula = formula.f
             if isinstance(subformula, Not):
                 return self.to_nnf(subformula.f)
             elif isinstance(subformula, And):
                 return Or(self.to_nnf(Not(subformula.f1)), self.to_nnf((Not(subformula.f2))))
-            elif isinstance(subformula, AtomicFormula):
+            elif isinstance(subformula, Or):
+                return And(self.to_nnf(Not(subformula.f1)), self.to_nnf((Not(subformula.f2))))
+            elif isinstance(subformula, AtomicFormula) or isinstance(formula, TrueFormula) or isinstance(formula, FalseFormula):
                 return formula
+            elif type(subformula) in self.derived_formulas:
+                return self.to_nnf(Not(self.derived_formulas[type(subformula)](subformula)))
             else:
                 raise ValueError
         else:
@@ -111,7 +126,7 @@ class PL(FormalSystem):
 
     @staticmethod
     def find_atomics(formula:Formula)-> Set[AtomicFormula]:
-        pl = PL(Alphabet(set()))
+        """Finds all the atomic formulas"""
         f = formula
         res = set()
         if isinstance(f, TrueFormula) or isinstance(f, FalseFormula):
@@ -120,27 +135,41 @@ class PL(FormalSystem):
             res.add(f)
         elif isinstance(f, Not):
             res = res.union(PL.find_atomics(f.f))
-        elif isinstance(f, And) or isinstance(f, Or):
+        elif isinstance(f, And):
             res = res.union(PL.find_atomics(f.f1)).union(PL.find_atomics(f.f2))
+        elif type(f) in PL.derived_formulas:
+            res = res.union(PL.find_atomics(PL.derived_formulas[type(f)](f)))
         else:
-            res.add(f)
+            res.add(formula)
         return res
 
 
-    def minimal_models(self, f:Formula)-> Set[PLInterpretation]:
-        """Find models of min size (i.e. the less number of proposition to True).
-        Very trivial (and inefficient) algorithm: BRUTE FORCE on sorted-by-size interpretations
+    def models(self, f:Formula)-> Set[PLInterpretation]:
+        """Find all the models of a given formula.
+        Very trivial (and inefficient) algorithm: BRUTE FORCE on all the possible interpretations.
         """
         all_possible_interpretations = sorted(powerset(self.alphabet.symbols), key=len)
-        size2models = {}
+        models = set()
         for i in all_possible_interpretations:
             # compute current Interpretation, considering False
             # all propositional symbols not present in current interpretation
             current_interpretation = PLInterpretation(self.alphabet, {s: s in i for s in self.alphabet.symbols})
             if self.truth(f, current_interpretation):
-                if not len(i) in size2models:
-                    size2models[len(i)] = set()
-                size2models[len(i)].add(current_interpretation)
+                models.add(current_interpretation)
+
+        return models
+
+
+    def minimal_models(self, f:Formula)-> Set[PLInterpretation]:
+        """Find models of min size (i.e. the less number of proposition to True)."""
+        models = self.models(f)
+        size2models = {}
+
+        for m in models:
+            size = len([_ for _ in m.symbol2truth if m.symbol2truth[_]])
+            if size not in size2models:
+                size2models[size] = set()
+            size2models[size].add(m)
 
         if not size2models:
             return set()

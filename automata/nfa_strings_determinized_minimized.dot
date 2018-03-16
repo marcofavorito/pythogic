@@ -1,0 +1,13 @@
+digraph {
+	fake [style=invisible]
+	0 [shape=doublecircle]
+	9 [root=true]
+	5
+	7 [shape=doublecircle]
+	fake -> 9 [style=bold]
+	0 -> 5 [label=b]
+	9 -> 5 [label=c]
+	9 -> 7 [label=b]
+	5 -> 0 [label=b]
+	7 -> 7 [label=b]
+}

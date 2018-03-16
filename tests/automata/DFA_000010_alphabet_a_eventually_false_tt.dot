@@ -1,5 +1,0 @@
-digraph {
-	fake [style=invisible]
-	"{'{❬⊥❭(⊤⊤)}'}" [root=true]
-	fake -> "{'{❬⊥❭(⊤⊤)}'}" [style=bold]
-}
