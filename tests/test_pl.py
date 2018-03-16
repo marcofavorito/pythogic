@@ -50,13 +50,13 @@ class TestPL(unittest.TestCase):
 
         self.assertFalse(self.PL.truth(self.not_a, self.I))
         self.assertFalse(self.PL.truth(self.not_a_and_b, self.I))
-        self.assertTrue(self. PL.truth (self.not_a_or_c, self.I))
+        self.assertTrue(self. PL.truth(self.not_a_or_c, self.I))
 
-        self.assertTrue(self. PL.truth (self.true, self.I))
+        self.assertTrue(self. PL.truth(self.true, self.I))
         self.assertFalse(self.PL.truth(self.false, self.I))
 
 
-class TestPLIsFormula(unittest.TestCase):
+class TestPLIsFormula(TestPL):
 
     def test_is_formula_atomic(self):
         a_sym = Symbol("a")
@@ -107,7 +107,8 @@ class TestPLExpandFormula(unittest.TestCase):
         self.assertEqual(pl.expand_formula(TrueFormula()), T)
         self.assertEqual(pl.expand_formula(FalseFormula()), F)
         self.assertEqual(pl.expand_formula(Or(a, b)), Not(And(Not(a), Not(b))))
-        self.assertEqual(pl.expand_formula(Implies(a, b)), Not(And(a, Not(b))))
+        self.assertEqual(pl.expand_formula(Implies(a, b)), Not(And(Not(Not(a)), Not(b))))
+        self.assertEqual(pl.expand_formula(Implies(b, a)), Not(And(Not(Not(b)), Not(a))))
         # A === B = (A AND B) OR (NOT A AND NOT B) = NOT( NOT(A AND B) AND NOT(NOT A AND NOT B) )
         self.assertEqual(pl.expand_formula(Equivalence(a, b)), Not(And(Not(And(a, b)), Not(And(Not(a), Not(b))))))
 
@@ -123,7 +124,7 @@ class TestPLExpandFormula(unittest.TestCase):
         pl = PL(alphabet)
         self.assertEqual(pl.expand_formula(And(TrueFormula(), FalseFormula())), And(T, F))
         self.assertEqual(pl.expand_formula(Or(TrueFormula(), FalseFormula())), Not(And(Not(T), Not(F))))
-        self.assertEqual(pl.expand_formula(Implies(TrueFormula(), FalseFormula())), Not(And(T, Not(F))))
+        self.assertEqual(pl.expand_formula(Implies(TrueFormula(), FalseFormula())), Not(And(Not(Not(T)), Not(F))))
         self.assertEqual(pl.expand_formula(Equivalence(TrueFormula(), FalseFormula())), Not(And(Not(And(T, F)), Not(And(Not(T), Not(F))))))
 
     def test_expand_formula_error(self):
@@ -169,9 +170,12 @@ class TestPLToNNF(unittest.TestCase):
         self.assertEqual(pl.to_nnf(Not(Implies(b, Not(a)))), And(b, a))
 
 
-class TestPLFindSymbols(unittest.TestCase):
 
-    def test_find_symbols(self):
+
+
+class TestPLFindAtomics(unittest.TestCase):
+
+    def test_find_atomics(self):
         a = Symbol("a")
         b = Symbol("b")
         c = Symbol("c")
@@ -179,6 +183,8 @@ class TestPLFindSymbols(unittest.TestCase):
         atomic_b = AtomicFormula(b)
         atomic_c = AtomicFormula(c)
         self.assertEqual(PL.find_atomics(And(atomic_a, And(atomic_b, atomic_c))), {atomic_a, atomic_b, atomic_c})
+        self.assertEqual(PL.find_atomics(Or(atomic_a, Or(atomic_b, atomic_c))), {atomic_a, atomic_b, atomic_c})
+        self.assertEqual(PL.find_atomics(Equivalence(atomic_a, Or(atomic_b, atomic_c))), {atomic_a, atomic_b, atomic_c})
 
 
 class TestPLMinimalModel(unittest.TestCase):

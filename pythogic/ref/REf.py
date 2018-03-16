@@ -1,7 +1,7 @@
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.FormalSystem import FormalSystem
 from pythogic.base.Formula import PathExpressionUnion, PathExpressionStar, PathExpressionSequence, Formula, \
-    PathExpressionTest
+    PathExpressionTest, AtomicFormula, Not, And, FalseFormula, Or, Implies, Equivalence, TrueFormula
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.pl.PL import PL
 
@@ -9,9 +9,10 @@ from pythogic.pl.PL import PL
 class REf(FormalSystem):
     def __init__(self, alphabet: Alphabet):
         super().__init__(alphabet)
+        self.pl = PL(self.alphabet)
 
-    allowed_formulas = {PathExpressionUnion, PathExpressionSequence, PathExpressionStar}
-    derived_formulas = {}
+    allowed_formulas = {PathExpressionUnion, PathExpressionSequence, PathExpressionStar, AtomicFormula, And, Not}
+    derived_formulas = {Or, Implies, Equivalence, TrueFormula, FalseFormula}
 
 
     def _is_formula(self, f: Formula):
@@ -56,7 +57,10 @@ class REf(FormalSystem):
             raise ValueError
 
     def to_equivalent_formula(self, derived_formula: Formula):
-        raise NotImplementedError
+        return self.pl.to_equivalent_formula(derived_formula)
 
     def _expand_formula(self, f: Formula):
-        return f
+        if self.pl.is_formula(f):
+            return self.pl.expand_formula(f)
+        else:
+            return f

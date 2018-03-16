@@ -44,9 +44,10 @@ class LDLf_EmptyTraces(FormalSystem):
 
     def __init__(self, alphabet: Alphabet):
         super().__init__(alphabet)
+        self.pl = PL(self.alphabet)
 
     allowed_formulas = {LogicalTrue, Not, And, PathExpressionEventually, TrueFormula, FalseFormula}
-    derived_formulas = {LogicalFalse, Or, Next, Until, End, PathExpressionAlways, LDLfLast}
+    derived_formulas = {LogicalFalse, Or, Next, Until, End, PathExpressionAlways, LDLfLast, AtomicFormula}
 
     def _is_formula(self, f: Formula):
         """Check if a formula is legal in the current formal system"""
@@ -70,7 +71,10 @@ class LDLf_EmptyTraces(FormalSystem):
         if isinstance(p, PathExpressionUnion) or isinstance(p, PathExpressionSequence):
             return self._is_path(p.p1) and self._is_path(p.p2)
         elif isinstance(p, PathExpressionTest):
-            return self.is_formula(p.f)
+            if self.pl.is_formula(p.f):
+                return True
+            else:
+                return self.is_formula(p.f)
         elif isinstance(p, PathExpressionStar):
             return self._is_path(p.p)
         elif isinstance(p, Formula):
@@ -162,7 +166,9 @@ class LDLf_EmptyTraces(FormalSystem):
     def to_equivalent_formula(self, derived_formula: Formula):
         # make lines shorter
         ef = self.to_equivalent_formula
-        if isinstance(derived_formula, LogicalFalse):
+        if isinstance(derived_formula, AtomicFormula):
+            return PathExpressionEventually(derived_formula, LogicalTrue())
+        elif isinstance(derived_formula, LogicalFalse):
             return Not(LogicalTrue())
         elif isinstance(derived_formula, Or):
             return Not(And(Not(derived_formula.f1), Not(derived_formula.f2)))
@@ -308,10 +314,10 @@ class LDLf_EmptyTraces(FormalSystem):
 
         return {
             "alphabet": alphabet,
-            "states": states,
-            "initial_states": initial_states,
+            "states": frozenset(states),
+            "initial_states": frozenset(initial_states),
             "transitions": delta,
-            "accepting_states": final_states
+            "accepting_states": frozenset(final_states)
         }
 
 

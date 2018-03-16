@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Type
 
 from pythogic.base.Symbol import PredicateSymbol, Symbol, TrueSymbol, FalseSymbol, LastSymbol, DUMMY_SYMBOL
 from pythogic.base.Symbols import Symbols
@@ -27,12 +27,14 @@ class Expression(ABC):
 class Formula(Expression):
     pass
 
+class SimpleFormula(Formula):
+    pass
 
 class PathExpression(Formula):
     pass
 
 
-class AtomicFormula(Formula):
+class AtomicFormula(SimpleFormula):
 
     def __init__(self, symbol: Symbol):
         self.symbol = symbol
@@ -55,7 +57,7 @@ DUMMY_ATOMIC = AtomicFormula(DUMMY_SYMBOL)
 DUMMY_TERM = ConstantTerm.fromString(DUMMY_SYMBOL.name)
 
 
-class PredicateFormula(Formula):
+class PredicateFormula(SimpleFormula):
     def __init__(self, predicate_symbol: PredicateSymbol, *args: Term):
         assert len(args) == predicate_symbol.arity
         self.predicate_symbol = predicate_symbol
@@ -77,7 +79,7 @@ class Operator(Formula):
     base_expression = Symbols.ROUND_BRACKET_LEFT.value + "%s" + Symbols.ROUND_BRACKET_RIGHT.value
 
     @property
-    def operator_symbol(self):
+    def operator_symbol(self) -> str:
         raise NotImplementedError
 
 
@@ -108,23 +110,42 @@ class BinaryOperator(Operator):
     def _members(self):
         return self.f1, self.operator_symbol, self.f2
 
+
+class ListRepresentation(Operator):
+    def __init__(self, op: Type[Operator], formulas: List[Formula]):
+        self.op = op
+        self.formulas = frozenset(formulas)
+
+    def operator_symbol(self) -> str:
+        return self.op.operator_symbol
+
+    def _members(self):
+        return (self.op.operator_symbol, self.formulas)
+
+    def __str__(self):
+        return self.base_expression % (" "+self.op.operator_symbol+" ").join(list(map(str, self.formulas)))
+
+
+class CommutativeBinaryOperator(BinaryOperator):
+    """A generic commutative binary formula"""
+
+    def __init__(self, f1: Formula, f2: Formula):
+        _f1, _f2 = sorted([f1, f2], key=lambda x: x.__str__())
+        super().__init__(_f1, _f2)
+
+    @classmethod
+    def toListRepresentation(cls, formulas:List[Formula]):
+        return ListRepresentation(cls, formulas)
+
     @classmethod
     def chain(cls, formulas: List[Formula]):
         """apply the operator to a list of formulas"""
-        if len(formulas)==0:
+        if len(formulas) == 0:
             return cls(TrueFormula(), TrueFormula())
         elif len(formulas) == 1:
             return cls(formulas[0], TrueFormula())
         else:
             return cls(formulas[0], cls.chain(formulas[1:]))
-
-
-class CommutativeBinaryOperator(BinaryOperator):
-    """A generic binary formula"""
-
-    def __init__(self, f1: Formula, f2: Formula):
-        _f1, _f2 = sorted([f1, f2], key=lambda x: x.__str__())
-        super().__init__(_f1, _f2)
 
 
 class QuantifiedFormula(Operator):
@@ -225,10 +246,12 @@ class Equivalence(BinaryOperator):
 
 
 class Exists(QuantifiedFormula):
+    """Existential quantifier: ⱯVariable.(Formula) """
     operator_symbol = Symbols.EXISTS.value
 
 
 class ForAll(QuantifiedFormula):
+    """Universal quantifier: ∃ Variable.(Formula) """
     operator_symbol = Symbols.FORALL.value
 
 
@@ -252,7 +275,7 @@ class Always(UnaryOperator):
     operator_symbol = Symbols.ALWAYS.value
 
 
-class FalseFormula(Formula):
+class FalseFormula(SimpleFormula):
     def _members(self):
         return (FalseSymbol())
 
@@ -260,7 +283,7 @@ class FalseFormula(Formula):
         return str(FalseSymbol())
 
 
-class TrueFormula(Formula):
+class TrueFormula(SimpleFormula):
     def _members(self):
         return (TrueSymbol())
 
@@ -268,7 +291,7 @@ class TrueFormula(Formula):
         return str(TrueSymbol())
 
 
-class LDLfLast(Formula):
+class LDLfLast(SimpleFormula):
     def _members(self):
         return (LastSymbol())
 
@@ -354,7 +377,7 @@ class PathExpressionAlways(PathExpressionFormula):
     brackets = Symbols.FULLWIDTH_SQUARE_BRACKET_LEFT.value + Symbols.FULLWIDTH_SQUARE_BRACKET_RIGHT.value
 
 
-class LogicalTrue(Formula):
+class LogicalTrue(SimpleFormula):
     def _members(self):
         return (Symbol(Symbols.LOGICAL_TRUE.value))
 
@@ -362,7 +385,7 @@ class LogicalTrue(Formula):
         return str(Symbol(Symbols.LOGICAL_TRUE.value))
 
 
-class LogicalFalse(Formula):
+class LogicalFalse(SimpleFormula):
     def _members(self):
         return (Symbol(Symbols.LOGICAL_FALSE.value))
 
@@ -370,7 +393,7 @@ class LogicalFalse(Formula):
         return str(Symbol(Symbols.LOGICAL_FALSE.value))
 
 
-class End(Formula):
+class End(SimpleFormula):
     def _members(self):
         return (Symbol(Symbols.END.value))
 

@@ -1,0 +1,5 @@
+digraph {
+	fake [style=invisible]
+	1 [root=true shape=doublecircle]
+	fake -> 1 [style=bold]
+}

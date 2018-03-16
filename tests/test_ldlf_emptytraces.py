@@ -1,6 +1,8 @@
 import unittest
 from pprint import pprint
 
+from pythogic.automaton.DFA import DFA
+from pythogic.automaton.NFA import NFA
 from pythogic.ldlf_empty_traces.LDLf_EmptyTraces import LDLf_EmptyTraces
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.base.Formula import AtomicFormula, Not, And, Or, PathExpressionUnion, PathExpressionSequence, \
@@ -9,7 +11,7 @@ from pythogic.base.Formula import AtomicFormula, Not, And, Or, PathExpressionUni
 from pythogic.base.Alphabet import Alphabet
 from pythogic.base.Symbol import Symbol
 from pythogic.pl.PL import PL
-from pythogic.base.utils import print_nfa, print_dfa
+from pythogic.base.utils import print_nfa, print_dfa, powerset
 
 
 class TestLDLfEmptyTraces(unittest.TestCase):
@@ -371,9 +373,9 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.c_sym = Symbol("c")
 
         alphabet_a = Alphabet({self.a_sym})
-        alphabet_abc = Alphabet({self.a_sym, Symbol("b"), Symbol("c")})
+        self.alphabet_abc = Alphabet({self.a_sym, Symbol("b"), Symbol("c")})
         self.ldlf_a = LDLf_EmptyTraces(alphabet_a)
-        self.ldlf_abc = LDLf_EmptyTraces(alphabet_abc)
+        self.ldlf_abc = LDLf_EmptyTraces(self.alphabet_abc)
 
     def test_to_nfa_alphabet_a_logical_true(self):
         """tt"""
@@ -674,7 +676,6 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         a = self.a_sym
         tt = LogicalTrue()
         eventually_false_tt = PathExpressionEventually(FalseFormula(), tt)
-        aaa = self.ldlf_a.expand_formula(eventually_false_tt)
 
         pl = PL(self.ldlf_a.alphabet)
         expanded_false = pl.expand_formula(FalseFormula())
@@ -1896,5 +1897,60 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertEqual(x["accepting_states"], final_states)
         self.assertEqual(x["transitions"], delta)
 
-        print_nfa(x, "001002_alphabet_abc_always_union_a_b_end.NFA", "./tests/automata/nfa")
-        print_dfa(x, "001002_alphabet_abc_always_union_a_b_end.DFA", "./tests/automata/dfa")
+        print_nfa(x, "001002_alphabet_abc_always_union_a_b_end.NFA", "./tests/automata")
+        print_dfa(x, "001002_alphabet_abc_always_union_a_b_end.DFA", "./tests/automata")
+
+
+
+    def test_sequence_star_annidations(self):
+        atomic_a = AtomicFormula(self.a_sym)
+        atomic_b = AtomicFormula(self.b_sym)
+        atomic_c = AtomicFormula(self.c_sym)
+
+        main = PathExpressionEventually(
+            PathExpressionStar(
+                    PathExpressionSequence(
+                        PathExpressionSequence(atomic_a, PathExpressionStar(atomic_b)),
+                    atomic_c)),
+            End()
+        )
+
+        main = PathExpressionEventually(
+            PathExpressionStar(
+                PathExpressionSequence(
+                    PathExpressionStar(PathExpressionSequence(atomic_a, atomic_b)),
+                    atomic_c),
+            ),
+            End()
+        )
+
+        x = self.ldlf_abc.to_nfa(main)
+
+        # pprint(x)
+
+        print_nfa(x, "002003_alphabet_abc_always_union_a_b_end.NFA", "./tests/automata")
+        print_dfa(x, "002003_alphabet_abc_always_union_a_b_end.DFA", "./tests/automata")
+
+        # print_nfa(x, "old.NFA", "./tests/automata")
+        # print_dfa(x, "old.DFA", "./tests/automata")
+
+        # nfa = NFA.fromTransitions(Alphabet(powerset(self.alphabet_abc.symbols)),x["states"], x["initial_states"], x["accepting_states"], x["transitions"])
+        # nfa.to_dot("automata/new.NFA")
+        # dfa = NFA.determinize(nfa)
+        # dfa.to_dot("automata/new.DFA")
+        # dfa = DFA.minimize(dfa)
+        # dfa.to_dot("automata/new_minimized.DFA")
+        # dfa = DFA.trim(dfa)
+        # dfa.to_dot("automata/new_trimmed.DFA")
+
+
+
+# main = PathExpressionEventually(
+#             PathExpressionStar(
+#                 PathExpressionSequence(
+#                     PathExpressionStar(PathExpressionSequence(atomic_a, atomic_b)),
+#                     atomic_c),
+#             ),
+#             End()
+#         )
+

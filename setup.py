@@ -13,6 +13,7 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     # TODO: Put package requirements here
+    "pythomata", "typing"
 ]
 
 setup_requirements = [
@@ -21,6 +22,7 @@ setup_requirements = [
 
 test_requirements = [
     # TODO: Put package test requirements here
+    "pythomata", "typing"
 ]
 
 setup(
