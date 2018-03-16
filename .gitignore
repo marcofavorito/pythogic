@@ -1,7 +1,8 @@
 # Temporary gitignore
 pythogic/ltl/
 tests/test_ltl*
-tests/nfa/*
+tests/automata/dfa/*
+tests/automata/nfa/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
