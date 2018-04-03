@@ -342,6 +342,15 @@ class PathExpressionSequence(PathExpression):
     def _members(self):
         return (self.p1, self.operator_symbol, self.p2)
 
+    @classmethod
+    def chain(cls, formulas: List[Formula]):
+        """apply the operator to a list of formulas"""
+        assert len(formulas)>=2
+        if len(formulas) == 2:
+            return cls(formulas[0], formulas[1])
+        else:
+            return cls(formulas[0], cls.chain(formulas[1:]))
+
 
 class PathExpressionStar(PathExpression):
     operator_symbol = Symbols.PATH_STAR.value

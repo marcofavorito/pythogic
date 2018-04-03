@@ -1,9 +1,3 @@
-# Temporary gitignore
-pythogic/ltl/
-tests/test_ltl*
-tests/automata/dfa/*
-tests/automata/nfa/*
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -111,3 +105,10 @@ ENV/
 
 # imsc
 .pytest_cache
+
+
+# Temporary gitignore
+pythogic/ltl/
+tests/test_ltl*
+tests/automata
+tests/temp

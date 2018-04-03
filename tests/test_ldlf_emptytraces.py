@@ -367,7 +367,7 @@ class TestLDLfEmptyTracesDelta(TestLDLfEmptyTraces):
 class TestLDLfEmptyTracesToNFA(unittest.TestCase):
     def setUp(self):
         # configutations
-        self.print_automata = False
+        self.print_automata = True
 
         self.a_sym = Symbol("a")
         self.b_sym = Symbol("b")
@@ -2309,5 +2309,58 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertFalse(dfa.word_acceptance([a, a, c]))
         self.assertFalse(dfa.word_acceptance([a, b, abc, ab]))
         self.assertTrue(dfa.word_acceptance([a, b, abc, ab, c]))
+
+
+    def test_temp(self):
+        atomic_a = AtomicFormula(self.a_sym)
+        atomic_b = AtomicFormula(self.b_sym)
+        atomic_c = AtomicFormula(self.c_sym)
+
+        # main = PathExpressionEventually(
+        #     PathExpressionStar(
+        #             PathExpressionSequence(
+        #                 PathExpressionSequence(atomic_a, PathExpressionStar(atomic_b)),
+        #             atomic_c)),
+        #     End()
+        # )
+
+        main = PathExpressionEventually(
+            PathExpressionSequence(And(Not(atomic_a), And(atomic_b, atomic_c)),
+                                   PathExpressionSequence(And(Not(atomic_a), And(Not(atomic_b), atomic_c)),
+                                                          And(Not(atomic_a), And(Not(atomic_b), Not(atomic_c))))),
+            End()
+        )
+
+        x = self.ldlf_abc.to_nfa(main)
+
+        # pprint(x)
+
+        if self.print_automata:
+            print_nfa(x, "temp.NFA", "./temp/")
+            print_dfa(x, "temp.DFA", "./temp/")
+
+        # dfa = _to_pythomata_dfa(x)
+
+    def test_breakout_lr(self):
+        # rows = [Symbol(r) for r in ["r0", "r1", "r2", "r3", "r4", "r5"]]
+        rows = [Symbol(r) for r in ["r0", "r1", "r2"]]
+        atoms = [AtomicFormula(r) for r in rows]
+        alphabet = Alphabet(set(rows))
+        ldlf = LDLf_EmptyTraces(alphabet)
+        f = PathExpressionEventually(
+            PathExpressionSequence.chain([
+                And.chain([atoms[0], Not(atoms[1]), Not(atoms[2])]), #Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
+                And.chain([atoms[0],     atoms[1],  Not(atoms[2])]), #Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
+                And.chain([atoms[0],     atoms[1],      atoms[2] ]), #Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
+                # And.chain([atoms[0],     atoms[1],      atoms[2],      atoms[3],  Not(atoms[4]), Not(atoms[5])]),
+                # And.chain([atoms[0],     atoms[1],      atoms[2],      atoms[3],      atoms[4],  Not(atoms[5])]),
+                # And.chain([atoms[0],     atoms[1],      atoms[2],      atoms[3],      atoms[4],      atoms[5] ])
+            ]),
+            LogicalTrue())
+        nfa = ldlf.to_nfa(f)
+        print_nfa(nfa, "rows.NFA", "./temp/")
+        print_dfa(nfa, "rows.DFA", "./temp/")
+
+
 
 
