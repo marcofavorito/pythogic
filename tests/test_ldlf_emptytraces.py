@@ -1,6 +1,7 @@
 import unittest
 from pprint import pprint
 
+from pythogic.ldlf_empty_traces.DFAOTF import DFAOTF
 from pythogic.ldlf_empty_traces.LDLf_EmptyTraces import LDLf_EmptyTraces
 from pythogic.ltlf.semantics.FiniteTrace import FiniteTrace
 from pythogic.base.Formula import AtomicFormula, Not, And, Or, PathExpressionUnion, PathExpressionSequence, \
@@ -2311,6 +2312,9 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         self.assertTrue(dfa.word_acceptance([a, b, abc, ab, c]))
 
 
+
+
+
     def test_temp(self):
         atomic_a = AtomicFormula(self.a_sym)
         atomic_b = AtomicFormula(self.b_sym)
@@ -2324,12 +2328,24 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         #     End()
         # )
 
+        # main = PathExpressionEventually(
+        #     PathExpressionSequence(And(Not(atomic_a), And(atomic_b, atomic_c)),
+        #                            PathExpressionSequence(And(Not(atomic_a), And(Not(atomic_b), atomic_c)),
+        #                                                   And(Not(atomic_a), And(Not(atomic_b), Not(atomic_c))))),
+        #     End()
+        # )
+
+        """< (!(a | b | c ))* ; (a | c) ; (!(a | b | c))* ; (b | c) >(true);"""
         main = PathExpressionEventually(
-            PathExpressionSequence(And(Not(atomic_a), And(atomic_b, atomic_c)),
-                                   PathExpressionSequence(And(Not(atomic_a), And(Not(atomic_b), atomic_c)),
-                                                          And(Not(atomic_a), And(Not(atomic_b), Not(atomic_c))))),
-            End()
+            PathExpressionSequence.chain([
+                PathExpressionStar(Not(Or.chain([atomic_a, atomic_b, atomic_c]))),
+                Or(atomic_a, atomic_c),
+                PathExpressionStar(Not(Or.chain([atomic_a, atomic_b, atomic_c]))),
+                Or(atomic_b, atomic_c)
+            ]),
+            LogicalTrue()
         )
+        print(main)
 
         x = self.ldlf_abc.to_nfa(main)
 
@@ -2339,7 +2355,28 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
             print_nfa(x, "temp.NFA", "./temp/")
             print_dfa(x, "temp.DFA", "./temp/")
 
-        # dfa = _to_pythomata_dfa(x)
+        dfa = _to_pythomata_dfa(x)
+        empty = frozenset()
+        a = frozenset({self.a_sym})
+        b = frozenset({self.b_sym})
+        c = frozenset({self.c_sym})
+        ab = a.union(b)
+        ac = a.union(c)
+        bc = b.union(c)
+        abc = ab.union(c)
+        not_ = frozenset({})
+        self.assertTrue(dfa.word_acceptance([empty, a, empty, b, a]))
+        self.assertFalse(dfa.word_acceptance([empty]))
+        self.assertFalse(dfa.word_acceptance([empty, b, empty]))
+        self.assertFalse(dfa.word_acceptance([empty, b, a]))
+
+        on_the_fly_dfa = DFAOTF(self.ldlf_abc, main)
+        self.assertTrue(on_the_fly_dfa.trace_acceptance([empty, a, empty, b, a]))
+        self.assertFalse(on_the_fly_dfa.trace_acceptance([empty]))
+        self.assertFalse(on_the_fly_dfa.trace_acceptance([empty, b, empty]))
+        self.assertFalse(on_the_fly_dfa.trace_acceptance([empty, b, a]))
+
+
 
     def test_breakout_lr(self):
         # rows = [Symbol(r) for r in ["r0", "r1", "r2", "r3", "r4", "r5"]]
@@ -2349,17 +2386,23 @@ class TestLDLfEmptyTracesToNFA(unittest.TestCase):
         ldlf = LDLf_EmptyTraces(alphabet)
         f = PathExpressionEventually(
             PathExpressionSequence.chain([
-                And.chain([atoms[0], Not(atoms[1]), Not(atoms[2])]), #Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
-                And.chain([atoms[0],     atoms[1],  Not(atoms[2])]), #Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
-                And.chain([atoms[0],     atoms[1],      atoms[2] ]), #Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
+                PathExpressionStar(And.chain([Not(atoms[0]), Not(atoms[1]), Not(atoms[2])])),
+                PathExpressionStar(And.chain([atoms[0], Not(atoms[1]), Not(atoms[2])])),
+                # Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
+                PathExpressionStar(And.chain([atoms[0], atoms[1], Not(atoms[2])])),
+                # Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
+                # And.chain([atoms[0],      atoms[1],      atoms[2]]),  # Not(atoms[3]), Not(atoms[4]), Not(atoms[5])]),
                 # And.chain([atoms[0],     atoms[1],      atoms[2],      atoms[3],  Not(atoms[4]), Not(atoms[5])]),
                 # And.chain([atoms[0],     atoms[1],      atoms[2],      atoms[3],      atoms[4],  Not(atoms[5])]),
                 # And.chain([atoms[0],     atoms[1],      atoms[2],      atoms[3],      atoms[4],      atoms[5] ])
             ]),
-            LogicalTrue())
+            And.chain([atoms[0], atoms[1], atoms[2]])
+        )
         nfa = ldlf.to_nfa(f)
         print_nfa(nfa, "rows.NFA", "./temp/")
         print_dfa(nfa, "rows.DFA", "./temp/")
+
+
 
 
 

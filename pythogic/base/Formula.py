@@ -140,10 +140,12 @@ class CommutativeBinaryOperator(BinaryOperator):
     @classmethod
     def chain(cls, formulas: List[Formula]):
         """apply the operator to a list of formulas"""
-        if len(formulas) == 0:
-            return cls(TrueFormula(), TrueFormula())
-        elif len(formulas) == 1:
-            return cls(formulas[0], TrueFormula())
+        dummy_formula = TrueFormula() if isinstance(cls, type(And)) else FalseFormula() if isinstance(cls, type(Or)) else None
+        assert dummy_formula
+        if len(formulas) == 1:
+            return cls(formulas[0], dummy_formula)
+        elif len(formulas) == 2:
+            return cls(formulas[0], formulas[1])
         else:
             return cls(formulas[0], cls.chain(formulas[1:]))
 

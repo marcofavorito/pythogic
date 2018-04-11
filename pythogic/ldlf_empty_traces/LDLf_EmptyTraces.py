@@ -283,7 +283,12 @@ class LDLf_EmptyTraces(FormalSystem):
                     symbol2formula = {Symbol(str(f)) : f for f in atomics if f != TrueFormula() and f!=FalseFormula()}
                     formula2atomic_formulas = {f : AtomicFormula.fromName(str(f)) if f != TrueFormula() and f!=FalseFormula() else f for f in atomics}
                     transformed_delta_formulas = [self._tranform_delta(f, formula2atomic_formulas) for f in delta_formulas]
-                    conjunctions = And.chain(transformed_delta_formulas)
+
+                    # the empy conjunction stands for true
+                    if len(transformed_delta_formulas)==0:
+                        conjunctions = TrueFormula()
+                    else:
+                        conjunctions = And.chain(transformed_delta_formulas)
 
                     models = frozenset(PL(Alphabet(set(symbol2formula))).minimal_models(conjunctions))
                     if len(models)==0:
