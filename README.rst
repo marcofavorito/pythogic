@@ -2,6 +2,11 @@
 Pythogic
 ========
 
+==========
+DEPRECATED
+==========
+The development and the support are temporarily suspended.
+
 .. image:: https://img.shields.io/pypi/v/pythogic.svg
         :target: https://pypi.python.org/pypi/pythogic
 
